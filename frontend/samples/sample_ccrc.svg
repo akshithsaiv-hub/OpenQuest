@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 410" width="100%" height="100%">
+  <defs>
+    <filter id="shadow4" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="596" height="406" x="2" y="2" rx="10" fill="#ffffff" stroke="#ea580c" stroke-width="2" filter="url(#shadow4)"/>
+  
+  <!-- Header Bar -->
+  <rect x="2" y="2" width="596" height="56" rx="10 10 0 0" fill="#c2410c"/>
+  <text x="300" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">కౌలు రైతు హక్కుల ధృవీకరణ పత్రం (CCRC)</text>
+  <text x="300" y="44" font-family="Arial, sans-serif" font-size="11" fill="#fed7aa" text-anchor="middle">CROP CULTIVATOR RIGHTS CARD - STATUTORY LEASE ENDORSEMENT</text>
+
+  <!-- Watermark -->
+  <text x="300" y="230" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#ffedd5" text-anchor="middle" transform="rotate(-15, 300, 230)">STATUTORY TENANT CARD</text>
+
+  <!-- Body Content -->
+  <g transform="translate(30, 75)" font-family="Arial, sans-serif" font-size="12">
+    <!-- Card ID -->
+    <rect x="0" y="0" width="540" height="34" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="16" y="22" font-weight="bold" fill="#9a3412">CCRC Registration ID:</text>
+    <text x="180" y="22" font-family="Courier, monospace" font-size="15" font-weight="bold" fill="#c2410c">CCRC-TS-2026-9912</text>
+    <text x="370" y="22" font-weight="bold" fill="#9a3412">Validity Season:</text>
+    <text x="470" y="22" font-weight="bold" fill="#047857">Rabi 2025-26</text>
+
+    <!-- Tenant Details -->
+    <rect x="0" y="44" width="540" height="70" rx="4" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="16" y="66" font-weight="bold" fill="#64748b">కౌలు రైతు పేరు / Tenant Farmer:</text>
+    <text x="16" y="86" font-size="15" font-weight="bold" fill="#0f172a">బానోత్ పద్మ (Banoth Padma) W/o రామ్ సింగ్</text>
+    <text x="16" y="104" font-size="11" fill="#475569">Aadhaar: XXXX-XXXX-7721 • Social Category: ST (Lambada) • Phone: 9701234567</text>
+
+    <!-- Land Owner Details -->
+    <rect x="0" y="124" width="540" height="70" rx="4" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="16" y="146" font-weight="bold" fill="#64748b">భూ యజమాని పేరు / Landowner (Pattadar):</text>
+    <text x="16" y="166" font-size="14" font-weight="bold" fill="#0f172a">K. Venkat Reddy S/o నారాయణ రెడ్డి</text>
+    <text x="16" y="184" font-size="11" fill="#475569">Pattadar Passbook: T192004210 • Village: Kallur, Khammam</text>
+
+    <!-- Land & Crop Details -->
+    <rect x="0" y="204" width="540" height="60" rx="4" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="16" y="226" font-weight="bold" fill="#64748b">సర్వే నం / Survey No:</text>
+    <text x="135" y="226" font-weight="bold" fill="#0f172a">142/A</text>
+    
+    <text x="230" y="226" font-weight="bold" fill="#64748b">కౌలు విస్తీర్ణం / Extent:</text>
+    <text x="350" y="226" font-weight="bold" fill="#15803d">1.80 Acres</text>
+
+    <text x="16" y="250" font-weight="bold" fill="#64748b">సాగు పంట / Leased Crop:</text>
+    <text x="145" y="250" font-weight="bold" fill="#c2410c">మిర్చి / Chilli &amp; పత్తి / Cotton</text>
+  </g>
+
+  <!-- Legal Protection Notice -->
+  <g transform="translate(30, 350)" font-family="Arial, sans-serif">
+    <rect width="540" height="42" rx="4" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="14" y="18" font-size="10" font-weight="bold" fill="#9a3412">చట్టపరమైన హామీ / Statutory Protection:</text>
+    <text x="14" y="32" font-size="9.5" fill="#7c2d12">Under AP/TS Land Licensed Cultivators Act, CCRC confers crop insurance &amp; subsidy rights to tenant WITHOUT affecting landowner's ownership.</text>
+  </g>
+</svg>

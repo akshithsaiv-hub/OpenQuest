@@ -1163,6 +1163,47 @@ def api_get_documents_direct(farmer_id: str = "DEMO_FARMER_1"):
     from utils.document_wallet import get_farmer_documents
     return get_farmer_documents(farmer_id)
 
+class VoiceQueryRequest(BaseModel):
+    query: str
+    language: Optional[str] = "auto"
+
+@app.post("/api/voice_assistant")
+def api_voice_assistant(req: VoiceQueryRequest):
+    """
+    Multilingual voice assistant endpoint understanding and responding in any major Indian language.
+    """
+    from utils.voice_engine import get_voice_response
+    return get_voice_response(query=req.query, lang_code=req.language or "auto")
+
+@app.get("/api/documents/download/{doc_type}")
+def api_download_sample_document(doc_type: str):
+    """
+    Serves downloadable official sample document copies for Aadhaar, Pahani, Passbook, and CCRC.
+    """
+    samples_dir = os.path.join(FRONTEND_DIR, "samples")
+    doc_map = {
+        "aadhaar": ("sample_aadhaar.svg", "Sample_Aadhaar_Card_Masked.svg"),
+        "pahani": ("sample_pahani.svg", "Sample_Pahani_Land_Record_RoR1B.svg"),
+        "land_record": ("sample_pahani.svg", "Sample_Pahani_Land_Record_RoR1B.svg"),
+        "passbook": ("sample_passbook.svg", "Sample_Bank_Passbook_DBT_Active.svg"),
+        "bank_passbook": ("sample_passbook.svg", "Sample_Bank_Passbook_DBT_Active.svg"),
+        "ccrc": ("sample_ccrc.svg", "Sample_CCRC_Tenant_Card.svg"),
+        "ccrc_tenancy": ("sample_ccrc.svg", "Sample_CCRC_Tenant_Card.svg")
+    }
+    key = doc_type.lower().strip()
+    if key not in doc_map:
+        raise HTTPException(status_code=404, detail=f"Document type '{doc_type}' not found.")
+    file_name, download_name = doc_map[key]
+    file_path = os.path.join(samples_dir, file_name)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Sample file not found on server")
+    return FileResponse(
+        path=file_path,
+        filename=download_name,
+        media_type="image/svg+xml",
+        headers={"Content-Disposition": f'attachment; filename="{download_name}"'}
+    )
+
 # Mount static files to serve the frontend portal
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
