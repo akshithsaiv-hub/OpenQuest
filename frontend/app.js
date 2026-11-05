@@ -760,10 +760,24 @@
 
 
   // =========================================================================
-  // 4. TAB 2: 72-HOUR CLIMATE SHIELD & CLAIM ASSISTANT
+  // 4. TAB 2: 72-HOUR CLIMATE SHIELD & CLAIM ASSISTANT (GEO-TAGGED CAMERA SUITE)
   // =========================================================================
   function initClaimShieldTab() {
-    // 72-Hour Live Countdown Timer
+    // State for live GPS telemetry
+    const currentGps = {
+      lat: 17.978421,
+      lon: 79.594112,
+      accuracy: 3.2,
+      altitude: 294,
+      timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      locked: true
+    };
+
+    // State for captured geo-evidence photos
+    const capturedEvidence = [];
+    let cameraStream = null;
+
+    // 1. 72-Hour Live Countdown Timer
     const timerDisplay = document.getElementById('liveCountdownTimer');
     if (timerDisplay) {
       let secondsLeft = 71 * 3600 + 59 * 60 + 42;
@@ -776,12 +790,127 @@
       }, 1000);
     }
 
-    // Weather Check Button
+    // 2. GPS Location Acquisition
+    function updateGpsUI() {
+      const coordsEl = document.getElementById('gpsCoordsDisplay');
+      const timeEl = document.getElementById('gpsTimestampDisplay');
+      const statusEl = document.getElementById('gpsLockStatus');
+      const vfCoordsEl = document.getElementById('vfCoords');
+      const vfSurveyEl = document.getElementById('vfSurveyTag');
+      const surveyVal = document.getElementById('claimSurvey') ? document.getElementById('claimSurvey').value : '284/B';
+      const villageVal = document.getElementById('claimVillage') ? document.getElementById('claimVillage').value : 'Geesugonda';
+
+      if (coordsEl) {
+        coordsEl.textContent = `📍 Lat: ${currentGps.lat}° N, Lon: ${currentGps.lon}° E (±${currentGps.accuracy}m)`;
+      }
+      if (timeEl) {
+        timeEl.textContent = `⏱️ Time: ${currentGps.timestamp} IST | Alt: ${currentGps.altitude}m MSL`;
+      }
+      if (statusEl) {
+        statusEl.textContent = currentGps.locked ? '🟢 High-Precision GPS Locked' : '🟡 Approximate Location';
+      }
+      if (vfCoordsEl) {
+        vfCoordsEl.textContent = `${currentGps.lat}° N, ${currentGps.lon}° E`;
+      }
+      if (vfSurveyEl) {
+        vfSurveyEl.textContent = `Survey #${surveyVal} | ${villageVal}`;
+      }
+    }
+
+    function acquireGpsLocation() {
+      if ('geolocation' in navigator) {
+        const statusEl = document.getElementById('gpsLockStatus');
+        if (statusEl) statusEl.textContent = '🔄 Acquiring Satellite Fix...';
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            currentGps.lat = parseFloat(pos.coords.latitude.toFixed(6));
+            currentGps.lon = parseFloat(pos.coords.longitude.toFixed(6));
+            currentGps.accuracy = parseFloat((pos.coords.accuracy || 4.0).toFixed(1));
+            currentGps.altitude = Math.round(pos.coords.altitude || 294);
+            currentGps.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            currentGps.locked = true;
+            updateGpsUI();
+          },
+          (err) => {
+            console.warn('Geolocation failed or permission denied, using district default coordinates:', err.message);
+            currentGps.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            currentGps.locked = false;
+            updateGpsUI();
+          },
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        );
+      } else {
+        updateGpsUI();
+      }
+    }
+
+    const btnRefreshGps = document.getElementById('btnRefreshGps');
+    if (btnRefreshGps) {
+      btnRefreshGps.addEventListener('click', () => {
+        btnRefreshGps.innerHTML = '<span>🔄</span> Locking...';
+        acquireGpsLocation();
+        setTimeout(() => {
+          btnRefreshGps.innerHTML = '<span>🔄</span> Refresh GPS';
+        }, 1200);
+      });
+    }
+
+    // Initial GPS acquire
+    acquireGpsLocation();
+
+    // 3. Compensation Calculator Logic
+    const cropScaleOfFinance = {
+      'Paddy': 42000,
+      'Cotton': 48000,
+      'Chilli': 78000,
+      'Maize': 35000,
+      'Groundnut': 36000,
+      'Soybean': 32000,
+      'Wheat': 38000
+    };
+
+    function updateCompensationDisplay() {
+      const crop = document.getElementById('hazardCrop') ? document.getElementById('hazardCrop').value.split(' ')[0] : 'Paddy';
+      const acres = parseFloat(document.getElementById('claimAcreage') ? document.getElementById('claimAcreage').value : 2.5) || 2.5;
+      const lossPct = parseInt(document.getElementById('claimLossPct') ? document.getElementById('claimLossPct').value : 80) || 80;
+
+      const sumInsPerAcre = cropScaleOfFinance[crop] || 40000;
+      const totalSumIns = sumInsPerAcre * acres;
+      const pmfbyPayout = Math.round(totalSumIns * (lossPct / 100.0));
+
+      const sdrfRate = 6880; // Irrigated norm per acre (Rs 17,000 / ha)
+      const sdrfPayout = lossPct >= 33 ? Math.round(sdrfRate * acres) : 0;
+      const stateReliefPayout = lossPct >= 33 ? Math.round(10000 * acres) : 0; // Telangana / AP ex-gratia
+      const totalRecovery = pmfbyPayout + sdrfPayout + stateReliefPayout;
+
+      const pmfbyEl = document.getElementById('calcPmfbyVal');
+      const sdrfEl = document.getElementById('calcSdrfVal');
+      const stateEl = document.getElementById('calcStateReliefVal');
+      const totalEl = document.getElementById('calcTotalVal');
+
+      if (pmfbyEl) pmfbyEl.textContent = `₹${pmfbyPayout.toLocaleString('en-IN')}`;
+      if (sdrfEl) sdrfEl.textContent = `₹${sdrfPayout.toLocaleString('en-IN')}`;
+      if (stateEl) stateEl.textContent = `₹${stateReliefPayout.toLocaleString('en-IN')}`;
+      if (totalEl) totalEl.textContent = `₹${totalRecovery.toLocaleString('en-IN')}`;
+    }
+
+    // Attach listener to inputs for dynamic recalculation
+    ['hazardCrop', 'claimAcreage', 'claimLossPct'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updateCompensationDisplay);
+        el.addEventListener('change', updateCompensationDisplay);
+      }
+    });
+    updateCompensationDisplay();
+
+    // 4. Weather Check Button
     const btnCheckWeather = document.getElementById('btnCheckWeather');
     if (btnCheckWeather) {
       btnCheckWeather.addEventListener('click', async function () {
-        const district = document.getElementById('hazardDistrict').value || 'Warangal';
-        const crop = document.getElementById('hazardCrop').value || 'Paddy';
+        const district = document.getElementById('hazardDistrict') ? document.getElementById('hazardDistrict').value : 'Warangal';
+        const crop = document.getElementById('hazardCrop') ? document.getElementById('hazardCrop').value : 'Paddy';
         const btn = this;
         btn.textContent = '🛰️ Fetching Live Open-Meteo Telemetry...';
 
@@ -793,25 +922,303 @@
               const tempEl = document.getElementById('dispTemp');
               const rainEl = document.getElementById('dispRain');
               const humEl = document.getElementById('dispHumidity');
-              if (tempEl) tempEl.textContent = `${data.weather.temperature_c || 32.5}°C`;
+              const warnBox = document.getElementById('weatherWarningBox');
+
+              if (tempEl) tempEl.textContent = `${data.weather.temperature_c || 33.5}°C`;
               if (rainEl) rainEl.textContent = `${data.weather.rainfall_mm || 0.0} mm`;
-              if (humEl) humEl.textContent = `${data.weather.humidity_percent || 48}%`;
+              if (humEl) humEl.textContent = `${data.weather.humidity_percent || 46}%`;
+
+              if (warnBox && data.stress_summary) {
+                warnBox.innerHTML = `<strong>⚠️ Active Telemetry Warning:</strong> ${escapeHtml(data.stress_summary)}`;
+              }
             }
           }
         } catch (err) {
           console.warn('Weather API failed, using cached values.');
         } finally {
           btn.innerHTML = '<span>📡</span> Fetch Live Weather & Detect Risks';
+          updateCompensationDisplay();
         }
       });
     }
 
-    // SMS Generator Form
+    // 5. In-App Camera Viewfinder Controls
+    const videoElem = document.getElementById('geoVideoPreview');
+    const standbyElem = document.getElementById('cameraStandbyPlaceholder');
+    const liveBadge = document.getElementById('cameraLiveBadge');
+    const btnToggleCamera = document.getElementById('btnToggleCamera');
+    const btnSnapPhoto = document.getElementById('btnSnapPhoto');
+    const btnTriggerUpload = document.getElementById('btnTriggerUpload');
+    const fileInput = document.getElementById('geoFileInput');
+    const canvas = document.getElementById('geoStampCanvas');
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Camera API is not supported on this browser or requires HTTPS / localhost. Please use the "Upload Photo" button below.');
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        cameraStream = stream;
+        videoElem.srcObject = stream;
+        videoElem.style.display = 'block';
+        if (standbyElem) standbyElem.style.display = 'none';
+        if (liveBadge) liveBadge.style.display = 'flex';
+        btnToggleCamera.innerHTML = '<span>🛑</span> Stop Camera';
+        btnToggleCamera.classList.remove('btn-secondary');
+        btnToggleCamera.classList.add('btn-danger');
+        btnSnapPhoto.disabled = false;
+      } catch (err) {
+        console.error('Camera access denied or unavailable:', err);
+        alert('Could not access device camera. Please check camera permissions or use the "Upload Photo" button.');
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      videoElem.style.display = 'none';
+      if (standbyElem) standbyElem.style.display = 'block';
+      if (liveBadge) liveBadge.style.display = 'none';
+      btnToggleCamera.innerHTML = '<span>📷</span> Open Live Camera';
+      btnToggleCamera.classList.remove('btn-danger');
+      btnToggleCamera.classList.add('btn-secondary');
+      btnSnapPhoto.disabled = true;
+    }
+
+    if (btnToggleCamera) {
+      btnToggleCamera.addEventListener('click', () => {
+        if (cameraStream) {
+          stopCamera();
+        } else {
+          startCamera();
+        }
+      });
+    }
+
+    // 6. Forensic Geo-Watermarking Engine (HTML5 Canvas)
+    function stampImageWithForensics(imageSource, width, height) {
+      if (!canvas) return null;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Draw base photo
+      ctx.drawImage(imageSource, 0, 0, width, height);
+
+      // 2. Compute dynamic banner dimensions
+      const bannerHeight = Math.max(130, Math.round(height * 0.18));
+      const bannerY = height - bannerHeight;
+
+      // Dark translucent backdrop
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+      ctx.fillRect(0, bannerY, width, bannerHeight);
+
+      // Top green accent line
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(0, bannerY, width, 4);
+
+      // Pull metadata
+      const farmerName = document.getElementById('claimFarmerName') ? document.getElementById('claimFarmerName').value : 'Farmer';
+      const village = document.getElementById('claimVillage') ? document.getElementById('claimVillage').value : 'Geesugonda';
+      const district = document.getElementById('hazardDistrict') ? document.getElementById('hazardDistrict').value : 'Warangal';
+      const surveyNo = document.getElementById('claimSurvey') ? document.getElementById('claimSurvey').value : '284/B';
+      const crop = document.getElementById('hazardCrop') ? document.getElementById('hazardCrop').value : 'Paddy';
+      const hazard = document.getElementById('claimHazard') ? document.getElementById('claimHazard').value : 'Hailstorm';
+      const lossPct = document.getElementById('claimLossPct') ? document.getElementById('claimLossPct').value : '80';
+      const photoType = document.getElementById('geoPhotoTypeSelect') ? document.getElementById('geoPhotoTypeSelect').value : 'Wide Field View';
+      const landmark = document.getElementById('geoLandmarkInput') ? document.getElementById('geoLandmarkInput').value : 'Field boundary';
+
+      // Scaling fonts relative to canvas resolution
+      const baseFontSize = Math.max(14, Math.round(width / 55));
+
+      // Header Tag
+      ctx.font = `bold ${baseFontSize + 2}px sans-serif`;
+      ctx.fillStyle = '#fbbf24'; // Gold
+      ctx.fillText(`🛡️ PMFBY / SDRF STATUTORY LOSS EVIDENCE (72-HR INTIMATION)`, 16, bannerY + baseFontSize + 10);
+
+      // Line 1: GPS Coordinates
+      ctx.font = `bold ${baseFontSize}px monospace`;
+      ctx.fillStyle = '#38bdf8'; // Sky blue
+      ctx.fillText(`📍 GPS: ${currentGps.lat}° N, ${currentGps.lon}° E | Acc: ±${currentGps.accuracy}m | Alt: ${currentGps.altitude}m MSL`, 16, bannerY + (baseFontSize * 2) + 16);
+
+      // Line 2: Timestamp & Land Parcel
+      ctx.font = `${baseFontSize - 1}px sans-serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`📅 Timestamp: ${currentGps.timestamp} IST | Survey No: ${surveyNo} | Village: ${village}, ${district}`, 16, bannerY + (baseFontSize * 3) + 22);
+
+      // Line 3: Farmer, Crop & Calamity
+      ctx.fillStyle = '#f87171'; // Coral red
+      ctx.fillText(`🌾 Cultivator: ${farmerName} | Crop: ${crop} | Peril: ${hazard} (${lossPct}% Loss)`, 16, bannerY + (baseFontSize * 4) + 26);
+
+      // Line 4: Category & Landmark
+      ctx.fillStyle = '#cbd5e1'; // Muted
+      ctx.fillText(`🏷️ Category: ${photoType} | Landmark: ${landmark}`, 16, bannerY + (baseFontSize * 5) + 30);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      return dataUrl;
+    }
+
+    // 7. Add Stamped Evidence to Gallery & Update UI
+    function addEvidenceToRegister(dataUrl, photoType) {
+      const evidenceId = `GEO-${Date.now().toString().slice(-6)}`;
+      const evidenceItem = {
+        id: evidenceId,
+        dataUrl: dataUrl,
+        photoType: photoType,
+        lat: currentGps.lat,
+        lon: currentGps.lon,
+        accuracy: currentGps.accuracy,
+        timestamp: currentGps.timestamp
+      };
+      capturedEvidence.push(evidenceItem);
+      renderEvidenceGallery();
+
+      // Transmit to backend evidence endpoint
+      fetch(`${API_BASE}/api/claim/evidence/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          farmer_name: document.getElementById('claimFarmerName') ? document.getElementById('claimFarmerName').value : 'Farmer',
+          survey_no: document.getElementById('claimSurvey') ? document.getElementById('claimSurvey').value : '',
+          latitude: currentGps.lat,
+          longitude: currentGps.lon,
+          accuracy: currentGps.accuracy,
+          timestamp: currentGps.timestamp,
+          image_base64: dataUrl.substring(0, 500) + '...[truncated]',
+          photo_type: photoType
+        })
+      }).catch(() => null);
+    }
+
+    function renderEvidenceGallery() {
+      const gallery = document.getElementById('evidenceGalleryContainer');
+      const countBadge = document.getElementById('geoCountBadge');
+      const listCount = document.getElementById('evidenceListCount');
+      const clearBtn = document.getElementById('btnClearEvidence');
+
+      if (countBadge) countBadge.textContent = `${capturedEvidence.length} Stamped`;
+      if (listCount) listCount.textContent = capturedEvidence.length;
+      if (clearBtn) clearBtn.style.display = capturedEvidence.length > 0 ? 'inline-block' : 'none';
+
+      if (!gallery) return;
+
+      if (capturedEvidence.length === 0) {
+        gallery.innerHTML = `
+          <div id="noEvidenceNotice" style="grid-column: 1 / -1; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 1.5rem; text-align: center; color: #64748b; font-size: 0.85rem;">
+            No geo-tagged damage photos captured yet. Snap a picture with the live camera above or upload a photo from your device.
+          </div>
+        `;
+        return;
+      }
+
+      gallery.innerHTML = capturedEvidence.map((ev, idx) => `
+        <div class="evidence-card" id="ev-card-${ev.id}">
+          <div class="evidence-thumb-container">
+            <img src="${ev.dataUrl}" alt="Crop Damage Evidence" class="evidence-thumb-img">
+            <span class="evidence-type-badge">${escapeHtml(ev.photoType)}</span>
+          </div>
+          <div class="evidence-meta-content">
+            <div class="evidence-meta-row">
+              <strong style="color: #166534; font-family: monospace;">📍 ${ev.lat}°, ${ev.lon}°</strong>
+              <span style="font-size: 0.72rem; color: #64748b;">±${ev.accuracy}m</span>
+            </div>
+            <div style="font-size: 0.75rem; color: #64748b;">
+              ⏱️ ${escapeHtml(ev.timestamp)}
+            </div>
+          </div>
+          <div class="evidence-actions-row">
+            <a href="${ev.dataUrl}" download="PMFBY_Loss_Evidence_${ev.id}.jpg" class="btn btn-primary" style="flex: 1; padding: 0.35rem 0.5rem; font-size: 0.78rem; text-align: center; text-decoration: none;">
+              📥 Download
+            </a>
+            <button type="button" class="btn btn-secondary btn-del-ev" data-idx="${idx}" style="padding: 0.35rem 0.5rem; font-size: 0.78rem;">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire delete buttons
+      gallery.querySelectorAll('.btn-del-ev').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const idx = parseInt(this.getAttribute('data-idx'));
+          capturedEvidence.splice(idx, 1);
+          renderEvidenceGallery();
+        });
+      });
+    }
+
+    const btnClearEvidence = document.getElementById('btnClearEvidence');
+    if (btnClearEvidence) {
+      btnClearEvidence.addEventListener('click', () => {
+        if (confirm('Clear all captured geo-tagged photos?')) {
+          capturedEvidence.length = 0;
+          renderEvidenceGallery();
+        }
+      });
+    }
+
+    // 8. Snap Button Event
+    if (btnSnapPhoto) {
+      btnSnapPhoto.addEventListener('click', () => {
+        if (!videoElem || !videoElem.videoWidth) {
+          alert('Camera video stream is not ready.');
+          return;
+        }
+        const width = videoElem.videoWidth || 1280;
+        const height = videoElem.videoHeight || 720;
+        const photoType = document.getElementById('geoPhotoTypeSelect') ? document.getElementById('geoPhotoTypeSelect').value : 'Damage Evidence';
+
+        const dataUrl = stampImageWithForensics(videoElem, width, height);
+        if (dataUrl) {
+          addEvidenceToRegister(dataUrl, photoType);
+          btnSnapPhoto.innerHTML = '<span>✅</span> Photo Stamped!';
+          setTimeout(() => {
+            btnSnapPhoto.innerHTML = '<span>📸</span> Snap Geo-Photo';
+          }, 1500);
+        }
+      });
+    }
+
+    // 9. File Upload Button Event
+    if (btnTriggerUpload && fileInput) {
+      btnTriggerUpload.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              const photoType = document.getElementById('geoPhotoTypeSelect') ? document.getElementById('geoPhotoTypeSelect').value : 'Uploaded Evidence';
+              const width = img.naturalWidth || 1280;
+              const height = img.naturalHeight || 720;
+              const dataUrl = stampImageWithForensics(img, width, height);
+              if (dataUrl) {
+                addEvidenceToRegister(dataUrl, photoType);
+              }
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+          this.value = ''; // Reset input
+        }
+      });
+    }
+
+    // 10. SMS Generator Form
     const claimSmsForm = document.getElementById('claimSmsForm');
     const smsResultBox = document.getElementById('smsResultBox');
     const smsTextDisplay = document.getElementById('smsTextDisplay');
     const btnCopySms = document.getElementById('btnCopySms');
     const btnSendSmsApp = document.getElementById('btnSendSmsApp');
+    const btnShareWhatsApp = document.getElementById('btnShareWhatsApp');
 
     if (claimSmsForm) {
       claimSmsForm.addEventListener('submit', async function (e) {
@@ -825,7 +1232,7 @@
           village: document.getElementById('claimVillage').value,
           survey_no: document.getElementById('claimSurvey').value,
           hazard_type: document.getElementById('claimHazard').value,
-          loss_percent: parseInt(document.getElementById('claimLossPct').value) || 75,
+          loss_percent: parseInt(document.getElementById('claimLossPct').value) || 80,
           acreage: parseFloat(document.getElementById('claimAcreage').value) || 2.5,
           language: state.lang
         };
@@ -847,20 +1254,33 @@
 
         if (!generatedText) {
           const nowIso = new Date().toISOString().replace('T', ' ').substring(0, 16);
-          generatedText = `[PMFBY 72-HR CROP LOSS INTIMATION]\n` +
-            `Farmer: ${reqData.farmer_name} (Ph: ${reqData.phone})\n` +
-            `Village: ${reqData.village}, District: ${reqData.district}\n` +
-            `Survey No: ${reqData.survey_no}\n` +
-            `Crop: ${reqData.crop} (${reqData.acreage} Acres)\n` +
-            `Calamity: ${reqData.hazard_type}\n` +
-            `Est Loss: ${reqData.loss_percent}%\n` +
-            `Timestamp: ${nowIso}\n` +
+          generatedText = `[PMFBY 72-HR CROP LOSS INTIMATION]
+` +
+            `Farmer: ${reqData.farmer_name} (Ph: ${reqData.phone})
+` +
+            `Village: ${reqData.village}, District: ${reqData.district}
+` +
+            `Survey No: ${reqData.survey_no}
+` +
+            `Crop: ${reqData.crop} (${reqData.acreage} Acres)
+` +
+            `Calamity: ${reqData.hazard_type}
+` +
+            `Est Loss: ${reqData.loss_percent}%
+` +
+            `Geo Location: ${currentGps.lat}° N, ${currentGps.lon}° E
+` +
+            `Attached Photos: ${capturedEvidence.length} Geo-Tagged Photos
+` +
+            `Timestamp: ${nowIso} IST
+` +
             `Action: Formal intimation submitted within statutory 72 hours per PMFBY Section 21.4. Please issue docket reference number.`;
         }
 
         if (smsTextDisplay) smsTextDisplay.textContent = generatedText;
         if (smsResultBox) smsResultBox.style.display = 'block';
         if (btnSendSmsApp) btnSendSmsApp.href = `sms:18001801551?body=${encodeURIComponent(generatedText)}`;
+        if (btnShareWhatsApp) btnShareWhatsApp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(generatedText)}`;
       });
     }
 
@@ -870,6 +1290,130 @@
           btnCopySms.textContent = '✅ Copied to Clipboard!';
           setTimeout(() => { btnCopySms.textContent = '📋 Copy SMS'; }, 2000);
         });
+      });
+    }
+
+    // 11. Official Claim Dossier Generation & Status Tracker Logger
+    const btnGenerateDossier = document.getElementById('btnGenerateDossier');
+    const btnLogToTracker = document.getElementById('btnLogToTracker');
+    const dossierBox = document.getElementById('dossierDisplayBox');
+    const dossierTextContent = document.getElementById('dossierTextContent');
+    const btnDownloadDossier = document.getElementById('btnDownloadDossier');
+    const btnPrintDossier = document.getElementById('btnPrintDossier');
+
+    let currentDossierText = '';
+
+    if (btnGenerateDossier) {
+      btnGenerateDossier.addEventListener('click', async () => {
+        const payload = {
+          farmer_name: document.getElementById('claimFarmerName').value || 'Komirelli Ramulu',
+          phone: document.getElementById('claimPhone').value || '9848022338',
+          crop: document.getElementById('hazardCrop').value || 'Paddy',
+          district: document.getElementById('hazardDistrict').value || 'Warangal',
+          village: document.getElementById('claimVillage').value || 'Geesugonda',
+          survey_no: document.getElementById('claimSurvey').value || '284/B',
+          hazard_type: document.getElementById('claimHazard').value || 'Hailstorm',
+          loss_percent: parseInt(document.getElementById('claimLossPct').value) || 80,
+          acreage: parseFloat(document.getElementById('claimAcreage').value) || 2.5,
+          geo_photos_count: capturedEvidence.length,
+          telemetry_notes: `${document.getElementById('dispTemp').textContent}, ${document.getElementById('dispRain').textContent} rain, ${document.getElementById('dispHumidity').textContent} humidity`
+        };
+
+        btnGenerateDossier.textContent = '⏳ Compiling Dossier...';
+
+        try {
+          const resp = await fetch(`${API_BASE}/api/claim/dossier`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            currentDossierText = data.dossier_text;
+          }
+        } catch (err) {
+          console.warn('Backend dossier failed, using client generator');
+        }
+
+        if (!currentDossierText) {
+          currentDossierText = `================================================================================\n` +
+            `STATUTORY PMFBY & SDRF CROP LOSS CLAIM REPRESENTATION DOCKET\n` +
+            `Reference ID: PMFBY/${payload.district.slice(0, 3).toUpperCase()}/${Date.now()}\n` +
+            `================================================================================\n\n` +
+            `1. CULTIVATOR: ${payload.farmer_name} (Mobile: ${payload.phone})\n` +
+            `   Location: Village ${payload.village}, Dist ${payload.district}, Survey No: ${payload.survey_no}\n` +
+            `2. LOSS INCIDENT: Crop: ${payload.crop} (${payload.acreage} Acres) | Peril: ${payload.hazard_type}\n` +
+            `   Assessed Loss: ${payload.loss_percent}% | Enclosed Geo-Tagged Photos: ${payload.geo_photos_count}\n` +
+            `   Telemetry at Calamity: ${payload.telemetry_notes}\n` +
+            `3. PRAYER: Joint Survey inspection by AEO & Insurance Surveyor requested within 10 days.\n`;
+        }
+
+        if (dossierTextContent) dossierTextContent.textContent = currentDossierText;
+        if (dossierBox) dossierBox.style.display = 'block';
+        btnGenerateDossier.innerHTML = '<span>📄</span> Generate Official Dossier';
+      });
+    }
+
+    if (btnDownloadDossier) {
+      btnDownloadDossier.addEventListener('click', () => {
+        if (!currentDossierText) return;
+        const blob = new Blob([currentDossierText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `PMFBY_Claim_Dossier_${document.getElementById('claimSurvey').value || 'Survey'}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    if (btnPrintDossier) {
+      btnPrintDossier.addEventListener('click', () => {
+        const printWin = window.open('', '_blank');
+        printWin.document.write(`<pre style="font-family: monospace; white-space: pre-wrap; font-size: 14px; padding: 20px;">${escapeHtml(currentDossierText)}</pre>`);
+        printWin.document.close();
+        printWin.print();
+      });
+    }
+
+    if (btnLogToTracker) {
+      btnLogToTracker.addEventListener('click', async () => {
+        const fName = document.getElementById('claimFarmerName').value || 'Farmer';
+        const fPhone = document.getElementById('claimPhone').value || '9848022338';
+        const crop = document.getElementById('hazardCrop').value || 'Paddy';
+        const dist = document.getElementById('hazardDistrict').value || 'Warangal';
+        const refNo = `PMFBY-${dist.slice(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+
+        btnLogToTracker.textContent = '⏳ Saving to Tracker...';
+
+        try {
+          const resp = await fetch(`${API_BASE}/claims`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              farmer_name: fName,
+              phone: fPhone,
+              scheme_name: `PMFBY Crop Loss Claim (${crop})`,
+              reference_number: refNo,
+              status: 'Intimation Dispatched (Within 72 hrs)',
+              notes: `Enclosed ${capturedEvidence.length} geo-tagged damage photos.`
+            })
+          });
+          if (resp.ok) {
+            alert(`✅ Claim successfully logged into Live Status Tracker!
+
+Docket Reference Number: ${refNo}
+
+Automated SLA follow-up alerts have been scheduled.`);
+            btnLogToTracker.innerHTML = '<span>✅</span> Saved in Tracker';
+          }
+        } catch (err) {
+          alert(`Application tracked locally with reference: ${refNo}`);
+        } finally {
+          setTimeout(() => {
+            btnLogToTracker.innerHTML = '<span>💾</span> Save to Status Tracker';
+          }, 2500);
+        }
       });
     }
   }

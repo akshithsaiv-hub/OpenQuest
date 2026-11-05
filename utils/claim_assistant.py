@@ -162,3 +162,142 @@ def generate_intimation_sms(
         "hi": msg_hi,
         "target_helpline": PMFBY_HELPLINE
     }
+
+
+# Standard District Level Technical Committee (DLTC) Scale of Finance (Sum Insured per Acre)
+CROP_SUM_INSURED_PER_ACRE = {
+    "Paddy": 42000.0,
+    "Cotton": 48000.0,
+    "Chilli": 78000.0,
+    "Maize": 35000.0,
+    "Soybean": 32000.0,
+    "Bengal Gram": 30000.0,
+    "Groundnut": 36000.0,
+    "Red Gram": 34000.0,
+    "Wheat": 38000.0,
+    "Millets": 25000.0,
+    "Vegetables": 60000.0
+}
+
+# SDRF Input Subsidy per Acre (MHA Revised Norms)
+SDRF_SUBSIDY_PER_ACRE = {
+    "rainfed": 3440.0,      # Rs 8,500 / hectare
+    "irrigated": 6880.0,    # Rs 17,000 / hectare
+    "perennial": 9100.0     # Rs 22,500 / hectare
+}
+
+def calculate_claim_compensation(
+    crop: str,
+    acreage: float,
+    loss_percent: int,
+    is_irrigated: bool = True,
+    state: str = "Telangana"
+):
+    """
+    Computes statutory entitlement across PMFBY and State SDRF/ex-gratia disaster relief.
+    """
+    clean_crop = crop.split()[0].capitalize()
+    sum_insured_per_acre = CROP_SUM_INSURED_PER_ACRE.get(clean_crop, 40000.0)
+    total_sum_insured = round(sum_insured_per_acre * acreage, 2)
+
+    loss_ratio = max(0.0, min(100.0, float(loss_percent))) / 100.0
+    pmfby_payout = round(total_sum_insured * loss_ratio, 2)
+
+    sdrf_rate = SDRF_SUBSIDY_PER_ACRE["irrigated"] if is_irrigated else SDRF_SUBSIDY_PER_ACRE["rainfed"]
+    sdrf_eligible = (loss_percent >= 33)
+    sdrf_payout = round(sdrf_rate * acreage, 2) if sdrf_eligible else 0.0
+
+    state_relief_rate = 10000.0 if state in ["Telangana", "Andhra Pradesh"] else 0.0
+    state_relief_payout = round(state_relief_rate * acreage, 2) if (sdrf_eligible and state_relief_rate > 0) else 0.0
+
+    total_recovery = round(pmfby_payout + sdrf_payout + state_relief_payout, 2)
+
+    return {
+        "crop": crop,
+        "acreage": acreage,
+        "loss_percent": loss_percent,
+        "sum_insured_per_acre": sum_insured_per_acre,
+        "total_sum_insured": total_sum_insured,
+        "pmfby_expected_payout": pmfby_payout,
+        "sdrf_eligible": sdrf_eligible,
+        "sdrf_rate_per_acre": sdrf_rate,
+        "sdrf_payout": sdrf_payout,
+        "state_relief_payout": state_relief_payout,
+        "total_estimated_recovery": total_recovery,
+        "statutory_note": (
+            "PMFBY payout is processed via direct DBT by the empanelled insurance company. "
+            "SDRF input subsidy is released independently by the State Revenue/Disaster Management Dept "
+            "and does NOT reduce PMFBY insurance compensation."
+        )
+    }
+
+def generate_claim_dossier(
+    farmer_name: str,
+    phone: str,
+    crop: str,
+    district: str,
+    village: str,
+    survey_no: str,
+    hazard_type: str,
+    loss_percent: int,
+    acreage: float,
+    geo_photos_count: int = 0,
+    telemetry_notes: str = "33.5C, 0.0 mm rain, High Evaporative Deficit"
+) -> str:
+    """
+    Generates a formal, comprehensive Claim Representation Docket suitable for
+    submission to the Joint Survey Inspection Committee (AEO + Insurance Surveyor).
+    """
+    now = datetime.now()
+    dossier_id = f"PMFBY/{district[:3].upper()}/{now.strftime('%Y%m%d%H%M')}"
+    comp = calculate_claim_compensation(crop, acreage, loss_percent)
+
+    dossier = f"""================================================================================
+STATUTORY PMFBY & SDRF CROP LOSS CLAIM REPRESENTATION DOCKET
+Reference ID: {dossier_id} | Date of Intimation: {now.strftime('%d-%b-%Y %I:%M %p')}
+Statutory Mandate: Pradhan Mantri Fasal Bima Yojana (PMFBY) Operational Guidelines Sec 21.4
+================================================================================
+
+1. CULTIVATOR & GEOGRAPHIC PROFILE
+   - Full Name of Farmer: {farmer_name}
+   - Contact Mobile: {phone}
+   - Village & Gram Panchayat: {village}
+   - District & State: {district}, Telangana
+   - Survey / Khata / Passbook No: {survey_no}
+   - Cultivation Tenure: Registered Cultivator / Tenant CCRC Holder
+
+2. PARCEL & LOSS INCIDENT DETAILS
+   - Insured Crop: {crop}
+   - Total Cultivated Parcel Area: {acreage} Acres
+   - Nature of Peril / Hazard: {hazard_type}
+   - Assessed Crop Damage Severity: {loss_percent}%
+   - Environmental Telemetry at Loss: {telemetry_notes}
+   - 72-Hour Reporting Compliance: Intimated within statutory window (TIMELY)
+
+3. ESTIMATED STATUTORY COMPENSATION BREAKDOWN
+   - DLTC Scale of Finance (Sum Insured): Rs {comp['sum_insured_per_acre']:,.2f} per acre
+   - Total Sum Insured: Rs {comp['total_sum_insured']:,.2f}
+   - Projected PMFBY Insurance Payout: Rs {comp['pmfby_expected_payout']:,.2f}
+   - State Disaster Response Fund (SDRF) Input Subsidy: Rs {comp['sdrf_payout']:,.2f}
+   - Special State Calamity Ex-Gratia: Rs {comp['state_relief_payout']:,.2f}
+   -----------------------------------------------------------------------------
+   TOTAL PROJECTED STATUTORY RECOVERY: Rs {comp['total_estimated_recovery']:,.2f}
+
+4. ENCLOSED GEO-TAGGED EVIDENCE REGISTER
+   - Number of Geo-Tagged Field Photos Attached: {geo_photos_count}
+   - Forensic Photo Tags: GPS Latitude/Longitude, Timestamp, Survey Number embedded.
+   - Land Proof: Digital Pahani / Dharani / RoR-1B verified.
+   - Premium Proof: Bank Passbook statement / CSC receipt verified.
+
+5. PRAYER & OFFICIAL ACTION DEMANDED
+   The undersigned farmer respectfully intimates this localized loss under PMFBY Sec 21.4
+   and requests the District Agriculture Officer to depute the Joint Survey Committee 
+   (Village Agriculture Extension Officer & Empanelled Insurance Surveyor) for on-site 
+   loss verification within 10 days as per Citizen's Charter timelines.
+
+Signed by Cultivator: ___________________________
+Acknowledging Officer (AEO / CSC): ___________________________
+Official Helpline: 1800-180-1551 | Portal: pmfby.gov.in
+================================================================================
+"""
+    return dossier

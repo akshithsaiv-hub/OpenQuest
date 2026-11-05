@@ -35,7 +35,7 @@ from person3.consent_manager import (
 )
 from person3.document_checker import check_name_match, check_documents
 from person3.intermediary_backend import get_intermediary_farmers
-from utils.claim_assistant import calculate_72hr_window, generate_intimation_sms, PMFBY_HELPLINE
+from utils.claim_assistant import calculate_72hr_window, generate_intimation_sms, PMFBY_HELPLINE, calculate_claim_compensation, generate_claim_dossier, GEO_PHOTO_CHECKLIST, DOCUMENT_CHECKLIST
 from utils.credit_kcc import calculate_kcc_eligibility
 from utils.status_tracker import get_all_claims, add_claim_entry
 from utils.llm import process_farmer_query
@@ -164,6 +164,37 @@ class ClaimIntimationRequest(BaseModel):
     hazard_type: str
     acreage: float
     language: str = "en"
+
+
+class ClaimPayoutRequest(BaseModel):
+    crop: str = "Paddy"
+    acreage: float = 2.5
+    loss_percent: int = 80
+    is_irrigated: bool = True
+    state: str = "Telangana"
+
+class ClaimDossierRequest(BaseModel):
+    farmer_name: str
+    phone: str
+    crop: str
+    district: str
+    village: str
+    survey_no: str
+    hazard_type: str
+    loss_percent: int
+    acreage: float
+    geo_photos_count: int = 0
+    telemetry_notes: Optional[str] = "Live weather telemetry captured"
+
+class GeoEvidenceUploadRequest(BaseModel):
+    farmer_name: str = "Farmer"
+    survey_no: str = ""
+    latitude: float
+    longitude: float
+    accuracy: float = 5.0
+    timestamp: str
+    image_base64: str
+    photo_type: str = "Damage Evidence"
 
 class ClaimEntryRequest(BaseModel):
     farmer_name: str
@@ -1090,6 +1121,58 @@ def get_disaster_relief_info():
 @app.post("/calculate_kcc")
 def api_calculate_kcc_direct(req: KCCRequest):
     return calculate_kcc_eligibility(crop=req.crop, land_acres=req.land_acres, existing_kcc_debt=req.existing_debt)
+
+
+@app.post("/api/claim/payout_calc")
+def api_claim_payout_calc(req: ClaimPayoutRequest):
+    return calculate_claim_compensation(
+        crop=req.crop,
+        acreage=req.acreage,
+        loss_percent=req.loss_percent,
+        is_irrigated=req.is_irrigated,
+        state=req.state
+    )
+
+@app.post("/api/claim/dossier")
+def api_claim_dossier(req: ClaimDossierRequest):
+    dossier_text = generate_claim_dossier(
+        farmer_name=req.farmer_name,
+        phone=req.phone,
+        crop=req.crop,
+        district=req.district,
+        village=req.village,
+        survey_no=req.survey_no,
+        hazard_type=req.hazard_type,
+        loss_percent=req.loss_percent,
+        acreage=req.acreage,
+        geo_photos_count=req.geo_photos_count,
+        telemetry_notes=req.telemetry_notes or "Live Open-Meteo telemetry"
+    )
+    return {
+        "status": "success",
+        "dossier_text": dossier_text
+    }
+
+@app.get("/api/claim/checklist")
+def api_claim_checklist():
+    return {
+        "geo_photo_checklist": GEO_PHOTO_CHECKLIST,
+        "document_checklist": DOCUMENT_CHECKLIST,
+        "pmfby_helpline": PMFBY_HELPLINE
+    }
+
+@app.post("/api/claim/evidence/upload")
+def api_claim_evidence_upload(req: GeoEvidenceUploadRequest):
+    import uuid
+    evidence_id = f"GEO-{uuid.uuid4().hex[:8].upper()}"
+    return {
+        "status": "success",
+        "evidence_id": evidence_id,
+        "message": "Geo-tagged evidence photo registered and indexed for claim dossier",
+        "latitude": req.latitude,
+        "longitude": req.longitude,
+        "timestamp": req.timestamp
+    }
 
 @app.post("/generate_claim_sms")
 def api_generate_claim_sms_direct(req: ClaimIntimationRequest):

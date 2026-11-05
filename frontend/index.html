@@ -451,12 +451,12 @@ Ask me anything about:
     <div class="view-header">
       <h2 class="view-title"><span>⚡</span> Pan-India Climate Risk Shield & 72-Hour Claim Assistant</h2>
       <p class="view-desc">
-        Detects drought, excess rain, heat waves, and pest outbreaks in real-time. Immediately unlocks statutory PMFBY insurance intimation with an active 72-hour countdown to prevent claim rejection.
+        Detects drought, excess rain, heat waves, and pest outbreaks in real-time. Immediately unlocks statutory PMFBY insurance intimation, in-app geo-tagged field photo capture with live GPS location, and an active 72-hour countdown to prevent claim repudiation.
       </p>
     </div>
 
     <!-- Live 72-Hour Urgency Banner -->
-    <div class="card" style="border-left: 6px solid #ef4444; background: #fff5f5;">
+    <div class="card" style="border-left: 6px solid #ef4444; background: #fff5f5; margin-bottom: 1.25rem;">
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
         <div>
           <span class="badge-tag badge-tag-red">CRITICAL STATUTORY DEADLINE</span>
@@ -464,7 +464,7 @@ Ask me anything about:
             72-Hour PMFBY Loss Intimation Countdown
           </h3>
           <p style="font-size: 0.88rem; color: #7f1d1d; margin: 0;">
-            PMFBY Section 21.4 mandates reporting localized calamities within 72 hours. Failure leads to automatic claim forfeiture.
+            PMFBY Section 21.4 mandates reporting localized calamities within 72 hours of occurrence. Failure leads to automatic claim forfeiture.
           </p>
         </div>
         <div class="countdown-box-lg" id="liveCountdownTimer">
@@ -474,8 +474,9 @@ Ask me anything about:
     </div>
 
     <div class="content-grid-2">
-      <!-- Weather & Hazard Assessment Form -->
+      <!-- LEFT COLUMN: TELEMETRY, COMPENSATION & STATUTORY NORMS -->
       <div>
+        <!-- 1. Weather & Hazard Assessment Form -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title"><span>🛰️</span> Live Hazard & Agro-Meteorology Checker</h3>
@@ -495,6 +496,8 @@ Ask me anything about:
                 <option value="Chilli">Chilli</option>
                 <option value="Maize">Maize</option>
                 <option value="Groundnut">Groundnut</option>
+                <option value="Soybean">Soybean</option>
+                <option value="Wheat">Wheat</option>
               </select>
             </div>
           </div>
@@ -519,53 +522,232 @@ Ask me anything about:
                 <div class="metric-lbl">Humidity</div>
               </div>
             </div>
-            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.85rem; color: #991b1b; font-size: 0.92rem;">
+            <div id="weatherWarningBox" style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.85rem; color: #991b1b; font-size: 0.92rem; margin-top: 0.85rem;">
               <strong>⚠️ Active Warning:</strong> Moderate Water & Evaporative Stress detected for Paddy. Scheduled irrigation or canal contingency advised.
             </div>
           </div>
         </div>
 
-        <!-- Statutory SDRF/NDRF Relief Norms -->
+        <!-- 2. Statutory PMFBY & SDRF Compensation Calculator -->
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title"><span>🏛️</span> Disaster Management SDRF/NDRF Norms</h3>
-            <p class="card-subtitle">Official State Disaster Response Fund Input Subsidy for Declared Calamities (&gt;33% loss).</p>
+            <h3 class="card-title"><span>💰</span> Statutory Insurance & Disaster Relief Calculator</h3>
+            <p class="card-subtitle">Estimates guaranteed compensation across PMFBY scale of finance and SDRF disaster norms.</p>
+          </div>
+
+          <div class="payout-calc-card">
+            <div style="font-weight: 700; color: #0369a1; font-size: 0.95rem; margin-bottom: 0.5rem;">
+              Projected Compensation Breakdown:
+            </div>
+            <div class="payout-stat-grid">
+              <div class="payout-stat-item">
+                <div class="payout-stat-val" id="calcPmfbyVal">₹84,000</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">PMFBY Insurance</div>
+              </div>
+              <div class="payout-stat-item">
+                <div class="payout-stat-val" id="calcSdrfVal">₹17,200</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">SDRF Input Subsidy</div>
+              </div>
+              <div class="payout-stat-item">
+                <div class="payout-stat-val" id="calcStateReliefVal">₹25,000</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">State Ex-Gratia</div>
+              </div>
+              <div class="payout-total-item">
+                <div>
+                  <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8;">Total Statutory Entitlement</span>
+                  <div style="font-size: 0.8rem; color: #cbd5e1;">Evaluated for 2.5 Acres (80% Loss)</div>
+                </div>
+                <div class="payout-total-val" id="calcTotalVal">₹1,26,200</div>
+              </div>
+            </div>
+            <p style="font-size: 0.78rem; color: #475569; margin: 0.75rem 0 0 0; line-height: 1.5;">
+              ℹ️ <strong>Note:</strong> PMFBY payout is transferred via DBT by the empanelled insurance firm. SDRF disaster input subsidy is granted independently by the State Revenue Department and does not deduct from your PMFBY claim.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. Official 4-Channel Claim Filing Roadmap & Helplines -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>🏛️</span> Official 4-Step Claim Filing Roadmap</h3>
+            <p class="card-subtitle">Follow these 4 statutory routes to ensure your claim cannot be repudiated.</p>
           </div>
 
           <div class="checklist-box">
             <div class="check-step">
               <span class="check-num">1</span>
               <div>
-                <strong>Rainfed (Arid / Dryland) Crops:</strong> ₹8,500 per hectare (Minimum ₹1,000 per farmer).
+                <strong>Toll-Free Helpline (Immediate):</strong> Call <strong>1800-180-1551</strong> within 72 hours. State your crop, survey number, and demand an official <em>Docket Reference Number</em>.
               </div>
             </div>
             <div class="check-step">
               <span class="check-num">2</span>
               <div>
-                <strong>Assured Irrigated Crops:</strong> ₹17,000 per hectare (Minimum ₹2,000 per farmer).
+                <strong>In-App Geo-Tagged Photos:</strong> Snap wide-angle and close-up crop damage photos using the camera studio on the right. Timestamp and GPS location are stamped automatically.
               </div>
             </div>
             <div class="check-step">
               <span class="check-num">3</span>
               <div>
-                <strong>Perennial / Horticultural Crops:</strong> ₹22,500 per hectare (Minimum ₹2,500 per farmer).
+                <strong>Rythu Vedika / AEO Intimation:</strong> Submit a copy of your claim docket along with Pahani/Dharani passbook copy to the Agriculture Extension Officer within 72 hours.
               </div>
             </div>
             <div class="check-step">
               <span class="check-num">4</span>
               <div>
-                <strong>State Special Relief (e.g. Telangana ex-gratia):</strong> ₹10,000 per acre special assistance for unseasonal hail or crop devastation.
+                <strong>Joint Field Survey (10-15 Days):</strong> Attend the mandatory field inspection with the AEO and Insurance Surveyor. Sign the joint survey loss percentage report on the spot.
               </div>
             </div>
           </div>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
-            Note: SDRF input subsidy is provided directly by the State Revenue/Disaster Dept and does NOT deduct from PMFBY insurance claims.
-          </p>
+        </div>
+
+        <!-- 4. Statutory SDRF/NDRF Relief Norms -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>📜</span> Disaster Management SDRF/NDRF Norms</h3>
+            <p class="card-subtitle">Official State Disaster Response Fund Input Subsidy for Declared Calamities (&gt;33% loss).</p>
+          </div>
+
+          <div class="checklist-box" style="background: #faf5ff; border-color: #d8b4fe;">
+            <div class="check-step">
+              <span class="check-num" style="background: #7c3aed;">1</span>
+              <div>
+                <strong>Rainfed (Dryland) Crops:</strong> ₹8,500 per hectare (₹3,440 per acre, min ₹1,000 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num" style="background: #7c3aed;">2</span>
+              <div>
+                <strong>Assured Irrigated Crops:</strong> ₹17,000 per hectare (₹6,880 per acre, min ₹2,000 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num" style="background: #7c3aed;">3</span>
+              <div>
+                <strong>Perennial / Horticultural Crops:</strong> ₹22,500 per hectare (₹9,100 per acre, min ₹2,500 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num" style="background: #7c3aed;">4</span>
+              <div>
+                <strong>Special State Calamity Ex-Gratia:</strong> ₹10,000 per acre emergency assistance for unseasonal hail or flash floods (e.g. Telangana / AP).
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- 72-Hour Claim Intimation Generator & Checklist -->
+      <!-- RIGHT COLUMN: IN-APP GEO-TAGGED CAMERA, EVIDENCE STUDIO & DOSSIER -->
       <div>
+        <!-- 1. In-App Geo-Tagged Field Camera & Evidence Suite -->
+        <div class="card" style="border-top: 4px solid #16a34a;">
+          <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+              <div>
+                <h3 class="card-title" style="color: #15803d;"><span>📸</span> In-App Geo-Tagged Camera & Evidence Suite</h3>
+                <p class="card-subtitle">Captures crop damage photos with tamper-evident GPS coordinates, survey number, and timestamp required by PMFBY & SDRF joint inspection teams.</p>
+              </div>
+              <span class="badge-tag badge-tag-green" id="geoCountBadge">0 Stamped</span>
+            </div>
+          </div>
+
+          <!-- Live GPS Telemetry Lock Bar -->
+          <div class="gps-lock-banner">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span class="status-dot" style="background: #16a34a;"></span>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #166534;" id="gpsLockStatus">🟢 High-Precision GPS Locked</span>
+              </div>
+              <div class="gps-coords-text" id="gpsCoordsDisplay">📍 Lat: 17.978421° N, Lon: 79.594112° E (±3.2m)</div>
+              <div style="font-size: 0.75rem; color: #4b5563; margin-top: 0.2rem;" id="gpsTimestampDisplay">⏱️ Time: 05-Nov-2026, 23:55 IST | Alt: 294m MSL</div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btnRefreshGps" style="padding: 0.4rem 0.75rem; font-size: 0.82rem;">
+              <span>🔄</span> Refresh GPS
+            </button>
+          </div>
+
+          <!-- Photo Type & Survey Field Inputs -->
+          <div class="form-row form-row-2" style="margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label" for="geoPhotoTypeSelect">Evidence Category</label>
+              <select id="geoPhotoTypeSelect" class="form-select">
+                <option value="Wide Field View (Survey boundary + Landmark)">Wide Field View (Survey boundary & Landmark)</option>
+                <option value="Close-Up Plant Damage (Lodged/Scorched stalks)">Close-Up Plant Damage (Lodged / Scorched Stalks)</option>
+                <option value="Water Inundation / Submersion Depth">Water Inundation / Submersion Depth</option>
+                <option value="Hailstone Size & Foliage Shredding">Hailstone Size & Foliage Shredding</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="geoLandmarkInput">Field Landmark / Notes</label>
+              <input type="text" id="geoLandmarkInput" class="form-input" value="East bund near borewell" placeholder="e.g. Near borewell / Canal bund">
+            </div>
+          </div>
+
+          <!-- Live Camera Viewfinder Box -->
+          <div class="camera-viewfinder-box" id="cameraViewfinder">
+            <!-- Live badge when active -->
+            <div class="camera-live-badge" id="cameraLiveBadge" style="display: none;">
+              <span class="camera-live-pulse"></span>
+              <span>LIVE CAM ACTIVE</span>
+            </div>
+
+            <!-- Viewfinder Video -->
+            <video id="geoVideoPreview" class="camera-video-elem" autoplay playsinline muted style="display: none;"></video>
+
+            <!-- Fallback Standby View -->
+            <div id="cameraStandbyPlaceholder" class="camera-standby-placeholder">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📷</div>
+              <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 0.25rem;">Camera Viewfinder Ready</div>
+              <div style="font-size: 0.82rem; color: #94a3b8; max-width: 320px; margin: 0 auto;">
+                Click "Open Live Camera" to snap live photos in the field, or click "Upload Photo" to select an existing picture from your phone.
+              </div>
+            </div>
+
+            <!-- In-Viewfinder GPS Stamp Preview -->
+            <div class="gps-telemetry-badge" id="viewfinderGpsBadge">
+              <span>📍 <strong id="vfCoords">17.9784° N, 79.5941° E</strong></span>
+              <span id="vfSurveyTag">Survey #284/B | Geesugonda</span>
+            </div>
+          </div>
+
+          <!-- Hidden Canvas for Stamping -->
+          <canvas id="geoStampCanvas" style="display: none;"></canvas>
+          <input type="file" id="geoFileInput" accept="image/*" capture="environment" style="display: none;">
+
+          <!-- Camera & Upload Control Buttons -->
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <button type="button" class="btn btn-secondary" id="btnToggleCamera" style="flex: 1; min-width: 140px;">
+              <span>📷</span> Open Live Camera
+            </button>
+            <button type="button" class="btn btn-primary" id="btnSnapPhoto" style="flex: 1.2; min-width: 160px;" disabled>
+              <span>📸</span> Snap Geo-Photo
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnTriggerUpload" style="flex: 1; min-width: 140px;">
+              <span>📂</span> Upload Photo
+            </button>
+          </div>
+
+          <!-- Enclosed Geo-Tagged Evidence Gallery -->
+          <div style="margin-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h4 style="margin: 0; font-size: 0.95rem; color: #1e293b;">
+                <span>📁</span> Attached Field Evidence (<span id="evidenceListCount">0</span> photos)
+              </h4>
+              <button type="button" class="btn btn-secondary" id="btnClearEvidence" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; display: none;">
+                Clear All
+              </button>
+            </div>
+
+            <div id="evidenceGalleryContainer" class="evidence-grid">
+              <!-- Evidence cards appended dynamically -->
+              <div id="noEvidenceNotice" style="grid-column: 1 / -1; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 1.5rem; text-align: center; color: #64748b; font-size: 0.85rem;">
+                No geo-tagged damage photos captured yet. Snap a picture with the live camera above or upload a photo from your device.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 1-Click Legal Claim SMS Generator -->
         <div class="card">
           <div class="card-header">
             <h3 class="card-title"><span>📝</span> 1-Click Legal Claim SMS Generator</h3>
@@ -626,54 +808,46 @@ Ask me anything about:
             <label class="form-label" style="color: #991b1b;">Legal SMS Text Ready to Dispatch:</label>
             <div style="background: #1e293b; color: #e2e8f0; font-family: monospace; font-size: 0.88rem; padding: 1rem; border-radius: 6px; white-space: pre-wrap;" id="smsTextDisplay">
             </div>
-            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
               <button type="button" class="btn btn-primary" id="btnCopySms" style="flex: 1;">
                 📋 Copy SMS
               </button>
               <a href="sms:18001801551" class="btn btn-secondary" id="btnSendSmsApp" style="flex: 1;">
                 💬 Open in SMS App
               </a>
+              <a href="#" class="btn btn-secondary" id="btnShareWhatsApp" style="flex: 1; background: #25d366; color: #ffffff;" target="_blank">
+                🟢 WhatsApp
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- 5-Step Claim Checklist -->
-        <div class="card">
+        <!-- 3. Official Crop Loss Claim Dossier & Tracker Logger -->
+        <div class="card" style="border-top: 3px solid #2563eb;">
           <div class="card-header">
-            <h3 class="card-title"><span>📋</span> Mandatory 72-Hour Evidence Checklist</h3>
-            <p class="card-subtitle">Ensure these 5 steps are completed to guarantee insurance clearance.</p>
+            <h3 class="card-title" style="color: #1d4ed8;"><span>📄</span> Official Crop Loss Claim Dossier</h3>
+            <p class="card-subtitle">Generate court-grade formal intimation docket ready for the Joint Survey Committee.</p>
           </div>
 
-          <div class="checklist-box">
-            <div class="check-step">
-              <span class="check-num">1</span>
-              <div>
-                <strong>Take Geo-Tagged Photos:</strong> Use PMFBY Crop Insurance App or phone camera with GPS enabled showing crop damage and survey boundary.
-              </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <button type="button" class="btn btn-primary" id="btnGenerateDossier" style="flex: 1.2;">
+              <span>📄</span> Generate Official Dossier
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnLogToTracker" style="flex: 1;">
+              <span>💾</span> Save to Status Tracker
+            </button>
+          </div>
+
+          <div id="dossierDisplayBox" style="display: none;">
+            <div class="petition-container" id="dossierTextContent" style="white-space: pre-wrap; font-size: 0.88rem; max-height: 380px; overflow-y: auto;">
             </div>
-            <div class="check-step">
-              <span class="check-num">2</span>
-              <div>
-                <strong>Call Toll-Free 1800-180-1551:</strong> Request docket/intimation reference number and note down operator name.
-              </div>
-            </div>
-            <div class="check-step">
-              <span class="check-num">3</span>
-              <div>
-                <strong>Notify Rythu Vedika / AEO:</strong> Submit signed copy to Agriculture Extension Officer within 72 hours.
-              </div>
-            </div>
-            <div class="check-step">
-              <span class="check-num">4</span>
-              <div>
-                <strong>Keep Ready Land Records:</strong> Pahani / Dharani / RoR-1B and CCRC agreement (for tenant cultivators).
-              </div>
-            </div>
-            <div class="check-step">
-              <span class="check-num">5</span>
-              <div>
-                <strong>Joint Field Survey:</strong> Be present along with AEO and Insurance Representative within 10-15 days.
-              </div>
+            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-primary" id="btnDownloadDossier" style="flex: 1;">
+                ⬇️ Download Dossier (.txt)
+              </button>
+              <button type="button" class="btn btn-secondary" id="btnPrintDossier" style="flex: 1;">
+                🖨️ Print Dossier
+              </button>
             </div>
           </div>
         </div>
