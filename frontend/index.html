@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Kisan Setu - Unified Farmer Scheme & Subsidy Assistant</title>
-  <meta name="description" content="Discover Central and State agricultural subsidies, crop insurance, and farmer schemes across India with multi-language support.">
+  <title>Kisan Setu - Unified Pan-India Farmer Scheme & Subsidy Assistant</title>
+  <meta name="description" content="Discover Central and State agricultural subsidies, 72-hr crop loss claim assistant, water saving subsidies, KCC loans, and higher official escalation across India.">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
@@ -16,12 +16,12 @@
       <div class="brand-wrapper">
         <span class="brand-icon" aria-hidden="true">🌾</span>
         <div>
-          <h1 class="brand-name" data-i18n="app_title">Kisan Setu</h1>
-          <p class="brand-tagline" data-i18n="app_subtitle">Unified Farmer Scheme & Subsidy Assistant</p>
+          <h1 class="brand-name" data-i18n="app_title">Kisan Setu / రైతు సహాయత</h1>
+          <p class="brand-tagline" data-i18n="app_subtitle">Unified Farmer Welfare, Subsidies & Grievance Shield</p>
         </div>
       </div>
 
-      <!-- Visible Language Selector in Header -->
+      <!-- Language Selector in Header -->
       <div class="lang-selector-wrapper" aria-label="Select Language">
         <span class="lang-icon" aria-hidden="true">🌐</span>
         <select id="langSelect" class="lang-select" aria-label="Choose Language">
@@ -36,135 +36,1093 @@
     </div>
   </header>
 
-  <!-- Hero & State Selector Section -->
-  <section class="hero-section" aria-labelledby="heroTitle">
-    <div class="hero-container">
-      <div class="hero-badge">
-        <span>🇮🇳</span>
-        <span>Pan-India Agricultural Welfare & Subsidies</span>
-      </div>
-      <h2 id="heroTitle" class="hero-title" data-i18n="hero_title">
-        Find Government Schemes & Subsidies for Your Farm
-      </h2>
-      <p class="hero-subtitle" data-i18n="hero_desc">
-        Select your State or Union Territory below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
-      </p>
-
-      <!-- Prominent State Selector Card -->
-      <div class="state-selector-card">
-        <label for="stateSelect" class="selector-label" data-i18n="select_state_label">
-          📍 Select Your State / Union Territory
-        </label>
-        <div class="state-select-wrapper">
-          <span class="state-input-icon" aria-hidden="true">🗺️</span>
-          <select id="stateSelect" class="state-select-input" aria-required="true">
-            <!-- Populated dynamically by app.js -->
-          </select>
-          <span class="state-input-arrow" aria-hidden="true">▼</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Empty State Prompt (Visible BEFORE State is Selected) -->
-  <section id="emptyStatePrompt" class="empty-state-guide" aria-live="polite">
-    <div class="guide-icon" aria-hidden="true">🚜</div>
-    <h3 class="guide-heading" data-i18n="no_state_prompt">
-      Please select your State above to view available schemes and subsidies.
-    </h3>
-    <p class="guide-text">
-      Agricultural welfare and subsidies vary by State. Once you select your location, the assistant will immediately display both your State Government subsidies and Central Government schemes.
-    </p>
-  </section>
-
-  <!-- Main Schemes Section (Hidden until State is Selected) -->
-  <main id="mainContent" class="main-content" style="display: none;" role="main">
-    
-    <!-- Active State Summary Banner -->
-    <div id="stateBanner" class="state-banner">
-      <div class="banner-left">
-        <span class="banner-flag" aria-hidden="true">🌾</span>
-        <div>
-          <div>
-            <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;" data-i18n="state_selected_banner">Showing Agricultural Schemes for</span>
-          </div>
-          <span id="bannerStateName" class="banner-state-name">Telangana</span>
-          <span id="bannerStats" class="banner-stats">(2 State + 6 Central)</span>
-        </div>
-      </div>
-      <button id="changeStateBtn" class="change-state-btn" type="button">
-        Change State ↻
+  <!-- 8 Main Application Navigation Tabs -->
+  <nav class="main-nav-bar" aria-label="Primary Navigation">
+    <div class="main-nav-container" id="mainNavContainer" role="tablist">
+      <button class="nav-tab-btn active" role="tab" aria-selected="true" data-tab="tab0" id="btn-tab0">
+        <span class="nav-tab-icon">📜</span>
+        <span>Scheme Browser</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab1" id="btn-tab1">
+        <span class="nav-tab-icon">🤖</span>
+        <span>Eligibility & Chat</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab2" id="btn-tab2">
+        <span class="nav-tab-icon">⚡</span>
+        <span>72-Hr Claim Shield</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab3" id="btn-tab3">
+        <span class="nav-tab-icon">💧</span>
+        <span>Water Subsidies & Crops</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab4" id="btn-tab4">
+        <span class="nav-tab-icon">💳</span>
+        <span>KCC Loan & Tracker</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab5" id="btn-tab5">
+        <span class="nav-tab-icon">📁</span>
+        <span>Document Wallet</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab6" id="btn-tab6">
+        <span class="nav-tab-icon">📈</span>
+        <span>MSP vs Mandi</span>
+      </button>
+      <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="tab7" id="btn-tab7">
+        <span class="nav-tab-icon">🏛️</span>
+        <span>Intermediary & Escalation</span>
       </button>
     </div>
+  </nav>
 
-    <!-- Toolbar: Tabs, Search & Filters -->
-    <section class="toolbar-container" aria-label="Scheme Filters and Search">
-      
-      <!-- Government Level Tabs -->
-      <div class="level-tabs" role="tablist">
-        <button id="tabAllBtn" class="tab-btn active" role="tab" aria-selected="true" type="button">
-          <span data-i18n="tab_all">All Schemes</span>
-          <span id="countAll" class="tab-count">0</span>
-        </button>
-        <button id="tabStateBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
-          <span id="labelTabState" data-i18n="tab_state">State Schemes</span>
-          <span id="countState" class="tab-count">0</span>
-        </button>
-        <button id="tabCentralBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
-          <span data-i18n="tab_central">Central Schemes</span>
-          <span id="countCentral" class="tab-count">0</span>
-        </button>
-      </div>
-
-      <!-- Instant Search Bar -->
-      <div class="search-wrapper">
-        <span class="search-icon" aria-hidden="true">🔍</span>
-        <input 
-          id="searchInput" 
-          type="search" 
-          class="search-input" 
-          placeholder="Search schemes by name, crop, or keyword (e.g. Paddy, Tractor, Insurance, Loan)..." 
-          aria-label="Search schemes"
-        >
-      </div>
-
-      <!-- Secondary Filters -->
-      <div class="filter-row">
-        <div class="filter-group">
-          <label for="typeFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_type">
-            Scheme Type
-          </label>
-          <select id="typeFilterSelect" class="filter-select">
-            <option value="all">All Scheme Types</option>
-            <option value="income_support">Direct Income / Investment Support</option>
-            <option value="insurance">Crop Loss Insurance</option>
-            <option value="credit">Subsidized Crop Credit / Loan</option>
-            <option value="machinery">Tractor & Farm Machinery Grants</option>
-            <option value="irrigation">Drip, Sprinkler & Solar Pumps</option>
-            <option value="pension">Farmer Pension (Old Age)</option>
-            <option value="fencing">Farm Fencing (Animal Protection)</option>
-          </select>
+  <!-- TAB 0: SCHEME BROWSER -->
+  <div id="view-tab0" class="tab-view active" role="tabpanel" aria-labelledby="btn-tab0">
+    <!-- Hero & State Selector Section -->
+    <section class="hero-section" aria-labelledby="heroTitle">
+      <div class="hero-container">
+        <div class="hero-badge">
+          <span>🇮🇳</span>
+          <span>Pan-India Agricultural Welfare & Subsidies</span>
         </div>
+        <h2 id="heroTitle" class="hero-title" data-i18n="hero_title">
+          Find Government Schemes & Subsidies for Your Farm
+        </h2>
+        <p class="hero-subtitle" data-i18n="hero_desc">
+          Select your State or Union Territory below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
+        </p>
 
-        <div class="filter-group">
-          <label for="eligibilityFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_eligibility">
-            Farmer Type
+        <!-- Prominent State Selector Card -->
+        <div class="state-selector-card">
+          <label for="stateSelect" class="selector-label" data-i18n="select_state_label">
+            📍 Select Your State / Union Territory
           </label>
-          <select id="eligibilityFilterSelect" class="filter-select">
-            <option value="all">All Farmer Types</option>
-            <option value="small_marginal">Small & Marginal Farmers (&lt; 5 Acres)</option>
-            <option value="tenant">Tenant Farmers & Sharecroppers</option>
-          </select>
+          <div class="state-select-wrapper">
+            <span class="state-input-icon" aria-hidden="true">🗺️</span>
+            <select id="stateSelect" class="state-select-input" aria-required="true">
+              <!-- Populated dynamically by app.js -->
+            </select>
+            <span class="state-input-arrow" aria-hidden="true">▼</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Schemes Cards Grid -->
-    <section id="schemesGrid" class="schemes-grid" aria-label="List of Agricultural Schemes">
-      <!-- Cards rendered dynamically by app.js -->
+    <!-- Empty State Prompt -->
+    <section id="emptyStatePrompt" class="empty-state-guide" aria-live="polite">
+      <div class="guide-icon" aria-hidden="true">🚜</div>
+      <h3 class="guide-heading" data-i18n="no_state_prompt">
+        Please select your State above to view available schemes and subsidies.
+      </h3>
+      <p class="guide-text">
+        Agricultural welfare and subsidies vary by State. Once you select your location, the assistant will immediately display both your State Government subsidies and Central Government schemes.
+      </p>
     </section>
 
-  </main>
+    <!-- Main Schemes Section -->
+    <main id="mainContent" class="main-content" style="display: none;" role="main">
+      <!-- Active State Summary Banner -->
+      <div id="stateBanner" class="state-banner">
+        <div class="banner-left">
+          <span class="banner-flag" aria-hidden="true">🌾</span>
+          <div>
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;" data-i18n="state_selected_banner">Showing Agricultural Schemes for</span>
+            </div>
+            <span id="bannerStateName" class="banner-state-name">Telangana</span>
+            <span id="bannerStats" class="banner-stats">(2 State + 6 Central)</span>
+          </div>
+        </div>
+        <button id="changeStateBtn" class="change-state-btn" type="button">
+          Change State ↻
+        </button>
+      </div>
+
+      <!-- Toolbar: Tabs, Search & Filters -->
+      <section class="toolbar-container" aria-label="Scheme Filters and Search">
+        <div class="level-tabs" role="tablist">
+          <button id="tabAllBtn" class="tab-btn active" role="tab" aria-selected="true" type="button">
+            <span data-i18n="tab_all">All Schemes</span>
+            <span id="countAll" class="tab-count">0</span>
+          </button>
+          <button id="tabStateBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
+            <span id="labelTabState" data-i18n="tab_state">State Schemes</span>
+            <span id="countState" class="tab-count">0</span>
+          </button>
+          <button id="tabCentralBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
+            <span data-i18n="tab_central">Central Schemes</span>
+            <span id="countCentral" class="tab-count">0</span>
+          </button>
+        </div>
+
+        <div class="search-wrapper">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input 
+            id="searchInput" 
+            type="search" 
+            class="search-input" 
+            placeholder="Search schemes by name, crop, or keyword (e.g. Paddy, Tractor, Insurance, Loan)..." 
+            aria-label="Search schemes"
+          >
+        </div>
+
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="typeFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_type">
+              Scheme Type
+            </label>
+            <select id="typeFilterSelect" class="filter-select">
+              <option value="all">All Scheme Types</option>
+              <option value="income_support">Direct Income / Investment Support</option>
+              <option value="insurance">Crop Loss Insurance</option>
+              <option value="credit">Subsidized Crop Credit / Loan</option>
+              <option value="machinery">Tractor & Farm Machinery Grants</option>
+              <option value="irrigation">Drip, Sprinkler & Solar Pumps</option>
+              <option value="pension">Farmer Pension (Old Age)</option>
+              <option value="fencing">Farm Fencing (Animal Protection)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="eligibilityFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_eligibility">
+              Farmer Type
+            </label>
+            <select id="eligibilityFilterSelect" class="filter-select">
+              <option value="all">All Farmer Types</option>
+              <option value="small_marginal">Small & Marginal Farmers (&lt; 5 Acres)</option>
+              <option value="tenant">Tenant Farmers & Sharecroppers</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schemes Cards Grid -->
+      <section id="schemesGrid" class="schemes-grid" aria-label="List of Agricultural Schemes">
+        <!-- Cards rendered dynamically by app.js -->
+      </section>
+    </main>
+  </div>
+
+  <!-- TAB 1: ELIGIBILITY & CHAT -->
+  <div id="view-tab1" class="tab-view" role="tabpanel" aria-labelledby="btn-tab1">
+    <div class="view-header">
+      <h2 class="view-title"><span>🤖</span> Farmer Self-Service Chat & Eligibility Engine</h2>
+      <p class="view-desc">
+        100% Deterministic evaluation with zero hallucinations. Checks your land holding, tenancy (CCRC), crop, and irrigation source against statutory Central and State eligibility rules.
+      </p>
+    </div>
+
+    <div class="content-grid-2">
+      <!-- Profile Form -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><span>🌾</span> Enter Farmer Profile</h3>
+          <p class="card-subtitle">Fill in your land and crop details to compute eligible subsidies.</p>
+        </div>
+
+        <form id="eligibilityForm">
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="elState">State</label>
+              <select id="elState" class="form-select">
+                <option value="Telangana">Telangana</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="elDistrict">District</label>
+              <input type="text" id="elDistrict" class="form-input" value="Warangal" placeholder="e.g. Warangal, Nalgonda">
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="elAcres">Land Holding (Acres)</label>
+              <input type="number" id="elAcres" class="form-input" value="2.5" step="0.1" min="0.1" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="elCrop">Primary Crop</label>
+              <select id="elCrop" class="form-select">
+                <option value="Paddy">Paddy (Rice)</option>
+                <option value="Cotton">Cotton</option>
+                <option value="Chilli">Chilli / Spices</option>
+                <option value="Maize">Maize (Corn)</option>
+                <option value="Soybean">Soybean</option>
+                <option value="Bengal Gram">Bengal Gram (Chana)</option>
+                <option value="Groundnut">Groundnut</option>
+                <option value="Red Gram">Red Gram (Pigeonpea)</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Millets">Millets (Jowar / Bajra / Ragi)</option>
+                <option value="Vegetables">Horticulture / Vegetables</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-checkbox-label">
+              <input type="checkbox" id="elTenant">
+              <span>Tenant Farmer / Sharecropper (Oral or Written Lease)</span>
+            </label>
+          </div>
+
+          <div class="form-group" id="ccrcGroup" style="display: none; background: #fff8e1; padding: 0.6rem; border-radius: 6px; border: 1px dashed #f59e0b;">
+            <label class="form-checkbox-label">
+              <input type="checkbox" id="elCcrc">
+              <span>I have an active CCRC (Crop Cultivator Rights Card)</span>
+            </label>
+            <p style="font-size: 0.78rem; color: #92400e; margin: 0.3rem 0 0 1.6rem;">
+              CCRC gives statutory recognition to tenant farmers without impacting the landowner's title.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-checkbox-label">
+              <input type="checkbox" id="elWell" checked>
+              <span>Operational Borewell or Irrigation Source Available</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="elQuery">Question or Scheme Query (Optional)</label>
+            <input type="text" id="elQuery" class="form-input" placeholder="e.g. Can I get drip subsidy? What are PM-KISAN rules?">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnMatchEligibility">
+            <span>🔍</span> Check Eligible Schemes & Subsidies
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Display -->
+      <div id="eligibilityResultsContainer">
+        <div class="card" style="text-align: center; color: var(--text-muted); padding: 3rem 1.5rem;">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎯</div>
+          <h3>Ready for Evaluation</h3>
+          <p style="font-size: 0.92rem; margin-top: 0.4rem;">
+            Click the "Check Eligible Schemes" button to run deterministic rule matching against 32+ official Central & State schemes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: 72-HR CLAIM SHIELD -->
+  <div id="view-tab2" class="tab-view" role="tabpanel" aria-labelledby="btn-tab2">
+    <div class="view-header">
+      <h2 class="view-title"><span>⚡</span> Pan-India Climate Risk Shield & 72-Hour Claim Assistant</h2>
+      <p class="view-desc">
+        Detects drought, excess rain, heat waves, and pest outbreaks in real-time. Immediately unlocks statutory PMFBY insurance intimation with an active 72-hour countdown to prevent claim rejection.
+      </p>
+    </div>
+
+    <!-- Live 72-Hour Urgency Banner -->
+    <div class="card" style="border-left: 6px solid #ef4444; background: #fff5f5;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <span class="badge-tag badge-tag-red">CRITICAL STATUTORY DEADLINE</span>
+          <h3 style="color: #991b1b; margin: 0.35rem 0 0.2rem 0; font-size: 1.25rem;">
+            72-Hour PMFBY Loss Intimation Countdown
+          </h3>
+          <p style="font-size: 0.88rem; color: #7f1d1d; margin: 0;">
+            PMFBY Section 21.4 mandates reporting localized calamities within 72 hours. Failure leads to automatic claim forfeiture.
+          </p>
+        </div>
+        <div class="countdown-box-lg" id="liveCountdownTimer">
+          71:59:42
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid-2">
+      <!-- Weather & Hazard Assessment Form -->
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>🛰️</span> Live Hazard & Agro-Meteorology Checker</h3>
+            <p class="card-subtitle">Connects to Open-Meteo real-time telemetry across any Indian district.</p>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="hazardDistrict">District</label>
+              <input type="text" id="hazardDistrict" class="form-input" value="Warangal">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hazardCrop">Crop</label>
+              <select id="hazardCrop" class="form-select">
+                <option value="Paddy">Paddy (Rice)</option>
+                <option value="Cotton">Cotton</option>
+                <option value="Chilli">Chilli</option>
+                <option value="Maize">Maize</option>
+                <option value="Groundnut">Groundnut</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-secondary btn-block" id="btnCheckWeather">
+            <span>📡</span> Fetch Live Weather & Detect Risks
+          </button>
+
+          <!-- Weather Output Display -->
+          <div id="weatherOutput" style="margin-top: 1.2rem;">
+            <div class="metric-row">
+              <div class="metric-card">
+                <div class="metric-val" id="dispTemp">33.5°C</div>
+                <div class="metric-lbl">Temperature</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-val" id="dispRain">0.0 mm</div>
+                <div class="metric-lbl">Rainfall</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-val" id="dispHumidity">46%</div>
+                <div class="metric-lbl">Humidity</div>
+              </div>
+            </div>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.85rem; color: #991b1b; font-size: 0.92rem;">
+              <strong>⚠️ Active Warning:</strong> Moderate Water & Evaporative Stress detected for Paddy. Scheduled irrigation or canal contingency advised.
+            </div>
+          </div>
+        </div>
+
+        <!-- Statutory SDRF/NDRF Relief Norms -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>🏛️</span> Disaster Management SDRF/NDRF Norms</h3>
+            <p class="card-subtitle">Official State Disaster Response Fund Input Subsidy for Declared Calamities (&gt;33% loss).</p>
+          </div>
+
+          <div class="checklist-box">
+            <div class="check-step">
+              <span class="check-num">1</span>
+              <div>
+                <strong>Rainfed (Arid / Dryland) Crops:</strong> ₹8,500 per hectare (Minimum ₹1,000 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">2</span>
+              <div>
+                <strong>Assured Irrigated Crops:</strong> ₹17,000 per hectare (Minimum ₹2,000 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">3</span>
+              <div>
+                <strong>Perennial / Horticultural Crops:</strong> ₹22,500 per hectare (Minimum ₹2,500 per farmer).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">4</span>
+              <div>
+                <strong>State Special Relief (e.g. Telangana ex-gratia):</strong> ₹10,000 per acre special assistance for unseasonal hail or crop devastation.
+              </div>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+            Note: SDRF input subsidy is provided directly by the State Revenue/Disaster Dept and does NOT deduct from PMFBY insurance claims.
+          </p>
+        </div>
+      </div>
+
+      <!-- 72-Hour Claim Intimation Generator & Checklist -->
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>📝</span> 1-Click Legal Claim SMS Generator</h3>
+            <p class="card-subtitle">Generates statutory intimation message for PMFBY Toll-Free (1800-180-1551) and AEO.</p>
+          </div>
+
+          <form id="claimSmsForm">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="claimFarmerName">Farmer Name</label>
+                <input type="text" id="claimFarmerName" class="form-input" value="Komirelli Ramulu">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimPhone">Phone Number</label>
+                <input type="tel" id="claimPhone" class="form-input" value="9848022338">
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="claimVillage">Village</label>
+                <input type="text" id="claimVillage" class="form-input" value="Geesugonda">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimSurvey">Survey / Khata No</label>
+                <input type="text" id="claimSurvey" class="form-input" value="284/B">
+              </div>
+            </div>
+
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label class="form-label" for="claimHazard">Calamity Type</label>
+                <select id="claimHazard" class="form-select">
+                  <option value="Hailstorm">Hailstorm</option>
+                  <option value="Excess Rain / Inundation">Excess Rain / Inundation</option>
+                  <option value="Severe Drought">Severe Drought / Dry Spell</option>
+                  <option value="Pest Outbreak">Pest / Disease Outbreak</option>
+                  <option value="Unseasonal Wind">Unseasonal Strong Winds</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimLossPct">Est. Loss %</label>
+                <input type="number" id="claimLossPct" class="form-input" value="80" min="33" max="100">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="claimAcreage">Acreage Affected</label>
+                <input type="number" id="claimAcreage" class="form-input" value="2.5" step="0.1">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger btn-block" id="btnGenSms">
+              <span>🚨</span> Generate Official 72-Hour Intimation SMS
+            </button>
+          </form>
+
+          <!-- Generated SMS Result Box -->
+          <div id="smsResultBox" style="display: none; margin-top: 1.25rem;">
+            <label class="form-label" style="color: #991b1b;">Legal SMS Text Ready to Dispatch:</label>
+            <div style="background: #1e293b; color: #e2e8f0; font-family: monospace; font-size: 0.88rem; padding: 1rem; border-radius: 6px; white-space: pre-wrap;" id="smsTextDisplay">
+            </div>
+            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-primary" id="btnCopySms" style="flex: 1;">
+                📋 Copy SMS
+              </button>
+              <a href="sms:18001801551" class="btn btn-secondary" id="btnSendSmsApp" style="flex: 1;">
+                💬 Open in SMS App
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-Step Claim Checklist -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>📋</span> Mandatory 72-Hour Evidence Checklist</h3>
+            <p class="card-subtitle">Ensure these 5 steps are completed to guarantee insurance clearance.</p>
+          </div>
+
+          <div class="checklist-box">
+            <div class="check-step">
+              <span class="check-num">1</span>
+              <div>
+                <strong>Take Geo-Tagged Photos:</strong> Use PMFBY Crop Insurance App or phone camera with GPS enabled showing crop damage and survey boundary.
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">2</span>
+              <div>
+                <strong>Call Toll-Free 1800-180-1551:</strong> Request docket/intimation reference number and note down operator name.
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">3</span>
+              <div>
+                <strong>Notify Rythu Vedika / AEO:</strong> Submit signed copy to Agriculture Extension Officer within 72 hours.
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">4</span>
+              <div>
+                <strong>Keep Ready Land Records:</strong> Pahani / Dharani / RoR-1B and CCRC agreement (for tenant cultivators).
+              </div>
+            </div>
+            <div class="check-step">
+              <span class="check-num">5</span>
+              <div>
+                <strong>Joint Field Survey:</strong> Be present along with AEO and Insurance Representative within 10-15 days.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: WATER-SAVING SUBSIDIES & LOW-WATER CROPS -->
+  <div id="view-tab3" class="tab-view" role="tabpanel" aria-labelledby="btn-tab3">
+    <div class="view-header">
+      <h2 class="view-title"><span>💧</span> Water-Saving Subsidies & Next-Season Crop Planning</h2>
+      <p class="view-desc">
+        Turns water stress into action: Matches farmers to 18+ verified Central and State drip, sprinkler, solar pump, and farm pond schemes, and 26+ lower-water crop alternatives with MSP support.
+      </p>
+    </div>
+
+    <!-- Section A: 18+ Schemes -->
+    <div class="card">
+      <div class="card-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem;">
+        <div>
+          <h3 class="card-title"><span>🚿</span> Verified Water-Saving Subsidies (18+ Schemes)</h3>
+          <p class="card-subtitle">PMKSY (PDMC/HKKP), PM-KUSUM (Components A/B/C), TSMIP, APMIP, Krishi Bhagya & Magel Tyala Shet Tale.</p>
+        </div>
+        <div>
+          <span class="badge-tag badge-tag-green" id="waterSchemesBadge">18 Schemes Loaded</span>
+        </div>
+      </div>
+
+      <!-- State & Category Filter for Schemes -->
+      <div class="form-row form-row-2" style="margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="waterStateFilter">Filter by State</label>
+          <select id="waterStateFilter" class="form-select">
+            <option value="All">All States (Pan-India)</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="waterTypeFilter">Filter by Technology</label>
+          <select id="waterTypeFilter" class="form-select">
+            <option value="All">All Technologies</option>
+            <option value="Micro-Irrigation">Micro-Irrigation (Drip & Sprinkler)</option>
+            <option value="Solar Pump">Solar Pumps (PM-KUSUM)</option>
+            <option value="Farm Pond">Farm Ponds & Water Harvesting</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Water Schemes Cards Grid -->
+      <div id="waterSchemesGrid" class="schemes-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Section B: 26+ Low-Water Crops -->
+    <div class="card">
+      <div class="card-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem;">
+        <div>
+          <h3 class="card-title"><span>🌱</span> Next-Season Low-Water Crop Alternatives (26+ Crops)</h3>
+          <p class="card-subtitle">Official ICAR & Ministry of Agriculture advisories for drought mitigation with up to 88% water savings.</p>
+        </div>
+        <div>
+          <span class="badge-tag badge-tag-blue" id="lowWaterCropsBadge">26 Crops Available</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="pill-group" id="cropCategoryPills">
+        <button class="pill-btn active" data-cropcat="All">All Categories (26)</button>
+        <button class="pill-btn" data-cropcat="Pulses">Pulses / Dal (8)</button>
+        <button class="pill-btn" data-cropcat="Oilseeds">Oilseeds (6)</button>
+        <button class="pill-btn" data-cropcat="Millets">Millets / Shree Anna (7)</button>
+        <button class="pill-btn" data-cropcat="Commercial">Commercial / Cash (5)</button>
+      </div>
+
+      <!-- Crops Cards Grid -->
+      <div id="lowWaterCropsGrid" class="schemes-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: KCC CREDIT & STATUS TRACKER -->
+  <div id="view-tab4" class="tab-view" role="tabpanel" aria-labelledby="btn-tab4">
+    <div class="view-header">
+      <h2 class="view-title"><span>💳</span> Kisan Credit Card (KCC) Guidance & Application Tracker</h2>
+      <p class="view-desc">
+        Calculate official DLTC Scale of Finance limits, 4% Modified Interest Subvention Scheme (MISS) savings, and track your pending scheme applications with SLA countdowns.
+      </p>
+    </div>
+
+    <div class="content-grid-2">
+      <!-- Section A: KCC Scale of Finance Calculator -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><span>💰</span> KCC Scale of Finance Calculator</h3>
+          <p class="card-subtitle">RBI & NABARD standardized credit computation for crop production.</p>
+        </div>
+
+        <form id="kccForm">
+          <div class="form-group">
+            <label class="form-label" for="kccCrop">Crop Cultivated</label>
+            <select id="kccCrop" class="form-select">
+              <option value="Paddy">Paddy (₹38,000/acre)</option>
+              <option value="Cotton">Cotton (₹42,000/acre)</option>
+              <option value="Chilli">Chilli / Spices (₹65,000/acre)</option>
+              <option value="Maize">Maize (₹28,000/acre)</option>
+              <option value="Soybean">Soybean (₹24,000/acre)</option>
+              <option value="Bengal Gram">Bengal Gram (₹22,000/acre)</option>
+              <option value="Groundnut">Groundnut (₹26,000/acre)</option>
+              <option value="Sugarcane">Sugarcane (₹70,000/acre)</option>
+            </select>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="kccAcres">Land Holding (Acres)</label>
+              <input type="number" id="kccAcres" class="form-input" value="3.0" step="0.5" min="0.5" max="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="kccDebt">Existing Bank Loan (₹)</label>
+              <input type="number" id="kccDebt" class="form-input" value="0" step="5000" min="0">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnCalcKcc">
+            <span>🧮</span> Calculate Sanctioned KCC Limit
+          </button>
+        </form>
+
+        <!-- KCC Calculation Output -->
+        <div id="kccResultDisplay" style="margin-top: 1.25rem;">
+          <div class="metric-row">
+            <div class="metric-card">
+              <div class="metric-val" id="dispKccLimit">₹1,48,200</div>
+              <div class="metric-lbl">Total Sanctioned Limit</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="dispKccRate" style="color: #15803d;">4.0% p.a.</div>
+              <div class="metric-lbl">Effective Interest Rate</div>
+            </div>
+          </div>
+
+          <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 0.85rem; font-size: 0.9rem;">
+            <div><strong>Interest Subvention Breakdown:</strong></div>
+            <ul style="margin: 0.35rem 0 0 1.2rem; line-height: 1.5;">
+              <li>7.0% Standard Short-Term Agricultural Lending Rate</li>
+              <li>- 3.0% Prompt Repayment Incentive (PRI)</li>
+              <li>= <strong>4.0% Net Annual Rate</strong> (for loans up to ₹3,00,000)</li>
+              <li style="color: #15803d; font-weight: bold;">Saves ₹26,676 annually vs informal money lenders (24% p.a.)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section B: Application & Claim Status Tracker -->
+      <div>
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 class="card-title"><span>📌</span> Claim & Application Status Tracker</h3>
+              <p class="card-subtitle">Farmer-entered status tracking with SLA breach alarms.</p>
+            </div>
+            <button class="btn btn-secondary" id="btnRefreshClaims" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+              ↻ Refresh
+            </button>
+          </div>
+
+          <!-- Existing Logged Claims List -->
+          <div id="claimsListContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Add New Application Log Form -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>➕</span> Log New Application / Claim</h3>
+            <p class="card-subtitle">Keep an audit trail of your subsidy filings to prevent bureaucratic delays.</p>
+          </div>
+
+          <form id="addClaimForm">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trkFarmerName">Farmer Name</label>
+                <input type="text" id="trkFarmerName" class="form-input" value="B. Venkanna" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trkPhone">Phone Number</label>
+                <input type="tel" id="trkPhone" class="form-input" value="9701133445" required>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trkScheme">Scheme / Application Name</label>
+                <input type="text" id="trkScheme" class="form-input" value="PM-KUSUM Solar Pump Component B" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trkRef">Acknowledgment / Ref No</label>
+                <input type="text" id="trkRef" class="form-input" value="KUSUM/TG/2026/8821" required>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trkStatus">Current Stage</label>
+                <select id="trkStatus" class="form-select">
+                  <option value="Application Submitted">Application Submitted</option>
+                  <option value="Document Verification">Document Verification</option>
+                  <option value="Joint Field Inspection">Joint Field Inspection</option>
+                  <option value="Administrative Sanction Approved">Administrative Sanction Approved</option>
+                  <option value="Disbursed / Completed">Disbursed / Completed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trkNotes">Notes / Handling Officer</label>
+                <input type="text" id="trkNotes" class="form-input" value="REDCO District Office">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="btnAddClaim">
+              <span>💾</span> Save Application to Tracker
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: DOCUMENT WALLET & DIGILOCKER -->
+  <div id="view-tab5" class="tab-view" role="tabpanel" aria-labelledby="btn-tab5">
+    <div class="view-header">
+      <h2 class="view-title"><span>📁</span> Consent-Driven Farmer Document Wallet & DigiLocker</h2>
+      <p class="view-desc">
+        Store scanned land records (Pahani/Dharani), Aadhaar, Bank Passbooks, and CCRC agreements with explicit farmer consent. Integrated with DigiLocker and AgriStack Farmer ID metadata.
+      </p>
+    </div>
+
+    <!-- Security & Consent Notice -->
+    <div class="card" style="border-left: 5px solid #2e7d32; background: #f0fdf4;">
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <span style="font-size: 2rem;">🔒</span>
+        <div>
+          <h4 style="margin:0; color: #166534;">Explicit Consent & Data Minimization Protocol</h4>
+          <p style="margin: 0.25rem 0 0 0; font-size: 0.88rem; color: #14532d;">
+            Your documents are client-side encrypted and masked (e.g. Aadhaar <code>XXXX-XXXX-4921</code>). Zero unconsented data sharing. Only metadata required for scheme eligibility is evaluated.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Cards Grid -->
+    <div class="schemes-grid" id="docWalletGrid">
+      <!-- Card 1 -->
+      <div class="scheme-card" style="border-left: 4px solid #16a34a;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <span class="badge-tag badge-tag-green">DigiLocker Verified</span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Aadhaar Identity Card</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">UIDAI Masked ID</p>
+          </div>
+          <span style="font-size: 1.8rem;">🪪</span>
+        </div>
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; margin: 0.85rem 0; font-family: monospace; font-size: 0.95rem;">
+          XXXX - XXXX - 4921
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          Verified Name: <strong>Komirelli Ramulu</strong> • Status: <strong>NPCI DBT Seeded</strong>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="scheme-card" style="border-left: 4px solid #2563eb;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <span class="badge-tag badge-tag-blue">Revenue Record Verified</span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Land Title / Pahani / Dharani</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">Record of Rights (RoR-1B)</p>
+          </div>
+          <span style="font-size: 1.8rem;">📜</span>
+        </div>
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; margin: 0.85rem 0; font-size: 0.88rem;">
+          <strong>Survey No:</strong> 284/B • <strong>Extent:</strong> 2 Acres 20 Guntas • <strong>Village:</strong> Geesugonda
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          Passbook No: <strong>T28090041284</strong> • Cultivator: <strong>Self / Pattadar</strong>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="scheme-card" style="border-left: 4px solid #f59e0b;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <span class="badge-tag badge-tag-amber">Statutory Agreement</span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Crop Cultivator Rights Card (CCRC)</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">Tenant Cultivator Legal Card</p>
+          </div>
+          <span style="font-size: 1.8rem;">🤝</span>
+        </div>
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; margin: 0.85rem 0; font-size: 0.88rem;">
+          <strong>Card ID:</strong> CCRC-TS-2026-9912 • <strong>Validity:</strong> Rabi 2025-26
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          Gives full legal PMFBY & Rythu Bharosa access without affecting owner title.
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="scheme-card" style="border-left: 4px solid #8b5cf6;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <span class="badge-tag badge-tag-blue">Bank Verified</span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Bank Passbook / DBT Mandate</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">State Bank of India</p>
+          </div>
+          <span style="font-size: 1.8rem;">🏦</span>
+        </div>
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; margin: 0.85rem 0; font-size: 0.88rem;">
+          <strong>A/C:</strong> ******3492 • <strong>IFSC:</strong> SBIN0020144 • <strong>Branch:</strong> Warangal Main
+        </div>
+        <div style="font-size: 0.82rem; color: var(--text-muted);">
+          Aadhaar Authentication: <strong>Active (Aadhaar Enabled Payment System ready)</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: MSP VS MANDI -->
+  <div id="view-tab6" class="tab-view" role="tabpanel" aria-labelledby="btn-tab6">
+    <div class="view-header">
+      <h2 class="view-title"><span>📈</span> Minimum Support Price (MSP) vs Mandi Benchmark (2025-2026)</h2>
+      <p class="view-desc">
+        Protects small and marginal farmers from distress selling below support price to local commission agents. Compare official procurement rates with prevailing market prices.
+      </p>
+    </div>
+
+    <!-- Arbitrage Warning Card -->
+    <div class="card" style="border-left: 5px solid #0284c7; background: #f0f9ff;">
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <span style="font-size: 2rem;">💡</span>
+        <div>
+          <h4 style="margin:0; color: #0369a1;">Mandatory Government Procurement Rights</h4>
+          <p style="margin: 0.25rem 0 0 0; font-size: 0.88rem; color: #075985;">
+            Farmers are legally entitled to sell fair average quality (FAQ) produce at statutory MSP centres (PACS, IKP, CCI, NAFED, Markfed). Selling below MSP is an economic loss!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live MSP vs Mandi Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><span>⚖️</span> Price Arbitrage Table (2025-2026 Season)</h3>
+        <p class="card-subtitle">Real-time comparison between statutory MSP + State Bonus vs Local Mandi / Commission Agent Rates.</p>
+      </div>
+
+      <div class="table-responsive">
+        <table class="styled-table" id="mspTable">
+          <thead>
+            <tr>
+              <th>Crop Name</th>
+              <th>Statutory MSP</th>
+              <th>State Bonus</th>
+              <th>Effective Govt Price</th>
+              <th>Prevailing Mandi Price</th>
+              <th>Net Farmer Gain</th>
+              <th>Recommended Procurement Point</th>
+            </tr>
+          </thead>
+          <tbody id="mspTableBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 7: INTERMEDIARY DESK & ESCALATION -->
+  <div id="view-tab7" class="tab-view" role="tabpanel" aria-labelledby="btn-tab7">
+    <div class="view-header">
+      <h2 class="view-title"><span>🏛️</span> Intermediary Desk, Feedback Curation & Higher Official Escalation</h2>
+      <p class="view-desc">
+        Equips CSC Operators, Extension Officers (AEOs), and FPOs to resolve farmer issues, curate scheme updates, and escalate unaddressed grievances to Mandal, District, or State Authorities.
+      </p>
+    </div>
+
+    <div class="content-grid-2">
+      <!-- Section A: Rapidfuzz Name Matching -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><span>🔍</span> Rapidfuzz Aadhaar-to-Bank Name Matching</h3>
+          <p class="card-subtitle">Solves 90% of DBT payment failure rejections due to spelling variations or initials.</p>
+        </div>
+
+        <form id="nameVerifyForm">
+          <div class="form-group">
+            <label class="form-label" for="verifyAadhaarName">Name as printed on Aadhaar</label>
+            <input type="text" id="verifyAadhaarName" class="form-input" value="Komirelli Ramulu">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="verifyBankName">Name as printed in Bank Passbook</label>
+            <input type="text" id="verifyBankName" class="form-input" value="K. Ramulu">
+          </div>
+
+          <button type="submit" class="btn btn-secondary btn-block" id="btnVerifyName">
+            <span>⚡</span> Run Token Set Similarity Match
+          </button>
+        </form>
+
+        <div id="nameMatchResult" style="margin-top: 1.25rem;">
+          <div class="metric-row">
+            <div class="metric-card">
+              <div class="metric-val" id="dispMatchScore" style="color: #2563eb;">85%</div>
+              <div class="metric-lbl">Similarity Score</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="dispMatchStatus" style="color: #16a34a; font-size: 1.2rem;">Minor Variation</div>
+              <div class="metric-lbl">DBT Acceptance Status</div>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;" id="dispMatchAction">
+            Initials allowed under RBI Master Circular. Ready for Direct Benefit Transfer (DBT).
+          </p>
+        </div>
+      </div>
+
+      <!-- Section B: Scheme Feedback Loop -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><span>📢</span> Community Scheme Feedback Loop</h3>
+          <p class="card-subtitle">Flag outdated guidelines, portal link errors, or ground discrepancies.</p>
+        </div>
+
+        <form id="feedbackForm">
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="fbScheme">Scheme Name</label>
+              <input type="text" id="fbScheme" class="form-input" value="PM-KISAN e-KYC" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fbType">Issue Type</label>
+              <select id="fbType" class="form-select">
+                <option value="Outdated Information">Outdated Information</option>
+                <option value="Broken Application Link">Broken Application Link</option>
+                <option value="Incorrect Eligibility Criteria">Incorrect Eligibility Criteria</option>
+                <option value="Field Officer Non-Cooperation">Field Officer Non-Cooperation</option>
+                <option value="Portal Down / Server Error">Portal Down / Server Error</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="fbRole">Reporter Role</label>
+              <select id="fbRole" class="form-select">
+                <option value="Farmer">Farmer</option>
+                <option value="CSC Operator">CSC / VLE Operator</option>
+                <option value="Agriculture Extension Officer">Agriculture Extension Officer (AEO)</option>
+                <option value="NGO / FPO Representative">NGO / FPO Representative</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fbState">State</label>
+              <input type="text" id="fbState" class="form-input" value="Telangana">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="fbDesc">Details of Feedback / Discrepancy</label>
+            <textarea id="fbDesc" class="form-textarea" rows="3" placeholder="Describe the incorrect rule, server error, or ground issue..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btnSubmitFeedback">
+            <span>📨</span> Submit Feedback to Curation Engine
+          </button>
+        </form>
+        <div id="feedbackNotice" style="display: none; margin-top: 0.75rem; background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 6px; padding: 0.6rem; color: #065f46; font-size: 0.88rem;">
+          ✅ Feedback submitted! Audit ID generated and queued for verification.
+        </div>
+      </div>
+    </div>
+
+    <!-- Section C: 4-Tier Formal Escalation Petition Generator -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><span>⚖️</span> 4-Tier Formal Grievance Escalation Petition Generator</h3>
+        <p class="card-subtitle">Generate an official administrative petition when field officers or banks fail to act on your scheme entitlements.</p>
+      </div>
+
+      <form id="escalateForm">
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label" for="escLevel">Escalation Authority Level</label>
+            <select id="escLevel" class="form-select">
+              <option value="Level 1: Village / Mandal Agriculture Extension Officer (AEO)">Level 1: Mandal AEO</option>
+              <option value="Level 2: Mandal Agriculture Officer (MAO)" selected>Level 2: Mandal Agriculture Officer (MAO)</option>
+              <option value="Level 3: District Agriculture Officer (DAO)">Level 3: District Agriculture Officer (DAO)</option>
+              <option value="Level 4: District Collector / CPGRAMS / Prajavani Portal">Level 4: District Collector / CPGRAMS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escFarmerName">Farmer Name</label>
+            <input type="text" id="escFarmerName" class="form-input" value="Komirelli Ramulu" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escFatherName">Father / Husband Name</label>
+            <input type="text" id="escFatherName" class="form-input" value="Laxmaiah" required>
+          </div>
+        </div>
+
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label" for="escPhone">Phone Number</label>
+            <input type="tel" id="escPhone" class="form-input" value="9848022338" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escAadhaar">Aadhaar (Masked)</label>
+            <input type="text" id="escAadhaar" class="form-input" value="XXXX-XXXX-4921" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escVillage">Village & Mandal</label>
+            <input type="text" id="escVillage" class="form-input" value="Geesugonda, Warangal" required>
+          </div>
+        </div>
+
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label" for="escSurvey">Survey Number</label>
+            <input type="text" id="escSurvey" class="form-input" value="284/B">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escScheme">Affected Scheme</label>
+            <input type="text" id="escScheme" class="form-input" value="Rythu Bharosa Investment Support" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="escCategory">Problem Category</label>
+            <select id="escCategory" class="form-select">
+              <option value="DBT Disbursement Delayed &gt; 60 Days">DBT Disbursement Delayed &gt; 60 Days</option>
+              <option value="Arbitrary Rejection Without Written Cause">Arbitrary Rejection Without Written Cause</option>
+              <option value="Crop Loss Insurance Survey Denied">Crop Loss Insurance Survey Denied</option>
+              <option value="CCRC Tenant Cultivator Rights Denied">CCRC Tenant Cultivator Rights Denied</option>
+              <option value="Aadhaar-NPCI Seeded Account Ignored">Aadhaar-NPCI Seeded Account Ignored</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="escDesc">Grievance Narrative / Timeline</label>
+          <textarea id="escDesc" class="form-textarea" rows="3" required>Applied for Rythu Bharosa 60 days ago. AEO verified the field, but portal shows pending at DAO level. No disbursement credited to Aadhaar-seeded SBI account.</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btnGenPetition">
+          <span>📜</span> Generate Formal Administrative Petition
+        </button>
+      </form>
+
+      <!-- Petition Output Preview -->
+      <div id="petitionOutputContainer" style="display: none; margin-top: 1.5rem;">
+        <div class="petition-container" id="petitionTextDisplay">
+          <!-- Populated dynamically -->
+        </div>
+        <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-primary" id="btnCopyPetition">
+            📋 Copy Formal Petition
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="window.print();">
+            🖨️ Print / Save PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Accessibility Footer -->
   <footer class="site-footer" role="contentinfo">

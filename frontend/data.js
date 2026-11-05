@@ -1395,3 +1395,1372 @@ const UI_TRANSLATIONS = {
     emergency_rule: "ತುರ್ತು ನಿಯಮ"
   }
 };
+
+
+const WATER_SAVING_SCHEMES_DATA = [
+  {
+    "scheme_id": "PMKSY_PDMC",
+    "name": "PMKSY - Per Drop More Crop (Micro Irrigation Drip & Sprinkler)",
+    "level": "Central & Pan-India State Top-Up",
+    "category": "Micro Irrigation Subsidy (Drip & Sprinkler)",
+    "implementing_agency": "Ministry of Agriculture & Farmers Welfare & State Horticulture/Agriculture Depts",
+    "target_beneficiaries": "Small, Marginal and Other Farmers across all 28 Indian States & 8 UTs",
+    "applicable_states": [
+      "All States",
+      "Telangana",
+      "Andhra Pradesh",
+      "Maharashtra",
+      "Karnataka",
+      "Gujarat",
+      "Tamil Nadu",
+      "Haryana",
+      "Punjab",
+      "Rajasthan",
+      "Madhya Pradesh",
+      "Uttar Pradesh"
+    ],
+    "subsidy_rules": {
+      "small_and_marginal_farmers": "55% Central/State baseline (up to 90% in Telangana TSMIP, AP, and TN; 100% for SC/ST)",
+      "other_farmers": "45% baseline (up to 80% in progressive states)",
+      "sc_st_farmers": "90% to 100% subsidy depending on state top-up guidelines"
+    },
+    "eligible_systems": [
+      "Drip Irrigation System (Inline & Online)",
+      "Micro Sprinkler & Mini Sprinkler Systems",
+      "Portable & Semi-Permanent Sprinkler Sets",
+      "Rain-gun Sprinkler Units"
+    ],
+    "water_savings_potential": "40% to 60% water savings compared to traditional flood irrigation; 20-30% yield boost",
+    "eligibility_criteria": [
+      "Cultivable land holding with functional water source (borewell, open well, or farm pond)",
+      "Electricity connection or solar pump setup",
+      "Valid RoR (Pahani / Dharani / Patta Passbook / 7/12 / Khasra)",
+      "One-time benefit per survey land holding for 7 years"
+    ],
+    "documents_required": [
+      "Aadhaar Card copy",
+      "Land Record (Pahani / 1B / RoR / 7/12 / Khasra-Khatauni)",
+      "Bank Passbook showing active IFSC",
+      "Soil & Water Test Report (where mandated)",
+      "Caste Certificate (for SC/ST subsidy tier)"
+    ],
+    "current_status": "Active pan-India under revised PMKSY 2.0 framework",
+    "portal_url": "https://pmksy.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PMKSY_HKKP",
+    "name": "PMKSY - Har Khet Ko Pani (Groundwater & Surface Minor Irrigation)",
+    "level": "Central Scheme",
+    "category": "Assured Irrigation & Water Body Renovation",
+    "implementing_agency": "Ministry of Jal Shakti & State Water Resources Departments",
+    "target_beneficiaries": "Cultivators in command areas, rainfed gaps, and water-stressed assessment units",
+    "applicable_states": [
+      "All States"
+    ],
+    "subsidy_rules": {
+      "community_irrigation": "Up to 60% Central grant for surface minor irrigation lift projects and community tank command development",
+      "individual_groundwater": "Targeted groundwater extraction units for small & marginal farmers in safe assessment units"
+    },
+    "eligible_systems": [
+      "Repair, Renovation and Restoration (RRR) of traditional water bodies / village tanks",
+      "Surface Minor Irrigation (SMI) lift channels",
+      "Community tube-wells in non-overexploited blocks"
+    ],
+    "water_savings_potential": "Revives localized aquifer recharge; eliminates tail-end canal water starvation",
+    "eligibility_criteria": [
+      "Land located within notified minor irrigation command zone or safe groundwater block",
+      "Water Users Association (WUA) or Panchayat participatory membership"
+    ],
+    "documents_required": [
+      "Panchayat NOC",
+      "Land ownership extract (Khatauni / RoR)",
+      "Aadhaar of beneficiary group"
+    ],
+    "current_status": "Active across identified command clusters",
+    "portal_url": "https://pmksy.gov.in/hkkp/",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PMKSY_WDC",
+    "name": "PMKSY - Watershed Development Component (WDC 2.0 / Ridge-to-Valley)",
+    "level": "Central Scheme",
+    "category": "Soil Moisture & Rainwater Harvesting Infrastructure",
+    "implementing_agency": "Department of Land Resources (DoLR), Ministry of Rural Development",
+    "target_beneficiaries": "Rainfed, dryland, and degraded land agricultural communities",
+    "applicable_states": [
+      "All States",
+      "Telangana",
+      "Andhra Pradesh",
+      "Karnataka",
+      "Maharashtra",
+      "Madhya Pradesh",
+      "Rajasthan"
+    ],
+    "subsidy_rules": {
+      "community_and_individual_structures": "100% grant funded for community check-dams, percolation tanks, and continuous contour trenches; 70-80% for individual on-farm ponds"
+    },
+    "eligible_systems": [
+      "Earthen Check Dams & Masonry Weirs",
+      "Percolation Tanks & Farm Ponds (Khet Talab)",
+      "Loose Boulder Structures & Gabions",
+      "Sub-surface dykes in stream beds"
+    ],
+    "water_savings_potential": "Increases localized groundwater table by 1.5 to 3.0 meters; traps 100% of monsoon runoff",
+    "eligibility_criteria": [
+      "Land situated within notified micro-watershed project area",
+      "Willingness to contribute community maintenance labor/share"
+    ],
+    "documents_required": [
+      "Gram Sabha resolution extract",
+      "Survey parcel coordinates",
+      "Aadhaar Card"
+    ],
+    "current_status": "Active under WDC-PMKSY 2.0 (2021-2026)",
+    "portal_url": "https://dolr.gov.in/programmes-schemes/wdc-pmksy",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_A",
+    "name": "PM-KUSUM Component A (Decentralized Ground/Stilt Mounted Solar Plants 500kW to 2MW)",
+    "level": "Central Scheme",
+    "category": "Renewable Energy Farmer Power Producer",
+    "implementing_agency": "MNRE & State Electricity Distribution Companies (DISCOMs)",
+    "target_beneficiaries": "Individual farmers, FPOs, Cooperatives, and Panchayats with barren, fallow, or pasture land within 5 km of 33/11 kV substations",
+    "applicable_states": [
+      "All States",
+      "Rajasthan",
+      "Maharashtra",
+      "Gujarat",
+      "Madhya Pradesh",
+      "Haryana",
+      "Telangana"
+    ],
+    "subsidy_rules": {
+      "tariff_support": "DISCOM buys power for 25 years at pre-fixed feed-in tariff (approx ₹3.10 - ₹3.30/unit); farmer earns steady ₹1.5 - ₹2.5 Lakh/acre/year on barren land"
+    },
+    "eligible_systems": [
+      "500 kW to 2 MW Solar PV Plants on barren/cultivable land (stilt mounting allows dual farming)"
+    ],
+    "water_savings_potential": "Monetizes water-parched unproductive land with solar farming; zero water required for power generation",
+    "eligibility_criteria": [
+      "Barren / cultivable land within 5 km radius of rural 33/11 kV substation",
+      "Title deed ownership or 25-year registered lease"
+    ],
+    "documents_required": [
+      "Land Registry / RoR",
+      "Substation connectivity clearance from DISCOM",
+      "Aadhaar & PAN Card",
+      "Bank Account details"
+    ],
+    "current_status": "Active across participating state DISCOM tenders",
+    "portal_url": "https://pmkusum.mnre.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_B",
+    "name": "PM-KUSUM Component B (Standalone Off-Grid Solar Agriculture Pumps)",
+    "level": "Central Scheme",
+    "category": "Solar Energy & Renewable Irrigation",
+    "implementing_agency": "Ministry of New and Renewable Energy (MNRE) & State Nodal Agencies (TSREDCO, MEDA, HAREDA, KREDL)",
+    "target_beneficiaries": "Individual farmers with agricultural land and functional water source without grid electricity connection",
+    "applicable_states": [
+      "All States"
+    ],
+    "subsidy_rules": {
+      "central_subsidy": "30% Benchmark Cost from MNRE",
+      "state_subsidy": "30% State Govt Share (increases to 50% in NE/Hill States/Tribal Regions)",
+      "farmer_share": "10% to 40% (remaining can be financed through bank loans under Agri Infrastructure Fund)"
+    },
+    "eligible_systems": [
+      "3 HP, 5 HP, 7.5 HP, 10 HP Standalone DC/AC Surface and Submersible Solar Pumps"
+    ],
+    "water_savings_potential": "Guaranteed daytime uninterrupted irrigation; eliminates diesel pump recurring expenses (₹40,000-60,000/year savings)",
+    "eligibility_criteria": [
+      "Farmer must own agricultural land with an existing open well, borewell, or farm pond",
+      "No existing grid power connection for the applied borewell",
+      "Land title clearance and groundwater availability certificate"
+    ],
+    "documents_required": [
+      "Aadhaar Card",
+      "Land Ownership Passbook / Pahani / 7/12 / Khasra",
+      "Affidavit of No Existing Grid Connection",
+      "Bank Account details",
+      "Borewell / Source Depth Certificate"
+    ],
+    "current_status": "Active pan-India; target 14 lakh standalone solar pumps extended through 2026",
+    "portal_url": "https://pmkusum.mnre.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_C",
+    "name": "PM-KUSUM Component C (Solarisation of Grid-Connected Agricultural Pumps & Feeders)",
+    "level": "Central Scheme",
+    "category": "Solarised Feeder & Net Metering",
+    "implementing_agency": "MNRE & State DISCOMs",
+    "target_beneficiaries": "Farmers with existing grid-connected electric pump sets and rural agricultural feeders",
+    "applicable_states": [
+      "All States"
+    ],
+    "subsidy_rules": {
+      "feeder_level_solarisation": "CFA of ₹1.05 Cr/MW for feeder solarisation; DISCOM installs solar plant; farmer gets free daytime solar power",
+      "individual_pump_solarisation": "Up to 60% combined subsidy (30% Central + 30% State); farmer sells surplus power back to grid"
+    },
+    "eligible_systems": [
+      "Feeder Level Solarisation (FLS)",
+      "Individual Pump Solarisation with Net Metering"
+    ],
+    "water_savings_potential": "Solar power day-time usage prevents wasteful night flood irrigation; solar earnings incentivize water conservation",
+    "eligibility_criteria": [
+      "Existing agricultural electricity meter connection",
+      "Valid land ownership and operational water pump"
+    ],
+    "documents_required": [
+      "Electricity Bill / Consumer No.",
+      "Aadhaar Card",
+      "Bank Details",
+      "Land Passbook"
+    ],
+    "current_status": "Active under DISCOM feeder solarisation drives",
+    "portal_url": "https://pmkusum.mnre.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "TSMIP_TELANGANA",
+    "name": "Telangana State Micro Irrigation Project (TSMIP)",
+    "level": "Telangana State Scheme",
+    "category": "State Micro Irrigation Top-Up Scheme",
+    "implementing_agency": "Horticulture Department, Government of Telangana",
+    "target_beneficiaries": "All farmers in Telangana cultivating agriculture or horticulture crops",
+    "applicable_states": [
+      "Telangana"
+    ],
+    "subsidy_rules": {
+      "sc_st_farmers": "100% subsidy (Free drip/sprinkler up to 5 acres)",
+      "bc_small_marginal": "90% subsidy (farmer pays only 10% GST/share)",
+      "general_small_marginal": "80% subsidy",
+      "other_farmers": "50% subsidy up to 12.5 acres max ceiling"
+    },
+    "eligible_systems": [
+      "Drip for Paddy (AWD), Chilli, Cotton, Vegetable & Fruit Orchards",
+      "Micro & Raingun Sprinklers for Maize, Groundnut, Pulses"
+    ],
+    "water_savings_potential": "Reduces groundwater overdraft by 50%; cuts power consumption by 35%",
+    "eligibility_criteria": [
+      "Farmer in Telangana with Dharani Passbook / Digital RoR",
+      "Borewell or canal lift source available"
+    ],
+    "documents_required": [
+      "Dharani Land Passbook",
+      "Aadhaar Card linked to Mobile",
+      "Bank Account IFSC Passbook",
+      "Caste Certificate (MeeSeva issued for SC/ST/BC)"
+    ],
+    "current_status": "Active with ongoing allocations across all 33 Telangana districts",
+    "portal_url": "https://horticulturedept.telangana.gov.in / Rythu Vedika",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "APMIP_ANDHRA_PRADESH",
+    "name": "Andhra Pradesh Micro Irrigation Project (APMIP)",
+    "level": "Andhra Pradesh State Scheme",
+    "category": "Comprehensive Micro Irrigation & Rayalaseema Drought Shield",
+    "implementing_agency": "Department of Horticulture, Government of Andhra Pradesh",
+    "target_beneficiaries": "Small, marginal, and tenant farmers across all 26 AP districts with special focus on Rayalaseema & Prakasam dry tracts",
+    "applicable_states": [
+      "Andhra Pradesh"
+    ],
+    "subsidy_rules": {
+      "sc_st_farmers": "100% subsidy for SC/ST farmers up to 5.0 acres",
+      "bc_farmers_rayalaseema": "90% subsidy for BC farmers in Rayalaseema & Prakasam districts",
+      "other_small_marginal": "90% subsidy for all other small/marginal farmers up to 5 acres; 70% for 5 to 10 acres"
+    },
+    "eligible_systems": [
+      "Inline & Online Drip Irrigation for Horticulture & Sugarcane",
+      "Micro-jets & Portable Sprinklers for Groundnut, Bengal Gram, and Millets"
+    ],
+    "water_savings_potential": "Saves up to 65% groundwater; prevents borewell drying in summer",
+    "eligibility_criteria": [
+      "Land ownership recorded on Meebhoomi / e-Crop or registered CCRC card for tenant cultivators",
+      "Functional borewell or open water point"
+    ],
+    "documents_required": [
+      "Meebhoomi 1B / Pattadar Passbook or CCRC Card",
+      "Aadhaar Card copy",
+      "Bank Passbook copy",
+      "Integrated Caste Certificate"
+    ],
+    "current_status": "Active across all AP districts with digital registration via Rythu Bharosa Kendras (RBKs)",
+    "portal_url": "https://apmip.ap.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MAHA_SHET_TALE",
+    "name": "Maharashtra Magel Tyala Shet Tale (Farm Pond On Demand)",
+    "level": "Maharashtra State Scheme",
+    "category": "Farm Pond Construction & Water Storage",
+    "implementing_agency": "Agriculture Department, Government of Maharashtra (MahaDBT)",
+    "target_beneficiaries": "Farmers in Maharashtra experiencing dry spells in Vidarbha, Marathwada, and drought-prone talukas",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "subsidy_rules": {
+      "farm_pond_grant": "₹50,000 to ₹75,000 direct DBT grant for farm pond excavation (size 30m x 30m x 3m)",
+      "plastic_lining_add_on": "Additional ₹1,00,000 grant under State Plastic Lining Scheme to prevent seepage"
+    },
+    "eligible_systems": [
+      "Individual Farm Pond (Shet Tale) with inlet/outlet channels",
+      "Plastic geomembrane film lining (500 micron)"
+    ],
+    "water_savings_potential": "Stores 15 to 25 lakh liters of rainwater; provides 2-3 life-saving irrigations for cotton & soybean",
+    "eligibility_criteria": [
+      "Minimum 0.50 hectare (1.25 acre) cultivable land",
+      "Technical feasibility certificate from Agriculture Assistant (Krishi Sahayak)"
+    ],
+    "documents_required": [
+      "7/12 Extract and 8-A Extract",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Self-declaration of not owning an existing subsidised pond"
+    ],
+    "current_status": "Active on MahaDBT portal under Farmer Schemes",
+    "portal_url": "https://mahadbt.maharashtra.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MAHA_MSKVY_SOLAR",
+    "name": "Maharashtra Mukhyamantri Saur Krushi Vahini Yojana (MSKVY 2.0 / Solar Feeders)",
+    "level": "Maharashtra State Scheme",
+    "category": "Daytime Solar Power for Agriculture",
+    "implementing_agency": "MSEDCL (Mahavitaran) & Energy Department, Maharashtra",
+    "target_beneficiaries": "Agricultural electricity consumers and farmers leasing barren land for solar projects",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "subsidy_rules": {
+      "solar_feeder_power": "Provides 100% uninterrupted daytime electricity (8 hours daily) for farm pumps",
+      "land_lease_rent": "Farmers leasing land within 5 km of substation receive ₹1,25,000/acre/year guaranteed rent with 3% annual escalation"
+    },
+    "eligible_systems": [
+      "Solar Agriculture Feeders connected directly to rural substations"
+    ],
+    "water_savings_potential": "Eliminates dangerous nighttime flood watering; enables daytime precision water management",
+    "eligibility_criteria": [
+      "Agricultural pump consumers connected to MSEDCL rural feeders",
+      "Barren land parcel near 33/11kV substations for land lease"
+    ],
+    "documents_required": [
+      "Consumer electricity billing number",
+      "7/12 extract",
+      "Aadhaar Card"
+    ],
+    "current_status": "Active mission aiming for 7,000 MW solar capacity by 2026",
+    "portal_url": "https://www.mahadiscom.in/solar-mskvy/",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "KARNATAKA_KRISHI_BHAGYA",
+    "name": "Karnataka Krishi Bhagya Scheme (Farm Ponds, Polythene Lining & Micro Irrigation)",
+    "level": "Karnataka State Scheme",
+    "category": "Comprehensive Dryland Rainwater Harvesting Package",
+    "implementing_agency": "Department of Agriculture, Government of Karnataka",
+    "target_beneficiaries": "Dryland farmers in 130+ rain-dependent talukas of Karnataka (North & Central Karnataka dry belts)",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "subsidy_rules": {
+      "sc_st_farmers": "90% subsidy for farm pond excavation, polythene lining, pump set, and micro-irrigation package",
+      "general_small_marginal": "80% package subsidy (total benefit up to ₹1,75,000 per farm unit)"
+    },
+    "eligible_systems": [
+      "Farm Pond excavation with silt trap",
+      "UV-stabilised polythene lining (500 micron)",
+      "Solar or Diesel pump sets for lifting stored water",
+      "Drip / Sprinkler distribution package"
+    ],
+    "water_savings_potential": "Stores surface runoff to guarantee kharif crop rescue irrigation during 3-4 week monsoon breaks",
+    "eligibility_criteria": [
+      "Resident cultivator in notified dryland talukas of Karnataka",
+      "Pahani / RTC land record"
+    ],
+    "documents_required": [
+      "RTC / Pahani document",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Caste Certificate (for 90% SC/ST tier)"
+    ],
+    "current_status": "Active with annual allocations across Karnataka dryland districts",
+    "portal_url": "https://raitamitra.karnataka.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "GUJARAT_GGRC_SKY",
+    "name": "Gujarat Micro Irrigation Scheme (GGRC) & Suryashakti Kisan Yojana (SKY)",
+    "level": "Gujarat State Scheme",
+    "category": "State Micro Irrigation & Grid-Connected Solar Pumps",
+    "implementing_agency": "Gujarat Green Revolution Company (GGRC) & GUVNL",
+    "target_beneficiaries": "All farmers in Gujarat cultivating groundnut, cotton, vegetables, and cumin",
+    "applicable_states": [
+      "Gujarat"
+    ],
+    "subsidy_rules": {
+      "tribal_and_sc_farmers": "Up to 85% subsidy on Drip and Sprinkler systems",
+      "general_small_marginal": "70% subsidy; other farmers 50%",
+      "sky_solar_pumps": "Farmer contributes only 5%; 60% Govt subsidy + 35% low-interest loan; farmer earns ₹7/unit for surplus solar power fed to grid"
+    },
+    "eligible_systems": [
+      "Inline Drip System for Cotton and Groundnut",
+      "Micro-sprinkler systems for summer pulses",
+      "Grid-interactive solar pump sets"
+    ],
+    "water_savings_potential": "Cuts water usage by 55%; earns farmers ₹12,000-24,000 annually selling green solar electricity",
+    "eligibility_criteria": [
+      "7/12 & 8-A land record in Gujarat",
+      "Existing water source (borewell or well) with water test report"
+    ],
+    "documents_required": [
+      "7/12 & 8-A Extracts",
+      "Aadhaar Card",
+      "Bank Passbook copy",
+      "Electricity consumer number (if grid connected)"
+    ],
+    "current_status": "Active on GGRC online portal (ggrc.co.in) and i-Khedut portal",
+    "portal_url": "https://ggrc.co.in / https://ikhedut.gujarat.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "HARYANA_MERA_PANI",
+    "name": "Haryana Mera Pani Meri Virasat & Water Recharge Borewell Scheme",
+    "level": "Haryana State Scheme",
+    "category": "Crop Diversification Direct Incentive & Water Table Shield",
+    "implementing_agency": "Department of Agriculture & Farmers Welfare, Government of Haryana",
+    "target_beneficiaries": "Farmers in dark/overexploited groundwater zones replacing water-guzzling Paddy with maize, pulses, cotton, or agroforestry",
+    "applicable_states": [
+      "Haryana"
+    ],
+    "subsidy_rules": {
+      "crop_diversification_cash": "₹7,000 per acre direct cash incentive transferred to farmer bank account for switching from paddy",
+      "micro_irrigation_top_up": "85% subsidy on Drip and Sprinkler systems on diversified acreage",
+      "underground_recharge_wells": "Subsidy for constructing rooftop/farm water injection recharge borewells"
+    },
+    "eligible_systems": [
+      "Direct DBT Cash incentive for crop substitution",
+      "Drip & Mini Sprinkler setups",
+      "Borewell Groundwater Recharge Chambers"
+    ],
+    "water_savings_potential": "Saves 30 to 40 lakh liters of groundwater per acre per season; prevents water table drop",
+    "eligibility_criteria": [
+      "Farmer in Haryana who cultivated paddy in previous kharif and diversifies into non-paddy crops",
+      "Registration on Meri Fasal Mera Byora (MFMB) portal"
+    ],
+    "documents_required": [
+      "Meri Fasal Mera Byora (MFMB) acknowledgment ID",
+      "Parivar Pehchan Patra (PPP) Family ID",
+      "Aadhaar Card",
+      "Bank Passbook"
+    ],
+    "current_status": "Active with annual kharif enrollment window on fasal.haryana.gov.in",
+    "portal_url": "https://fasal.haryana.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PUNJAB_UGPL_PIPELINE",
+    "name": "Punjab Underground Pipeline System (UGPL) & Micro Irrigation",
+    "level": "Punjab State Scheme",
+    "category": "Conveyance Loss Elimination & Subsidised PVC Piping",
+    "implementing_agency": "Department of Soil and Water Conservation, Government of Punjab",
+    "target_beneficiaries": "Farmers facing high canal/borewell seepage losses and electricity consumption in Punjab",
+    "applicable_states": [
+      "Punjab"
+    ],
+    "subsidy_rules": {
+      "individual_pipeline": "50% capital subsidy (up to ₹60,000 per farmer or ₹84,000/ha) for laying underground PVC pipelines",
+      "community_pipeline_sc": "Up to 90% subsidy for SC/ST and community pipeline projects benefiting smallholders"
+    },
+    "eligible_systems": [
+      "Underground PVC irrigation pipeline networks (110mm to 160mm)",
+      "Automated inlet valves and distribution hydrants",
+      "Drip irrigation for cotton and kinnow orchards"
+    ],
+    "water_savings_potential": "Eliminates 30% to 35% conveyance seepage evaporation losses in open unlined field watercourses",
+    "eligibility_criteria": [
+      "Cultivated land in Punjab with operational tube-well or canal outlet",
+      "Joint consent if pipeline crosses neighboring survey numbers"
+    ],
+    "documents_required": [
+      "Fard / Jamabandi land extract",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Tube-well electricity bill or Canal outlet certificate"
+    ],
+    "current_status": "Active under State Soil & Water Conservation allocation",
+    "portal_url": "https://dswcpunjab.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "TAMILNADU_MICRO_IRRIGATION",
+    "name": "Tamil Nadu Micro Irrigation Scheme (100% Subsidy for Small/Marginal Farmers)",
+    "level": "Tamil Nadu State Scheme",
+    "category": "State Top-Up Precision Micro Irrigation",
+    "implementing_agency": "Department of Horticulture & Plantation Crops, Government of Tamil Nadu",
+    "target_beneficiaries": "Small, marginal, and large farmers cultivating sugarcane, banana, coconut, pulses, and oilseeds",
+    "applicable_states": [
+      "Tamil Nadu"
+    ],
+    "subsidy_rules": {
+      "small_and_marginal_farmers": "100% subsidy (55% PMKSY Central share + 45% Tamil Nadu State Government top-up)",
+      "other_large_farmers": "75% subsidy (45% Central + 30% State top-up)"
+    },
+    "eligible_systems": [
+      "Drip Irrigation System with disc filters and venturi injectors",
+      "Portable and Semi-Permanent Sprinklers for Pulses and Groundnut"
+    ],
+    "water_savings_potential": "Saves 50% to 60% Cauvery / Vaigai basin groundwater; boosts crop productivity by 35%",
+    "eligibility_criteria": [
+      "Patta / Chitta ownership in Tamil Nadu",
+      "Functional borewell or open well with water quality fit for irrigation"
+    ],
+    "documents_required": [
+      "Patta / Chitta extract and FMB sketch",
+      "Aadhaar Card",
+      "Small / Marginal Farmer Certificate issued by Revenue Tahsildar",
+      "Bank Passbook copy"
+    ],
+    "current_status": "Active with registrations open on TN Horticulture portal (tnhorticulture.tn.gov.in)",
+    "portal_url": "https://tnhorticulture.tn.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "RAJASTHAN_KHET_TALAI",
+    "name": "Rajasthan Farm Pond (Khet Talai) & Drip Subsidy (Rajkisan Sathi)",
+    "level": "Rajasthan State Scheme",
+    "category": "Arid Zone Rainwater Harvesting & High Subsidy Drip",
+    "implementing_agency": "Department of Agriculture, Government of Rajasthan",
+    "target_beneficiaries": "Farmers in arid and semi-arid districts (Barmer, Jodhpur, Bikaner, Nagaur, Kota, Alwar)",
+    "applicable_states": [
+      "Rajasthan"
+    ],
+    "subsidy_rules": {
+      "plastic_lined_farm_pond": "Up to ₹1,20,000 (or 70% of cost) subsidy for small/marginal farmers constructing plastic-lined farm ponds; ₹90,000 for other farmers",
+      "raw_earthen_pond": "₹63,000 (small/marginal) and ₹50,000 (general)",
+      "drip_sprinkler_topup": "70% subsidy for small/marginal; 75% for SC/ST"
+    },
+    "eligible_systems": [
+      "Plastic Film Lined Farm Ponds (Khet Talai - 400/500 micron)",
+      "Solar Water Pumps (under PM-KUSUM Component B)",
+      "Mini & Micro Sprinkler systems"
+    ],
+    "water_savings_potential": "Traps flash desert monsoon showers; provides winter crop irrigation without borewells",
+    "eligibility_criteria": [
+      "Minimum 0.50 hectare agricultural land in Rajasthan",
+      "Registration on Rajkisan Sathi portal with Jan Aadhaar card"
+    ],
+    "documents_required": [
+      "Jan Aadhaar Card",
+      "Jamabandi copy (within 6 months)",
+      "Aadhaar Card",
+      "Bank Account linked to Jan Aadhaar"
+    ],
+    "current_status": "Active via online lottery and queue on Rajkisan Sathi portal",
+    "portal_url": "https://rajkisan.rajasthan.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MP_BALRAM_TALAB",
+    "name": "Madhya Pradesh Balram Talab Yojana & e-Krishi Anudan",
+    "level": "Madhya Pradesh State Scheme",
+    "category": "Groundwater Recharge Farm Pond & Micro Irrigation",
+    "implementing_agency": "Farmers Welfare & Agriculture Development Department, Government of MP",
+    "target_beneficiaries": "Farmers in Malwa, Bundelkhand, and Mahakoshal belts facing declining water tables",
+    "applicable_states": [
+      "Madhya Pradesh"
+    ],
+    "subsidy_rules": {
+      "sc_st_farmers": "75% subsidy up to maximum of ₹1,00,000 for Balram Talab construction",
+      "small_marginal_farmers": "50% subsidy up to maximum of ₹80,000",
+      "other_farmers": "40% subsidy up to ₹50,000",
+      "drip_sprinkler_subsidy": "55% subsidy under PMKSY on MP e-Krishi Anudan"
+    },
+    "eligible_systems": [
+      "Balram Talab (Farm Pond for water storage & aquifer recharge)",
+      "Sprinkler sets for wheat, gram, and mustard",
+      "Drip systems for soybean, cotton, and vegetables"
+    ],
+    "water_savings_potential": "Enhances surrounding tube-well discharge by 40%; provides supplementary irrigation during dry spells",
+    "eligibility_criteria": [
+      "Khasra/B-1 land ownership in Madhya Pradesh",
+      "Farmer must construct pond on own cultivable land"
+    ],
+    "documents_required": [
+      "Khasra / B-1 copy",
+      "Aadhaar Card",
+      "Bank Passbook copy",
+      "Caste Certificate (for SC/ST 75% tier)"
+    ],
+    "current_status": "Active on MP DBT e-Krishi Anudan portal (dbt.mpdage.org)",
+    "portal_url": "https://dbt.mpdage.org",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "UP_KHET_TALAB",
+    "name": "Uttar Pradesh Khet Talab Yojana & Solar Pump Token Booking",
+    "level": "Uttar Pradesh State Scheme",
+    "category": "Bundelkhand Water Harvest & Subsidised Solar Pumps",
+    "implementing_agency": "Agriculture Department, Government of Uttar Pradesh",
+    "target_beneficiaries": "Farmers across all 75 UP districts with special priority for Bundelkhand (7 districts)",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "subsidy_rules": {
+      "khet_talab_subsidy": "50% direct subsidy (₹52,500 for small pond of 22m x 20m x 3m; ₹1,14,200 for medium pond) disbursed in 3 direct DBT tranches",
+      "solar_pump_token": "Up to 60% subsidy on 2 HP, 3 HP, 5 HP, and 7.5 HP solar pumps under PM-KUSUM with online token booking"
+    },
+    "eligible_systems": [
+      "Khet Talab (Rainwater storage farm ponds)",
+      "Solar DC/AC submersible and surface pump sets",
+      "Sprinkler irrigation sets for pulse and oilseed clusters"
+    ],
+    "water_savings_potential": "Saves Bundelkhand pulses from drought failure; stores 2,000 to 4,500 cubic meters of monsoon runoff",
+    "eligibility_criteria": [
+      "Registered farmer on upagriculture.com portal (Kisan Panjikaran)",
+      "Clear land title in Uttar Pradesh"
+    ],
+    "documents_required": [
+      "Kisan Panjikaran Number (UP Agriculture registration)",
+      "Khatauni land record",
+      "Aadhaar Card",
+      "Bank Passbook"
+    ],
+    "current_status": "Active with token booking sessions announced on upagriculture.com",
+    "portal_url": "https://upagriculture.com",
+    "last_verified": "2026-11-05"
+  }
+];
+
+const LOW_WATER_CROPS_DATA = [
+  {
+    "crop_id": "bengal_gram",
+    "name": "Bengal Gram / Desi Chickpea (శనగ / चना)",
+    "category": "Pulses (Rabi / Winter)",
+    "season_suitability": "Rabi (Post-Kharif Paddy or rainfed fallow)",
+    "water_requirement_mm": "250 - 350 mm (vs 1200 - 1400 mm for Paddy)",
+    "water_savings_percentage": "75% less water than flooded Paddy",
+    "msp_rate_per_quintal": 5440,
+    "recommended_varieties": [
+      "JG 11",
+      "JAKI 9218",
+      "NBeG 3",
+      "KAK 2",
+      "Vishal"
+    ],
+    "sowing_window": "October 15 to November 15 (Ideal with residual soil moisture)",
+    "duration_days": "95 - 105 days",
+    "expected_yield_qtl_per_acre": "8 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹35,000 - ₹45,000",
+    "soil_suitability": "Medium to deep black cotton soils and loamy soils with good water-holding capacity",
+    "attached_schemes": [
+      "NFSM-Pulses: 50% certified seed subsidy & free biofertilizer (Rhizobium + PSB) packets",
+      "PM-AASHA: Guaranteed MSP procurement through NAFED & State Markfed",
+      "Pradhan Mantri Krishi Sinchayee Yojana (PMKSY) for sprinkler sets"
+    ],
+    "soil_health_benefit": "Fixes 40-50 kg atmospheric Nitrogen/ha; reduces subsequent crop urea requirement by 25%"
+  },
+  {
+    "crop_id": "kabuli_chickpea",
+    "name": "Kabuli Chickpea / Dollar Chana (కాబూలీ శనగ / काबुली चना)",
+    "category": "High-Value Export Pulses (Rabi)",
+    "season_suitability": "Rabi (Irrigated dry)",
+    "water_requirement_mm": "250 - 320 mm",
+    "water_savings_percentage": "78% less water than Paddy",
+    "msp_rate_per_quintal": 5440,
+    "market_price_per_quintal": "₹9,000 - ₹12,000 (Premium export market valuation)",
+    "recommended_varieties": [
+      "MNK 1",
+      "PKV Kabuli 2",
+      "Phule G 0517",
+      "Kripa"
+    ],
+    "sowing_window": "October 20 to November 10",
+    "duration_days": "100 - 110 days",
+    "expected_yield_qtl_per_acre": "7 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹55,000 - ₹75,000",
+    "soil_suitability": "Deep, well-drained black clay loams; sensitive to excess moisture",
+    "attached_schemes": [
+      "Agricultural and Processed Food Products Export Development Authority (APEDA) export credit",
+      "NFSM-Pulses demonstration clusters"
+    ],
+    "soil_health_benefit": "Leaves deep root channels that improve soil aeration and infiltration for the next season"
+  },
+  {
+    "crop_id": "green_gram",
+    "name": "Green Gram / Moong (పెసర / मूंग)",
+    "category": "Short-Duration Pulses (Summer / Catch Crop / Kharif)",
+    "season_suitability": "Summer (March-May) or Kharif onset (June-July)",
+    "water_requirement_mm": "200 - 280 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 8682,
+    "recommended_varieties": [
+      "MGG 295",
+      "WGG 42",
+      "IPM 02-14",
+      "Shikha",
+      "Samrat"
+    ],
+    "sowing_window": "March 1 to March 25 (Summer) or June 15 to July 15 (Kharif)",
+    "duration_days": "60 - 65 days (Fastest cash liquidity turnaround)",
+    "expected_yield_qtl_per_acre": "5 - 7 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹48,000",
+    "soil_suitability": "Well-drained loams, sandy loams, and light red soils; highly responsive to micro-sprinklers",
+    "attached_schemes": [
+      "National Food Security Mission: Free Certified Mini-Kit Seed Distribution at Rythu Vedikas",
+      "MSP Procurement Operations through NAFED and State Oilfed",
+      "Summer Moong Promotion under State Pulses Missions"
+    ],
+    "soil_health_benefit": "Biomass incorporation after 2 pickings adds 3 to 4 tonnes of green manure per acre"
+  },
+  {
+    "crop_id": "black_gram",
+    "name": "Black Gram / Urad (మినుములు / उड़द)",
+    "category": "Pulses (Zero-Tillage Rice Fallows / Kharif)",
+    "season_suitability": "Rabi Rice-Fallows (November-December) or Kharif",
+    "water_requirement_mm": "250 - 320 mm",
+    "water_savings_percentage": "78% less water than Paddy",
+    "msp_rate_per_quintal": 7400,
+    "recommended_varieties": [
+      "PU 31",
+      "LBG 752",
+      "TBG 104",
+      "VBN 8",
+      "Shekhar 2"
+    ],
+    "sowing_window": "Broadcast into standing paddy 2-3 days before harvest or sown November-December",
+    "duration_days": "75 - 85 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹40,000 - ₹50,000",
+    "soil_suitability": "Clayey loams and residual moisture black soils; ideal relay crop in delta and canal commands",
+    "attached_schemes": [
+      "Zero-Tillage Rice Fallows Promotion Scheme (Subsidised seeds and pre-emergence weedicides)",
+      "NAFED Price Support Scheme (PSS) Procurement"
+    ],
+    "soil_health_benefit": "Zero tillage saves ₹4,000/acre in land preparation; deep taproot breaks plough-pan layer"
+  },
+  {
+    "crop_id": "red_gram",
+    "name": "Red Gram / Pigeonpea / Tur (కందులు / अरहर-तुअर)",
+    "category": "Deep-Rooted Drought Avoidance Pulses (Kharif / Annual)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "350 - 450 mm",
+    "water_savings_percentage": "70% less water than flooded Paddy",
+    "msp_rate_per_quintal": 7550,
+    "recommended_varieties": [
+      "PRG 176",
+      "ICPL 87119 (Asha)",
+      "WRG 65",
+      "BDN 711",
+      "Maruti"
+    ],
+    "sowing_window": "June 15 to July 20",
+    "duration_days": "150 - 180 days (Intercropped with Cotton/Soybean or Sole Crop)",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹45,000 - ₹60,000",
+    "soil_suitability": "Deep, well-drained red and black soils with no waterlogging",
+    "attached_schemes": [
+      "Targeted Pulses Production Programme (TPPD) under NFSM",
+      "Special Tur Procurement Portal via e-Samridhi NAFED/NCCF with 100% procurement commitment",
+      "Drip fertigation subsidy under PMKSY"
+    ],
+    "soil_health_benefit": "Root depth of 2 meters mines sub-soil nutrients and moisture; recycles 1.5 tonnes leaf litter"
+  },
+  {
+    "crop_id": "horse_gram",
+    "name": "Horse Gram / Kulthi (ఉలవలు / कुलथी / కొల్లూ)",
+    "category": "Ultra Drought-Hardy Poor Soil Pulses (Late Kharif / Rabi)",
+    "season_suitability": "Late Kharif / Post-flood / Contingency crop (August to October)",
+    "water_requirement_mm": "150 - 220 mm (Survives where other crops fail)",
+    "water_savings_percentage": "88% less water than Paddy",
+    "msp_rate_per_quintal": 4500,
+    "recommended_varieties": [
+      "CRIDA 18R",
+      "Palem 1",
+      "Palem 2",
+      "AK 21",
+      "Madhu"
+    ],
+    "sowing_window": "August 15 to October 15",
+    "duration_days": "80 - 90 days",
+    "expected_yield_qtl_per_acre": "4 - 6 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹30,000 with near-zero chemical input cost",
+    "soil_suitability": "Shallow, gravelly, poor, eroded red gravels and degraded marginal wastelands",
+    "attached_schemes": [
+      "State Contingent Crop Planning mini-kits after delayed or failed monsoon",
+      "Traditional Nutri-Feed Promotion for dairy and poultry"
+    ],
+    "soil_health_benefit": "Extreme ground cover prevents topsoil erosion; thrives on zero synthetic fertilizer"
+  },
+  {
+    "crop_id": "cowpea",
+    "name": "Cowpea / Lobia / Black-Eyed Pea (బొబ్బర్లు / అలసందలు / लोबिया)",
+    "category": "Dual-Purpose Pulse & Nutritious Green Fodder",
+    "season_suitability": "Kharif, Summer, or Pre-Rabi",
+    "water_requirement_mm": "220 - 300 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 5800,
+    "recommended_varieties": [
+      "C 152",
+      "CP 4",
+      "VBN 1",
+      "Pusa Komal"
+    ],
+    "sowing_window": "June-July or February-March",
+    "duration_days": "70 - 80 days",
+    "expected_yield_qtl_per_acre": "5 - 7 Quintals grain + 60 quintals green fodder",
+    "net_income_estimate_per_acre": "₹32,000 - ₹42,000",
+    "soil_suitability": "Wide range from light sandy to loamy soils; tolerates heat and shade",
+    "attached_schemes": [
+      "National Livestock Mission: Fodder & Grain seed subsidy",
+      "NFSM-Pulses demonstration kits"
+    ],
+    "soil_health_benefit": "Dense canopy smothers 90% of weeds naturally; adds high nitrogen organic matter"
+  },
+  {
+    "crop_id": "lentil",
+    "name": "Lentil / Masoor (మసూర్ / मसूर)",
+    "category": "Cool Season Low-Water Pulses (Rabi)",
+    "season_suitability": "Rabi (October-November)",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 6700,
+    "recommended_varieties": [
+      "HUL 57",
+      "KLS 218",
+      "Pusa Ageti",
+      "IPL 316"
+    ],
+    "sowing_window": "October 25 to November 20",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹50,000",
+    "soil_suitability": "All types of soils from light loams to heavy black clays; tolerates light salinity",
+    "attached_schemes": [
+      "National Food Security Mission Pulses Component (100% domestic procurement pledge)",
+      "Central seed distribution on e-Samridhi portal"
+    ],
+    "soil_health_benefit": "Enriches soil micro-flora with cold-tolerant rhizobium nodules"
+  },
+  {
+    "crop_id": "sesame",
+    "name": "Sesame / Til / Gingelly (నువ్వులు / तिल)",
+    "category": "High-Value Arid Oilseeds (Summer / Spring)",
+    "season_suitability": "Summer (January to March) or Kharif",
+    "water_requirement_mm": "180 - 240 mm (Extremely water-thrifty)",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 9267,
+    "recommended_varieties": [
+      "Swetha (JCS 1020)",
+      "Rajeshwari",
+      "Hima",
+      "Chandana",
+      "GT 10"
+    ],
+    "sowing_window": "January 15 to February 28 (Summer) or June-July (Kharif)",
+    "duration_days": "80 - 85 days",
+    "expected_yield_qtl_per_acre": "3.5 - 5.0 Quintals",
+    "net_income_estimate_per_acre": "₹32,000 - ₹45,000 with very low input costs",
+    "soil_suitability": "Well-drained sandy loams and light red soils; highly sensitive to standing water",
+    "attached_schemes": [
+      "Highest Minimum Support Price (MSP) among all oilseeds in India (₹9,267/qtl)",
+      "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
+      "High global demand for Hulled Sesame Export"
+    ],
+    "soil_health_benefit": "Survives on only 2 to 3 light irrigations in total life cycle; breaks pest cycles"
+  },
+  {
+    "crop_id": "groundnut",
+    "name": "Groundnut / Peanut (వేరుశనగ / मूंगफली)",
+    "category": "Oilseeds & Food Crop (Rabi / Summer / Kharif)",
+    "season_suitability": "Rabi/Summer (November to January) or Kharif (June-July)",
+    "water_requirement_mm": "380 - 450 mm",
+    "water_savings_percentage": "65% less water than flooded Paddy",
+    "msp_rate_per_quintal": 6783,
+    "recommended_varieties": [
+      "Kadiri 6 (K6)",
+      "Kadiri 9",
+      "TAG 24",
+      "Dharani",
+      "Greeshma"
+    ],
+    "sowing_window": "November 15 to January 15 (Rabi/Summer)",
+    "duration_days": "105 - 115 days",
+    "expected_yield_qtl_per_acre": "10 - 14 Quintals",
+    "net_income_estimate_per_acre": "₹50,000 - ₹68,000",
+    "soil_suitability": "Sandy loam or loose red soils with good calcium content; easy peg penetration and pod lifting",
+    "attached_schemes": [
+      "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
+      "Gypsum 50% Subsidy via Agriculture Extension Officers (AEOs)",
+      "Micro-sprinkler subsidy under TSMIP / PMKSY (reduces water usage by 40%)"
+    ],
+    "soil_health_benefit": "High protein haulm provides ₹8,000/acre in cattle fodder value; fixes soil nitrogen"
+  },
+  {
+    "crop_id": "mustard_rapeseed",
+    "name": "Mustard & Rapeseed (ఆవాలు / सरसों-राई)",
+    "category": "Rabi Oilseeds (Low-Water Winter Crop)",
+    "season_suitability": "Rabi (October to November)",
+    "water_requirement_mm": "240 - 300 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 5650,
+    "recommended_varieties": [
+      "Pusa Bold",
+      "Pusa Mustard 25",
+      "RH 749",
+      "Giriraj",
+      "Kranti"
+    ],
+    "sowing_window": "October 1 to October 25",
+    "duration_days": "115 - 125 days",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Light to heavy soils with good drainage; tolerates salinity and alkalinity",
+    "attached_schemes": [
+      "Special Mustard Promotion Clusters under NMEO-OS",
+      "Free hybrid seed mini-kit distribution",
+      "Guaranteed procurement through NAFED and HAFED"
+    ],
+    "soil_health_benefit": "Glucosinolate root exudates act as natural biofumigants, suppressing soil nematodes and fungal spores"
+  },
+  {
+    "crop_id": "safflower",
+    "name": "Safflower / Kardi (కుసుమలు / कुसुम-करडी)",
+    "category": "Deep-Rooted Drought Champion Oilseeds (Rabi)",
+    "season_suitability": "Rabi (Post-Kharif residual moisture)",
+    "water_requirement_mm": "220 - 300 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 5800,
+    "recommended_varieties": [
+      "PBNS 12",
+      "NARI 6",
+      "Manjira",
+      "DSH 129",
+      "Bhima"
+    ],
+    "sowing_window": "September 25 to October 25",
+    "duration_days": "120 - 130 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹32,000 - ₹44,000",
+    "soil_suitability": "Deep black vertisols capable of holding moisture at depth; spiny leaves protect against wild boar and cattle",
+    "attached_schemes": [
+      "Technology Mission on Oilseeds (NMEO-OS)",
+      "State crop border planting incentive against wild animals"
+    ],
+    "soil_health_benefit": "Deep 2.5m taproot draws moisture and nutrient reserves from sub-soil; opens compacted clay"
+  },
+  {
+    "crop_id": "sunflower",
+    "name": "Sunflower (పొద్దుతిరుగుడు / सूरजमुखी)",
+    "category": "Day-Neutral Irrigated Dry Oilseeds (Rabi / Summer)",
+    "season_suitability": "Rabi (October-November) or Summer (January-February)",
+    "water_requirement_mm": "300 - 380 mm",
+    "water_savings_percentage": "75% less water than Paddy",
+    "msp_rate_per_quintal": 7280,
+    "recommended_varieties": [
+      "KBSH 41",
+      "KBSH 53",
+      "DRSH 1",
+      "NDSH 1012"
+    ],
+    "sowing_window": "November 1 to November 30 or January 15 to February 15",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "7 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹42,000 - ₹55,000",
+    "soil_suitability": "Well-drained soils; adaptable across sandy loams and deep vertisols",
+    "attached_schemes": [
+      "NMEO-OS: ₹4,000/ha input subsidy on hybrid seeds and boron",
+      "Assured procurement by State Cooperative Oil Federations"
+    ],
+    "soil_health_benefit": "Photo-insensitive nature allows perfect fitting into any crop gap after water-stressed paddy failure"
+  },
+  {
+    "crop_id": "castor",
+    "name": "Castor (ఆముదము / अरंडी)",
+    "category": "Industrial Semi-Arid Oilseeds (Kharif / Rabi)",
+    "season_suitability": "Kharif (July-August) or Rabi (September-October)",
+    "water_requirement_mm": "300 - 400 mm",
+    "water_savings_percentage": "72% less water than Paddy",
+    "msp_rate_per_quintal": 6000,
+    "recommended_varieties": [
+      "GCH 7",
+      "DCH 519",
+      "PCH 111",
+      "DCH 177",
+      "Jyoti"
+    ],
+    "sowing_window": "July 1 to August 15",
+    "duration_days": "150 - 180 days (Multiple pickings)",
+    "expected_yield_qtl_per_acre": "8 - 12 Quintals",
+    "net_income_estimate_per_acre": "₹45,000 - ₹65,000",
+    "soil_suitability": "Sandy and red loamy soils; ideal for poor, well-drained rainfed uplands",
+    "attached_schemes": [
+      "High global demand for castor oil and sebacic acid derivatives",
+      "Drip irrigation subsidy under PMKSY yields 35% extra production"
+    ],
+    "soil_health_benefit": "Not grazed by stray cattle or wild boars; deep root system binds soil against wind erosion"
+  },
+  {
+    "crop_id": "linseed",
+    "name": "Linseed / Flaxseed (అవిసెలు / अलसी)",
+    "category": "High-Value Omega-3 Dual Purpose Oilseed & Fiber (Rabi)",
+    "season_suitability": "Rabi (October-November)",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 6200,
+    "recommended_varieties": [
+      "T 397",
+      "Padmini",
+      "JLS 67",
+      "Deepika"
+    ],
+    "sowing_window": "October 15 to November 15",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "5 - 7 Quintals",
+    "net_income_estimate_per_acre": "₹30,000 - ₹42,000",
+    "soil_suitability": "Clayey loams and vertisols with good moisture retention; ideal utera/paira crop in paddy fallow",
+    "attached_schemes": [
+      "Promotion under Nutraceutical and Functional Foods Mission",
+      "Subsidised certified seed kits under NFSM-OS"
+    ],
+    "soil_health_benefit": "Minimal fertilizer requirement; excellent cool-season intercrop with gram or mustard"
+  },
+  {
+    "crop_id": "soybean",
+    "name": "Soybean (సోయాబీన్ / सोयाबीन)",
+    "category": "Rainfed Protein & Edible Oil Crop (Kharif)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "350 - 450 mm",
+    "water_savings_percentage": "68% less water than flooded Paddy",
+    "msp_rate_per_quintal": 4892,
+    "recommended_varieties": [
+      "JS 335",
+      "JS 95-60",
+      "JS 20-34",
+      "NRC 127",
+      "MACS 1407"
+    ],
+    "sowing_window": "June 15 to July 10",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "8 - 12 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Well-drained medium to deep black clay soils with pH 6.5 to 7.5",
+    "attached_schemes": [
+      "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
+      "Broad-Bed Furrow (BBF) machine subsidy to counter rainfed dry spells"
+    ],
+    "soil_health_benefit": "Fixes 60-80 kg atmospheric nitrogen per hectare; leaves rich organic nitrogen in soil"
+  },
+  {
+    "crop_id": "sorghum_jowar",
+    "name": "Sorghum / Jowar (జొన్నలు / ज्वार)",
+    "category": "Nutri-Cereals / Shree Anna (Kharif & Rabi Dual-Purpose)",
+    "season_suitability": "Kharif (June-July) or Rabi (September-October)",
+    "water_requirement_mm": "250 - 350 mm",
+    "water_savings_percentage": "75% less water than flooded Paddy",
+    "msp_rate_per_quintal": 3371,
+    "recommended_varieties": [
+      "CSH 16",
+      "CSH 24MF",
+      "CSV 29R",
+      "Maldandi (M 35-1)",
+      "Parbhani Moti"
+    ],
+    "sowing_window": "June 15 - July 15 (Kharif) or September 15 - October 15 (Rabi)",
+    "duration_days": "100 - 110 days",
+    "expected_yield_qtl_per_acre": "12 - 16 Quintals grain + 35 quintals nutritious stover",
+    "net_income_estimate_per_acre": "₹36,000 - ₹50,000",
+    "soil_suitability": "Wide soil range from shallow red gravels to deep black soils; highly tolerant to drought and heat",
+    "attached_schemes": [
+      "National Shree Anna Mission: Free seed kits, custom hiring center machinery",
+      "Public Distribution System (PDS) & Mid-Day Meal state procurement at MSP"
+    ],
+    "soil_health_benefit": "Extracts water down to 1.5m; deep fibrous root system binds soil against desertification"
+  },
+  {
+    "crop_id": "pearl_millet_bajra",
+    "name": "Pearl Millet / Bajra (సజ్జలు / बाजरा)",
+    "category": "Nutri-Cereals / Shree Anna (Extreme Heat & Arid Climate)",
+    "season_suitability": "Kharif or Summer",
+    "water_requirement_mm": "200 - 300 mm (Lowest water need among major cereals)",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 2625,
+    "recommended_varieties": [
+      "HHB 67 Improved",
+      "Dhanashakti (Biofortified Iron)",
+      "RHB 177",
+      "GHB 558"
+    ],
+    "sowing_window": "June 25 to July 15 (Kharif) or February (Summer)",
+    "duration_days": "70 - 80 days",
+    "expected_yield_qtl_per_acre": "10 - 14 Quintals",
+    "net_income_estimate_per_acre": "₹28,000 - ₹38,000",
+    "soil_suitability": "Drought-prone sandy loams and light arid soils; thrives even under 45°C ambient temperatures",
+    "attached_schemes": [
+      "National Shree Anna Mission: Biofortified high-iron variety promotion",
+      "Decentralized MSP procurement for ICDS and Anganwadi programs"
+    ],
+    "soil_health_benefit": "Super-fast photosynthetic C4 pathway; zero irrigation required after seedling establishment"
+  },
+  {
+    "crop_id": "finger_millet_ragi",
+    "name": "Finger Millet / Ragi (రాగులు / रागी-मडुआ)",
+    "category": "Nutri-Cereals / Shree Anna (Calcium & Iron Powerhouse)",
+    "season_suitability": "Kharif (June-August) or Rabi (September-October)",
+    "water_requirement_mm": "280 - 350 mm",
+    "water_savings_percentage": "75% less water than Paddy",
+    "msp_rate_per_quintal": 4290,
+    "recommended_varieties": [
+      "GPU 28",
+      "ML 365",
+      "Indaf 5",
+      "Vakula",
+      "Birsa Marua 2"
+    ],
+    "sowing_window": "July 1 to August 15",
+    "duration_days": "95 - 110 days",
+    "expected_yield_qtl_per_acre": "9 - 13 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Red sandy loams, gravelly laterites, and upland light soils; tolerates acidic soils",
+    "attached_schemes": [
+      "National Shree Anna Mission: MSP procurement via FCI & Civil Supplies Corporations",
+      "Special Ragi Processing Machinery Subsidies for Women Self Help Groups (SHGs)"
+    ],
+    "soil_health_benefit": "Contains 344 mg calcium per 100g grain; straw makes premium digestible livestock feed"
+  },
+  {
+    "crop_id": "foxtail_millet_korra",
+    "name": "Foxtail Millet / Kangni (కొర్రలు / कांगनी)",
+    "category": "Small Millets / Shree Anna (Short-Duration 70 Days)",
+    "season_suitability": "Kharif or Contingency early rabi",
+    "water_requirement_mm": "180 - 250 mm",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 3200,
+    "recommended_varieties": [
+      "SIA 3088",
+      "SIA 3156",
+      "Pratap Kangani 1",
+      "Meera"
+    ],
+    "sowing_window": "July 15 to August 15 (Best crop when main monsoon is delayed)",
+    "duration_days": "70 - 75 days",
+    "expected_yield_qtl_per_acre": "6 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹24,000 - ₹35,000",
+    "soil_suitability": "Shallow to medium soils, light red soils; highly resilient to intermittent dry spells",
+    "attached_schemes": [
+      "State Small Millet Mission seed mini-kits",
+      "Local Mandi procurement support and FPO direct-to-consumer processing hubs"
+    ],
+    "soil_health_benefit": "Mature crop ready in just 10 weeks; frees up land quickly for subsequent rabi pulse sowing"
+  },
+  {
+    "crop_id": "little_millet_samalu",
+    "name": "Little Millet / Kutki (సామలు / कुटकी)",
+    "category": "Small Millets / Shree Anna (Extreme Flood & Drought Flexibility)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "180 - 240 mm",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 3000,
+    "recommended_varieties": [
+      "OLM 203",
+      "JK 8",
+      "Kolab",
+      "Paiyur 2"
+    ],
+    "sowing_window": "June 25 to July 20",
+    "duration_days": "75 - 85 days",
+    "expected_yield_qtl_per_acre": "5 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹32,000",
+    "soil_suitability": "Tolerates waterlogging as well as severe drought; excels on steep tribal undulating slopes",
+    "attached_schemes": [
+      "Tribal Sub-Plan (TSP) free seed distributions and de-hulling machine grants",
+      "High urban demand for low-glycemic diabetic lifestyle foods"
+    ],
+    "soil_health_benefit": "Survives without pesticide or synthetic fertilizers; ideal certified organic crop"
+  },
+  {
+    "crop_id": "barnyard_millet_oodalu",
+    "name": "Barnyard Millet / Sanwa (ఊదలు / सांवा)",
+    "category": "Small Millets / Shree Anna (Fastest Maturing Cereal on Earth)",
+    "season_suitability": "Kharif or Contingency",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 3100,
+    "recommended_varieties": [
+      "PRJ 1",
+      "VL Madira 207",
+      "CO 2"
+    ],
+    "sowing_window": "July 1 to July 31",
+    "duration_days": "60 - 65 days (Ready in 6 weeks)",
+    "expected_yield_qtl_per_acre": "6 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹25,000 - ₹34,000",
+    "soil_suitability": "Poor marginal soils; highly tolerant to salinity, alkalinity, and water stagnation",
+    "attached_schemes": [
+      "National Shree Anna Mission Fast-Track Food Aid",
+      "Fasting food (Vrat Ka Chawal) premium market sales"
+    ],
+    "soil_health_benefit": "Produces rapid high-tonnage green fodder within 40 days of sowing"
+  },
+  {
+    "crop_id": "kodo_millet_arikalu",
+    "name": "Kodo Millet / Kodra (అరికెలు / कोदो)",
+    "category": "Small Millets / Shree Anna (Centuries-Old Drought Survivor)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "200 - 280 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 3200,
+    "recommended_varieties": [
+      "GPUK 3",
+      "RBK 155",
+      "TNAU 86",
+      "Jawahar Kodo 48"
+    ],
+    "sowing_window": "June 20 to July 15",
+    "duration_days": "95 - 105 days",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹26,000 - ₹38,000",
+    "soil_suitability": "Gravelly, stoney, infertile soils where other grains perish completely",
+    "attached_schemes": [
+      "State Millet Missions and Millets-in-Ration PDS distribution initiatives",
+      "High anti-oxidant polyphenolic market demand"
+    ],
+    "soil_health_benefit": "Grain stores for 10+ years without pest damage; ancient famine reserve grain"
+  },
+  {
+    "crop_id": "proso_millet_varigalu",
+    "name": "Proso Millet / Cheena (వరిగలు / चीना)",
+    "category": "Small Millets / Shree Anna (Lowest Water Footprint Grain)",
+    "season_suitability": "Summer (Catch crop) or Rabi",
+    "water_requirement_mm": "160 - 220 mm",
+    "water_savings_percentage": "88% less water than Paddy",
+    "msp_rate_per_quintal": 2900,
+    "recommended_varieties": [
+      "TNAU 202",
+      "DHPM 2769",
+      "Meenakshi"
+    ],
+    "sowing_window": "February 15 to March 15 (Summer) or September-October (Rabi)",
+    "duration_days": "55 - 65 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹30,000",
+    "soil_suitability": "Sandy loam, alluvial, and red soils with moderate drainage",
+    "attached_schemes": [
+      "Summer catch-crop diversification packages",
+      "Export bird-feed and specialty flour processing contracts"
+    ],
+    "soil_health_benefit": "Consumes less water per gram of dry matter produced than any other domestic grain crop"
+  },
+  {
+    "crop_id": "cluster_bean_guar",
+    "name": "Cluster Bean / Guar (గోరుచిక్కుడు / ग्वार)",
+    "category": "Industrial Export & Fodder Arid Crop",
+    "season_suitability": "Kharif (July to August)",
+    "water_requirement_mm": "180 - 250 mm (Extreme desert drought hardy)",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 5200,
+    "recommended_varieties": [
+      "RGC 936",
+      "RGC 1002",
+      "HG 365",
+      "HG 563"
+    ],
+    "sowing_window": "July 1 to July 31",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "5 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹30,000 - ₹48,000 depending on global gum exports",
+    "soil_suitability": "Arid sandy soils, light red soils; highly sensitive to stagnant water and clay compaction",
+    "attached_schemes": [
+      "Industrial Guar Gum Export Council market linkages",
+      "National Mission on Sustainable Agriculture (NMSA) dryland support"
+    ],
+    "soil_health_benefit": "Root nodules fix generous atmospheric nitrogen; enriches depleted sandy soils"
+  },
+  {
+    "crop_id": "barley_jau",
+    "name": "Barley / Jau (బార్లీ / जौ)",
+    "category": "Salinity & Drought Resilient Cereal (Rabi)",
+    "season_suitability": "Rabi (November-December)",
+    "water_requirement_mm": "220 - 280 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 1850,
+    "recommended_varieties": [
+      "RD 2552",
+      "RD 2035",
+      "DWRB 123",
+      "PL 426",
+      "K 551"
+    ],
+    "sowing_window": "November 5 to December 5",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "14 - 18 Quintals",
+    "net_income_estimate_per_acre": "₹28,000 - ₹38,000",
+    "soil_suitability": "Tolerates high salinity (EC up to 8 dS/m) and sodicity where wheat and rice dry up completely",
+    "attached_schemes": [
+      "Malting industry contract farming and buyback guarantees",
+      "FCI MSP procurement operations"
+    ],
+    "soil_health_benefit": "Tolerates brackish and saline borewell water; acts as a soil reclamation grain"
+  }
+];
+
+const DISASTER_RELIEF_DATA = {
+  "statutory_framework": "State Disaster Response Fund (SDRF) & National Disaster Response Fund (NDRF) Norms",
+  "administered_by": "Ministry of Home Affairs (MHA), Ministry of Agriculture & State Revenue / Disaster Management Departments",
+  "calamity_eligibility_threshold": "Crop loss of 33% and above caused by notified natural calamities (Hailstorm, Unseasonal Heavy Rains, Flooding, Cyclone, Drought, Pest Outbreak deemed natural calamity)",
+  "input_subsidy_compensation_rates": [
+    {
+      "category": "Rainfed / Unirrigated Crops (e.g. Dryland Pulses, Millets, Rainfed Cotton)",
+      "rate_per_hectare": "₹8,500 per hectare",
+      "approx_per_acre": "₹3,440 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Irrigated Crops (e.g. Paddy, Irrigated Cotton, Maize, Chilli)",
+      "rate_per_hectare": "₹17,000 per hectare",
+      "approx_per_acre": "₹6,880 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Perennial Horticulture Crops (e.g. Mango, Citrus, Guava, Oil Palm)",
+      "rate_per_hectare": "₹22,500 per hectare",
+      "approx_per_acre": "₹9,100 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Desiltation of Agricultural Land (Silt deposition > 3 inches after flash floods)",
+      "rate_per_hectare": "₹18,000 per hectare",
+      "approx_per_acre": "₹7,285 per acre",
+      "max_limit": "Eligible for small and marginal farmers",
+      "loss_criteria": "Sand/silt deposition > 3 inches rendering field uncultivable"
+    }
+  ],
+  "telangana_special_ex_gratia": {
+    "scheme_name": "Telangana Calamity Relief Assistance (Rythu Runa & Crop Relief)",
+    "rate_per_acre": "₹10,000 per acre for damaged standing crops during declared unseasonal hailstorms/floods",
+    "verification_team": "Joint inspection team of Agriculture Extension Officer (AEO) and Village Revenue Officer (VRO)",
+    "portal": "Government Order (GO) notifications via ccla.telangana.gov.in"
+  },
+  "claim_enumeration_procedure": [
+    "Step 1: Joint Field Enumeration (Azmoish) by Revenue Inspector / VRO and Agriculture Extension Officer (AEO) within 7 days of calamity event",
+    "Step 2: Geo-tagged photo documentation with survey numbers and GPS coordinates",
+    "Step 3: Preparation of draft beneficiary list displayed at Gram Panchayat / Rythu Vedika for 48 hours for public verification & objection filing",
+    "Step 4: Approval by District Collector / District Disaster Management Authority (DDMA)",
+    "Step 5: Direct Benefit Transfer (DBT) directly into farmer's Aadhaar-seeded bank account"
+  ],
+  "critical_difference_pmfby_vs_sdrf": "SDRF/NDRF is non-insurance sovereign disaster relief ex-gratia provided by the Government regardless of whether the crop was insured under PMFBY. A farmer can receive SDRF input subsidy in addition to statutory PMFBY insurance payouts.",
+  "official_sources": [
+    "Ministry of Home Affairs SDRF/NDRF Revised Norms 2023-2026",
+    "Disaster Management Division, Ministry of Agriculture & Farmers Welfare",
+    "Telangana State Disaster Management Authority (TSDMA)"
+  ],
+  "last_verified": "2026-11-05"
+};

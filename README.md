@@ -107,9 +107,15 @@ pip install -r requirements.txt
 # 2. Run All 17 Unit Tests
 python -m unittest discover -s tests
 
-# 3. Launch Streamlit Web App
+# 3. Launch Streamlit Web App (Port 8501)
 python -m streamlit run ui/streamlit_app/app.py
 
-# 4. Launch Telegram Bot (Interactive Test Mode)
+# 4. Launch FastAPI Eligibility & Climate Backend (Port 8000)
+python -m uvicorn backend.eligibility_api:app --host 127.0.0.1 --port 8000
+
+# 5. Launch Static Multi-Tab Frontend (Port 8081)
+python -m http.server 8081 --directory frontend
+
+# 6. Launch Telegram Bot (Interactive Test Mode)
 python ui/telegram_bot/bot.py --test
 ```

@@ -9,8 +9,8 @@ from rapidfuzz import fuzz
 
 app = FastAPI(
     title="Farmer Scheme & Eligibility Assistant API",
-    description="Deterministic rule-based eligibility engine and intermediary tracking backend.",
-    version="1.0.0"
+    description="Deterministic rule-based eligibility engine, 72-hr claim assistant, water subsidies, KCC credit, and intermediary tracking backend.",
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -21,7 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "schemes_telangana.json")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(ROOT_DIR, "data", "schemes_telangana.json")
+WATER_SCHEMES_PATH = os.path.join(ROOT_DIR, "data", "water_saving_schemes.json")
+LOW_WATER_CROPS_PATH = os.path.join(ROOT_DIR, "data", "low_water_crops.json")
+DISASTER_RELIEF_PATH = os.path.join(ROOT_DIR, "data", "disaster_relief.json")
 
 def load_schemes() -> List[Dict[str, Any]]:
     if not os.path.exists(DATA_PATH):
@@ -37,13 +41,13 @@ class FarmerProfile(BaseModel):
     district: Optional[str] = "Warangal"
     land_holding_acres: float = Field(default=2.0, ge=0.0)
     crop: str = "Paddy"
-    category: str = "marginal"  # marginal (<2.5 acres), small (2.5-5 acres), tenant, medium, large
+    category: str = "marginal"
     is_tenant: bool = False
-    has_ccrc: bool = False  # Crop Cultivator Rights Card for tenant
-    caste_category: Optional[str] = "BC"  # SC, ST, BC, General
+    has_ccrc: bool = False
+    caste_category: Optional[str] = "BC"
     has_irrigation_well: bool = True
     query: Optional[str] = None
-    language: Optional[str] = "en"  # en, te, hi
+    language: Optional[str] = "en"
 
 class SchemeMatchResult(BaseModel):
     scheme_id: str
@@ -69,16 +73,62 @@ class MatchResponse(BaseModel):
 
 class AlertRequest(BaseModel):
     farmer_id: str
-    channel: str = "telegram"  # telegram, sms, whatsapp
+    channel: str = "telegram"
     message: str
 
-# Deterministic Evaluation Engine (Person 1 specification - purely rule-based, no LLM)
+class KCCRequest(BaseModel):
+    crop: str = "Paddy"
+    land_acres: float = 2.5
+    existing_debt: float = 0.0
+
+class ClaimIntimationRequest(BaseModel):
+    farmer_name: str
+    phone: str
+    crop: str
+    district: str
+    village: str
+    survey_no: str
+    loss_percent: int
+    hazard_type: str
+    acreage: float
+    language: str = "en"
+
+class ClaimEntryRequest(BaseModel):
+    farmer_name: str
+    phone: str
+    scheme_name: str
+    reference_number: str
+    status: str
+    notes: Optional[str] = ""
+
+class FeedbackRequest(BaseModel):
+    scheme_id: str
+    scheme_name: str
+    feedback_type: str
+    reporter_role: str
+    description: str
+    state: str = "Telangana"
+
+class EscalationRequest(BaseModel):
+    farmer_name: str
+    father_husband_name: str
+    aadhaar_masked: str
+    phone: str
+    village: str
+    mandal: str
+    district: str
+    survey_no: str
+    problem_category: str
+    scheme_name: str
+    description: str
+    escalation_level: str = "Level 2: Mandal Agriculture Officer (MAO)"
+
+# Deterministic Evaluation Engine
 def evaluate_farmer(profile: FarmerProfile, scheme: Dict[str, Any]) -> SchemeMatchResult:
     reasons: List[str] = []
     eligible = True
     rules = scheme.get("rules", {})
 
-    # Rule 1: State Check
     allowed_states = rules.get("allowed_states", ["All"])
     if "All" not in allowed_states and profile.state not in allowed_states:
         eligible = False
@@ -86,7 +136,6 @@ def evaluate_farmer(profile: FarmerProfile, scheme: Dict[str, Any]) -> SchemeMat
     else:
         reasons.append(f"State '{profile.state}' matches scheme coverage.")
 
-    # Rule 2: Land Holding Boundaries
     min_land = rules.get("min_land_acres")
     max_land = rules.get("max_land_acres")
     if min_land is not None and profile.land_holding_acres < min_land:
@@ -96,33 +145,26 @@ def evaluate_farmer(profile: FarmerProfile, scheme: Dict[str, Any]) -> SchemeMat
         eligible = False
         reasons.append(f"Maximum land permissible is {max_land} acres (you entered {profile.land_holding_acres} acres).")
 
-    # Rule 3: Tenant & Land Title Rules
     if rules.get("requires_land_title_or_ccrc", False):
         if profile.is_tenant:
-            if not profile.has_ccrc and scheme["scheme_id"] == "TS-RB-01":
-                # Rythu Bharosa allows tenant only with valid CCRC
-                reasons.append("Tenant farmers require Crop Cultivator Rights Card (CCRC) for Rythu Bharosa.")
-            elif profile.has_ccrc:
-                reasons.append("Tenant eligibility verified via CCRC endorsement.")
+            if not profile.has_ccrc:
+                eligible = False
+                reasons.append("Tenant farmers must possess an active CCRC (Crop Cultivator Rights Card).")
+            else:
+                reasons.append("CCRC certificate validated for tenant cultivator.")
         else:
-            reasons.append("Landownership title required (Pattadar / Dharani RoR).")
+            reasons.append("Landownership title record (Pahani / Dharani / RoR) eligible.")
 
-    # Rule 4: Crop Specificity (e.g., PMFBY or MSP)
-    allowed_crops = rules.get("allowed_crops")
-    if allowed_crops:
-        if profile.crop.strip().title() not in [c.title() for c in allowed_crops]:
-            eligible = False
-            reasons.append(f"Scheme is for crops: {', '.join(allowed_crops)}. Your crop is {profile.crop}.")
-        else:
-            reasons.append(f"Crop '{profile.crop}' is eligible under this notification.")
+    notified_crops = rules.get("notified_crops", ["All"])
+    if "All" not in notified_crops and profile.crop not in notified_crops:
+        eligible = False
+        reasons.append(f"Crop '{profile.crop}' is not in notified list for this scheme season ({', '.join(notified_crops)}).")
+    else:
+        reasons.append(f"Crop '{profile.crop}' is eligible.")
 
-    # Rule 5: Infrastructure (Well/Borewell for Micro Irrigation)
-    if rules.get("requires_functional_wells_or_borewells", False):
-        if not profile.has_irrigation_well:
-            eligible = False
-            reasons.append("Requires functional borewell/open-well with energisation.")
-        else:
-            reasons.append("Functional water source available for drip/sprinkler installation.")
+    if rules.get("requires_irrigation_source", False) and not profile.has_irrigation_well:
+        eligible = False
+        reasons.append("Scheme requires an operational borewell or open well.")
 
     return SchemeMatchResult(
         scheme_id=scheme["scheme_id"],
@@ -132,171 +174,134 @@ def evaluate_farmer(profile: FarmerProfile, scheme: Dict[str, Any]) -> SchemeMat
         eligible=eligible,
         reasons=reasons,
         benefits_summary=scheme["benefits_summary"],
-        documents_required=scheme.get("documents_required", []),
-        deadlines=scheme.get("deadlines", {}),
+        documents_required=scheme["documents_required"],
+        deadlines=scheme["deadlines"],
         claim_window=scheme.get("claim_window"),
         source_url=scheme["source_url"],
         last_verified=scheme["last_verified"],
         where_to_apply=scheme["where_to_apply"]
     )
 
-@app.get("/")
-def read_root():
-    return {
-        "service": "Farmer Scheme Assistant Engine",
-        "pilot_state": "Telangana",
-        "status": "online",
-        "last_updated": "2026-11-05"
-    }
-
-@app.post("/match", response_model=MatchResponse)
-def match_schemes(profile: FarmerProfile):
-    """Deterministic eligibility matching across all verified schemes."""
-    schemes = load_schemes()
-    eligible: List[SchemeMatchResult] = []
-    ineligible: List[SchemeMatchResult] = []
-
-    for s in schemes:
-        result = evaluate_farmer(profile, s)
-        if result.eligible:
-            eligible.append(result)
-        else:
-            ineligible.append(result)
-
-    return MatchResponse(
-        profile=profile,
-        eligible_schemes=eligible,
-        ineligible_schemes=ineligible,
-        total_eligible=len(eligible),
-        evaluated_at=datetime.now().isoformat()
-    )
-
-# Sample database of farmers for Intermediary Dashboard (Person 3 interface)
+# Mock Farmer Database
 MOCK_FARMERS_DB = [
     {
-        "farmer_id": "TS-WAR-001",
+        "farmer_id": "F-TG-001",
         "farmer_name": "Komirelli Ramulu",
-        "phone": "+91 98480 12345",
-        "state": "Telangana",
+        "phone": "+91-98480-22338",
         "district": "Warangal",
         "village": "Geesugonda",
-        "crop": "Paddy",
         "land_holding_acres": 2.2,
-        "category": "Marginal Farmer",
-        "scheme_name": "PMFBY Rabi Crop Insurance",
+        "crop": "Paddy",
+        "scheme_id": "TS-RB-01",
+        "scheme_name": "Rythu Bharosa",
         "doc_status": "pending",
-        "pending_documents": ["Sowing Certificate from AEO", "Bank Passbook IFSC update"],
+        "pending_documents": ["Aadhaar-Bank Name Match Affidavit"],
+        "urgent_alert": "Rabi application window closing in 48 hours",
+        "deadline_date": "2026-11-25",
+        "days_left": 2,
         "aadhaar_name": "Komirelli Ramulu",
         "bank_account_name": "K. Ramulu",
-        "name_match_score": 85,
-        "name_match_status": "Minor Mismatch (Requires CSC Attestation)",
-        "next_deadline": "2026-11-15T23:59:59",
-        "days_left": 10,
-        "urgent_alert": "PMFBY Rabi enrollment cut-off in 10 days"
+        "name_match_status": "Requires Attention",
+        "name_match_score": 82
     },
     {
-        "farmer_id": "TS-NAL-002",
-        "farmer_name": "Boda Venkanna",
-        "phone": "+91 94401 23456",
-        "state": "Telangana",
+        "farmer_id": "F-TG-002",
+        "farmer_name": "Banoth Padma",
+        "phone": "+91-94401-88219",
         "district": "Nalgonda",
         "village": "Miryalaguda",
-        "crop": "Cotton",
         "land_holding_acres": 4.5,
-        "category": "Small Farmer",
-        "scheme_name": "MSP Cotton Procurement 2026",
-        "doc_status": "complete",
-        "pending_documents": [],
-        "aadhaar_name": "Boda Venkanna",
-        "bank_account_name": "Boda Venkanna",
-        "name_match_score": 100,
-        "name_match_status": "Exact Match (NPCI Active)",
-        "next_deadline": "2027-01-31T18:00:00",
-        "days_left": 87,
-        "urgent_alert": "Procurement token available on OPMS portal"
+        "crop": "Cotton",
+        "scheme_id": "CEN-PMFBY-01",
+        "scheme_name": "PMFBY Crop Insurance",
+        "doc_status": "pending",
+        "pending_documents": ["Sowing Certificate from AEO"],
+        "urgent_alert": "Premium cut-off date is 15-Nov-2026",
+        "deadline_date": "2026-11-15",
+        "days_left": 10,
+        "aadhaar_name": "Banoth Padma",
+        "bank_account_name": "Guguloth Saroja",
+        "name_match_status": "Severe Mismatch",
+        "name_match_score": 40
     },
     {
-        "farmer_id": "TS-KHM-003",
-        "farmer_name": "Banoth Padma",
-        "phone": "+91 97012 34567",
-        "state": "Telangana",
+        "farmer_id": "F-TG-003",
+        "farmer_name": "Boda Venkanna",
+        "phone": "+91-97011-33445",
         "district": "Khammam",
         "village": "Kallur",
-        "crop": "Chilli",
         "land_holding_acres": 1.8,
-        "category": "Tenant Farmer",
-        "scheme_name": "PMFBY Crop Loss Claim (Unseasonal Hail)",
-        "doc_status": "pending",
-        "pending_documents": ["Crop Damage Photos", "CCRC Agreement copy", "Loss Intimation Form"],
-        "aadhaar_name": "Banoth Padma",
-        "bank_account_name": "Padma B",
-        "name_match_score": 78,
-        "name_match_status": "Mismatch Alert! Update Bank Passbook",
-        "next_deadline": "2026-11-07T14:00:00",
-        "days_left": 2,
-        "urgent_alert": "CRITICAL: 72-hour crop loss claim reporting window closes in 48 hours!"
-    },
-    {
-        "farmer_id": "TS-NZB-004",
-        "farmer_name": "Mohammad Shabbir",
-        "phone": "+91 98660 98765",
-        "state": "Telangana",
-        "district": "Nizamabad",
-        "village": "Armoor",
-        "crop": "Maize",
-        "land_holding_acres": 3.0,
-        "category": "Small Farmer",
-        "scheme_name": "TSMIP Drip Irrigation Subsidy",
-        "doc_status": "pending",
-        "pending_documents": ["Electricity connection bill", "Borewell discharge certificate"],
-        "aadhaar_name": "Mohammad Shabbir",
-        "bank_account_name": "Mohd Shabbir",
-        "name_match_score": 92,
-        "name_match_status": "Acceptable Match",
-        "next_deadline": "2026-12-31T23:59:59",
-        "days_left": 56,
-        "urgent_alert": "TSMIP annual subsidy quota verification"
-    },
-    {
-        "farmer_id": "TS-KRM-005",
-        "farmer_name": "Gaddam Mallaiah",
-        "phone": "+91 99123 45678",
-        "state": "Telangana",
-        "district": "Karimnagar",
-        "village": "Choppadandi",
-        "crop": "Paddy",
-        "land_holding_acres": 1.5,
-        "category": "Marginal Farmer",
-        "scheme_name": "Rythu Bharosa Rabi",
+        "crop": "Chilli",
+        "scheme_id": "TS-TSMIP-01",
+        "scheme_name": "TSMIP Drip Subsidy",
         "doc_status": "complete",
         "pending_documents": [],
-        "aadhaar_name": "Gaddam Mallaiah",
-        "bank_account_name": "Gaddam Mallaiah",
-        "name_match_score": 100,
+        "urgent_alert": "Field inspection scheduled on Friday",
+        "deadline_date": "2026-11-20",
+        "days_left": 15,
+        "aadhaar_name": "Boda Venkanna",
+        "bank_account_name": "Boda Venkanna",
         "name_match_status": "Exact Match",
-        "next_deadline": "2026-11-25T23:59:59",
-        "days_left": 20,
-        "urgent_alert": "Rythu Bharosa verification at Rythu Vedika"
+        "name_match_score": 100
     }
 ]
 
-@app.get("/farmer_status")
-def get_farmer_status(district: Optional[str] = None, doc_status: Optional[str] = None):
-    """Intermediary mode API: Fetches farmers with pending documents and approaching deadlines."""
-    farmers = MOCK_FARMERS_DB
-    if district and district.lower() != "all":
-        farmers = [f for f in farmers if f["district"].lower() == district.lower()]
-    if doc_status and doc_status.lower() != "all":
-        farmers = [f for f in farmers if f["doc_status"].lower() == doc_status.lower()]
-    return farmers
+# API Endpoints
+@app.get("/")
+def read_root():
+    return {
+        "service": "Farmer Scheme Eligibility Assistant API",
+        "version": "2.0.0",
+        "pilot_state": "Telangana (Pan-India Supported)",
+        "modules": [
+            "Deterministic Scheme Matching",
+            "72-Hour Crop Loss Claim Assistant",
+            "Water-Saving Subsidy Matcher (18+ Schemes)",
+            "Low-Water Crop Alternatives (26+ Crops)",
+            "KCC Credit Calculator & 4% Subvention",
+            "Document Wallet & DigiLocker",
+            "Higher Official Grievance Escalation"
+        ]
+    }
 
-@app.post("/verify_name_match")
+@app.get("/schemes")
+def get_all_schemes():
+    return load_schemes()
+
+@app.post("/match", response_model=MatchResponse)
+def match_farmer_schemes(profile: FarmerProfile):
+    schemes = load_schemes()
+    eligible_list: List[SchemeMatchResult] = []
+    ineligible_list: List[SchemeMatchResult] = []
+
+    for scheme in schemes:
+        res = evaluate_farmer(profile, scheme)
+        if res.eligible:
+            eligible_list.append(res)
+        else:
+            ineligible_list.append(res)
+
+    return MatchResponse(
+        profile=profile,
+        eligible_schemes=eligible_list,
+        ineligible_schemes=ineligible_list,
+        total_eligible=len(eligible_list),
+        evaluated_at=datetime.now().isoformat()
+    )
+
+@app.get("/farmer_status")
+def get_intermediary_farmer_status(district: Optional[str] = None, doc_status: Optional[str] = None):
+    results = MOCK_FARMERS_DB
+    if district:
+        results = [f for f in results if f["district"].lower() == district.lower()]
+    if doc_status:
+        results = [f for f in results if f["doc_status"].lower() == doc_status.lower()]
+    return results
+
+@app.get("/verify_name")
 def verify_name_match(aadhaar_name: str, bank_name: str):
-    """Document readiness check: Fuzzy match between Aadhaar name and Bank account name."""
     clean_aadhaar = aadhaar_name.strip().lower().replace(".", " ")
     clean_bank = bank_name.strip().lower().replace(".", " ")
-    
-    # token_set_ratio handles initial matching and word ordering
     ratio = int(fuzz.token_set_ratio(clean_aadhaar, clean_bank))
     status = "Exact Match" if ratio == 100 else ("Minor Variation" if ratio >= 80 else "Severe Mismatch")
     return {
@@ -309,11 +314,9 @@ def verify_name_match(aadhaar_name: str, bank_name: str):
 
 @app.post("/send_alert")
 def send_proactive_alert(req: AlertRequest):
-    """Sends / simulates proactive deadline alert to the farmer."""
     farmer = next((f for f in MOCK_FARMERS_DB if f["farmer_id"] == req.farmer_id), None)
     if not farmer:
         raise HTTPException(status_code=404, detail="Farmer not found")
-    
     return {
         "status": "success",
         "farmer_id": req.farmer_id,
@@ -324,51 +327,128 @@ def send_proactive_alert(req: AlertRequest):
         "timestamp": datetime.now().isoformat()
     }
 
-# Live MSP vs Mandi Benchmark endpoint
 @app.get("/msp_comparison")
 def get_msp_comparison():
     return [
-        {
-            "crop": "Paddy (Common / Grade A)",
-            "msp_rate": 2320,
-            "state_bonus": 500,
-            "effective_gov_price": 2820,
-            "average_mandi_price": 2180,
-            "price_delta": 640,
-            "recommendation": "Sell at government PACS / IKP procurement centre to gain +₹640/quintal over open market.",
-            "source": "Telangana Civil Supplies Corporation (epds.telangana.gov.in)"
-        },
-        {
-            "crop": "Cotton (Medium Staple)",
-            "msp_rate": 7121,
-            "state_bonus": 0,
-            "effective_gov_price": 7121,
-            "average_mandi_price": 6850,
-            "price_delta": 271,
-            "recommendation": "Sell to Cotton Corporation of India (CCI) procurement centre at MSP of ₹7,121.",
-            "source": "Cotton Corporation of India (CCI)"
-        },
-        {
-            "crop": "Maize",
-            "msp_rate": 2225,
-            "state_bonus": 0,
-            "effective_gov_price": 2225,
-            "average_mandi_price": 2100,
-            "price_delta": 125,
-            "recommendation": "MSP procurement offers ₹125/quintal premium over local trader bids.",
-            "source": "Commission for Agricultural Costs and Prices (CACP)"
-        }
+        {"crop": "Paddy (Grade A)", "msp_rate": 2320, "state_bonus": 500, "effective_gov_price": 2820, "average_mandi_price": 2180, "price_delta": 640, "recommendation": "Sell at PACS / IKP procurement centre for +₹640/qtl bonus."},
+        {"crop": "Cotton (Medium Staple)", "msp_rate": 7121, "state_bonus": 0, "effective_gov_price": 7121, "average_mandi_price": 6850, "price_delta": 271, "recommendation": "Sell at Cotton Corporation of India (CCI) centre."},
+        {"crop": "Maize", "msp_rate": 2225, "state_bonus": 0, "effective_gov_price": 2225, "average_mandi_price": 2100, "price_delta": 125, "recommendation": "Sell at Markfed procurement centre."},
+        {"crop": "Bengal Gram (Chana)", "msp_rate": 5440, "state_bonus": 0, "effective_gov_price": 5440, "average_mandi_price": 5100, "price_delta": 340, "recommendation": "Sell at NAFED / Markfed procurement centre."},
+        {"crop": "Sesame (Til)", "msp_rate": 9267, "state_bonus": 0, "effective_gov_price": 9267, "average_mandi_price": 8700, "price_delta": 567, "recommendation": "Sell at Mandi with statutory MSP floor."}
     ]
 
-# Live Climate & Water Stress Assessment endpoint (Pan-India)
 @app.get("/climate_water_stress")
 def get_climate_water_stress(district: str = "Warangal", state: Optional[str] = None, crop: str = "Paddy", water_source: str = "Borewell", lang: str = "en"):
-    from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
+    from utils.weather_api import get_live_weather, evaluate_multi_crop_climate_risk, generate_multilingual_water_advisory
     weather = get_live_weather(district, state=state)
-    assessment = evaluate_water_stress(weather, crop=crop, water_source=water_source)
+    assessment = evaluate_multi_crop_climate_risk(weather, crop=crop, water_source=water_source)
     advisory_text = generate_multilingual_water_advisory(assessment, lang=lang)
     return {
         "weather": weather,
         "assessment": assessment,
         "advisory_text": advisory_text
     }
+
+# New Endpoints for Full Feature Integration
+@app.get("/water_saving_schemes")
+def get_water_saving_schemes(state: Optional[str] = None):
+    if not os.path.exists(WATER_SCHEMES_PATH):
+        return []
+    with open(WATER_SCHEMES_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if state and state.lower() != "all":
+        data = [s for s in data if "All States" in s.get("applicable_states", []) or state.lower() in [st.lower() for st in s.get("applicable_states", [])]]
+    return data
+
+@app.get("/low_water_crops")
+def get_low_water_crops(category: Optional[str] = None):
+    if not os.path.exists(LOW_WATER_CROPS_PATH):
+        return []
+    with open(LOW_WATER_CROPS_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if category and category.lower() != "all":
+        data = [c for c in data if category.lower() in c.get("category", "").lower()]
+    return data
+
+@app.get("/disaster_relief")
+def get_disaster_relief_info():
+    if not os.path.exists(DISASTER_RELIEF_PATH):
+        return {}
+    with open(DISASTER_RELIEF_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.post("/calculate_kcc")
+def api_calculate_kcc(req: KCCRequest):
+    from utils.credit_kcc import calculate_kcc_eligibility
+    return calculate_kcc_eligibility(crop=req.crop, land_acres=req.land_acres, existing_kcc_debt=req.existing_debt)
+
+@app.post("/generate_claim_sms")
+def api_generate_claim_sms(req: ClaimIntimationRequest):
+    from utils.claim_assistant import generate_intimation_sms
+    return generate_intimation_sms(
+        farmer_name=req.farmer_name,
+        phone=req.phone,
+        crop=req.crop,
+        district=req.district,
+        village=req.village,
+        survey_no=req.survey_no,
+        loss_percent=req.loss_percent,
+        hazard_type=req.hazard_type,
+        acreage=req.acreage,
+        language=req.language
+    )
+
+@app.get("/claims")
+def api_get_claims():
+    from utils.status_tracker import get_all_claims, compute_claim_urgency
+    claims = get_all_claims()
+    for c in claims:
+        c["urgency_meta"] = compute_claim_urgency(c)
+    return claims
+
+@app.post("/claims")
+def api_add_claim(req: ClaimEntryRequest):
+    from utils.status_tracker import add_claim_entry
+    return add_claim_entry(
+        farmer_name=req.farmer_name,
+        phone=req.phone,
+        scheme_name=req.scheme_name,
+        reference_number=req.reference_number,
+        status=req.status,
+        notes=req.notes or ""
+    )
+
+@app.post("/feedback")
+def api_record_feedback(req: FeedbackRequest):
+    from utils.escalation_feedback import record_feedback
+    return record_feedback(
+        scheme_id=req.scheme_id,
+        scheme_name=req.scheme_name,
+        feedback_type=req.feedback_type,
+        reporter_role=req.reporter_role,
+        description=req.description,
+        state=req.state
+    )
+
+@app.post("/escalate")
+def api_escalate_grievance(req: EscalationRequest):
+    from utils.escalation_feedback import generate_formal_escalation_petition
+    return generate_formal_escalation_petition(
+        farmer_name=req.farmer_name,
+        father_husband_name=req.father_husband_name,
+        aadhaar_masked=req.aadhaar_masked,
+        phone=req.phone,
+        village=req.village,
+        mandal=req.mandal,
+        district=req.district,
+        survey_no=req.survey_no,
+        problem_category=req.problem_category,
+        scheme_name=req.scheme_name,
+        description=req.description,
+        escalation_level=req.escalation_level
+    )
+
+@app.get("/documents")
+def api_get_documents(farmer_id: str = "DEMO_FARMER_1"):
+    from utils.document_wallet import get_farmer_documents
+    return get_farmer_documents(farmer_id)
