@@ -1500,14 +1500,37 @@ Automated SLA follow-up alerts have been scheduled.`);
     }
 
     if (forecastRow && data.weather.forecast_daily) {
-      forecastRow.innerHTML = data.weather.forecast_daily.map(d => `
-        <div class="weather-day-chip ${d.rain_prob === '0%' ? 'dry-alert' : ''}">
-          <div style="font-size: 0.72rem; font-weight: 700; color: #64748b;">${escapeHtml(d.day)}</div>
-          <div style="font-size: 1.4rem; margin: 0.15rem 0;">${d.icon}</div>
-          <div style="font-size: 0.85rem; font-weight: 800; color: #1e293b;">${escapeHtml(d.temp)}</div>
-          <div style="font-size: 0.72rem; color: #0284c7; font-weight: 600;">Rain: ${escapeHtml(d.rain_prob)}</div>
-        </div>
-      `).join('');
+      forecastRow.innerHTML = data.weather.forecast_daily.map((d, idx) => {
+        const rainNum = parseInt(d.rain_prob) || 0;
+        const isDry = rainNum <= 5;
+        const isHeat = (d.status || '').toLowerCase().includes('heat') || (d.temp && parseFloat(d.temp) >= 38.5);
+        const cardBg = isHeat ? '#fff1f2' : (isDry ? '#fff7ed' : '#f0fdf4');
+        const cardBorder = isHeat ? '#f43f5e' : (isDry ? '#fdba74' : '#86efac');
+        const rainPillBg = isDry ? '#fee2e2' : '#e0f2fe';
+        const rainPillColor = isDry ? '#991b1b' : '#0369a1';
+        const dayLabel = d.day || `Day ${idx + 1}`;
+
+        return `
+          <div class="weather-day-chip" style="flex: 0 0 135px !important; min-width: 135px !important; max-width: 140px !important; background: ${cardBg} !important; border: 2px solid ${cardBorder} !important; border-radius: 12px !important; padding: 10px 8px !important; text-align: center !important; box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid rgba(0,0,0,0.08); width: 100%; padding-bottom: 4px;">
+              ${escapeHtml(dayLabel)}
+            </div>
+            <div style="font-size: 2.2rem; margin: 6px 0 2px 0; line-height: 1;">${d.icon || '☀️'}</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a; line-height: 1.2;">
+              ${escapeHtml(d.temp || '37°C')}
+            </div>
+            <div style="font-size: 0.74rem; font-weight: 700; color: #475569; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+              ${escapeHtml(d.status || (isDry ? 'Dry' : 'Fair'))}
+            </div>
+            <div style="width: 100%; background: ${rainPillBg}; color: ${rainPillColor}; padding: 3px 4px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px;">
+              🌧️ ${escapeHtml(d.rain_prob || '0%')} Rain
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; color: ${isHeat ? '#e11d48' : (isDry ? '#c2410c' : '#15803d')};">
+              ${isHeat ? '🔥 Extreme Heat' : (isDry ? '⚠️ Zero Rain' : '🌦️ Light Rain')}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // 2. Micro-Irrigation Matchmaker (BUY vs RENT)
@@ -1706,6 +1729,20 @@ Automated SLA follow-up alerts have been scheduled.`);
       btnRunEco.addEventListener('click', loadWeatherEcosystemData);
     }
 
+    const btnLeft = document.getElementById('btnScrollForecastLeft');
+    const btnRight = document.getElementById('btnScrollForecastRight');
+    const forecastRow = document.getElementById('ecoForecastRow');
+    if (btnLeft && forecastRow) {
+      btnLeft.addEventListener('click', () => {
+        forecastRow.scrollBy({ left: -260, behavior: 'smooth' });
+      });
+    }
+    if (btnRight && forecastRow) {
+      btnRight.addEventListener('click', () => {
+        forecastRow.scrollBy({ left: 260, behavior: 'smooth' });
+      });
+    }
+
     // Trigger initial calculation
     loadWeatherEcosystemData();
 
@@ -1786,33 +1823,60 @@ Automated SLA follow-up alerts have been scheduled.`);
       return;
     }
 
-    grid.innerHTML = pool.map(s => `
+    grid.innerHTML = pool.map(s => {
+      const schemeTitle = s.name || s.scheme_name || 'Water Conservation Scheme';
+      const schemeDesc = s.water_savings_potential || s.target_beneficiaries || s.objective || 'Official government water conservation and irrigation assistance scheme.';
+
+      let subsidyText = '50% - 90%';
+      if (typeof s.subsidy_rules === 'string') {
+        subsidyText = s.subsidy_rules;
+      } else if (s.subsidy_rules && typeof s.subsidy_rules === 'object') {
+        subsidyText = s.subsidy_rules.small_and_marginal_farmers || s.subsidy_rules.farm_pond_grant || s.subsidy_rules.solar_feeder_power || s.subsidy_rules.details || Object.values(s.subsidy_rules)[0] || '50% - 90%';
+      } else if (s.subsidy_percentage) {
+        subsidyText = s.subsidy_percentage;
+      }
+
+      let eligText = 'All farmers with valid land records.';
+      if (Array.isArray(s.eligibility_criteria) && s.eligibility_criteria.length > 0) {
+        eligText = s.eligibility_criteria[0];
+      } else if (typeof s.eligibility_criteria === 'string') {
+        eligText = s.eligibility_criteria;
+      } else if (s.eligibility_summary) {
+        eligText = s.eligibility_summary;
+      }
+
+      const agencyText = s.implementing_agency || s.max_assistance || 'State Agriculture & Horticulture Department';
+      const portalUrl = s.portal_url || s.official_portal || '#';
+      const statesList = Array.isArray(s.applicable_states) ? s.applicable_states.join(', ') : (s.state || 'Pan-India');
+
+      return `
       <article class="scheme-card" style="border-left: 4px solid #0284c7;">
         <div class="scheme-header-area">
-          <span class="badge badge-central">${s.level} • ${s.category}</span>
-          <h3 class="scheme-title" style="margin-top: 0.35rem;">${s.scheme_name}</h3>
-          <p class="scheme-desc">${s.objective || ''}</p>
+          <span class="badge badge-central">${escapeHtml(s.level || 'State/Central')} • ${escapeHtml(s.category || 'Water Conservation')}</span>
+          <h3 class="scheme-title" style="margin-top: 0.35rem; color: #0f172a; font-size: 1.15rem; font-weight: 700;">${escapeHtml(schemeTitle)}</h3>
+          <p class="scheme-desc" style="color: #475569; font-size: 0.85rem; line-height: 1.45; margin-top: 0.25rem;">${escapeHtml(schemeDesc)}</p>
         </div>
         <div class="scheme-body-area">
           <div class="benefit-highlight">
             <span class="benefit-label">Subsidy Rate</span>
-            <div class="benefit-value" style="color: #0369a1;">${s.subsidy_percentage || '50% - 90%'}</div>
+            <div class="benefit-value" style="color: #0369a1; font-size: 0.95rem; font-weight: 700;">${escapeHtml(subsidyText)}</div>
           </div>
           <div class="scheme-field">
             <span class="field-title">Key Eligibility</span>
-            <p class="field-content">${s.eligibility_summary || 'All farmers with valid land records.'}</p>
+            <p class="field-content">${escapeHtml(eligText)}</p>
           </div>
           <div class="scheme-field">
-            <span class="field-title">Max Assistance / Cap</span>
-            <p class="field-content">${s.max_assistance || 'As per DLTC norms'}</p>
+            <span class="field-title">Implementing Agency</span>
+            <p class="field-content">${escapeHtml(agencyText)}</p>
           </div>
         </div>
         <div class="card-footer-area">
-          <span class="last-verified-text">State: ${(s.applicable_states || []).join(', ')}</span>
-          <a href="${s.official_portal || '#'}" target="_blank" class="official-link-btn" style="background: #0284c7;">Portal ↗</a>
+          <span class="last-verified-text">State: ${escapeHtml(statesList)}</span>
+          <a href="${escapeHtml(portalUrl)}" target="_blank" rel="noopener noreferrer" class="official-link-btn" style="background: #0284c7;">Portal ↗</a>
         </div>
       </article>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function renderLowWaterCrops() {
@@ -1828,26 +1892,37 @@ Automated SLA follow-up alerts have been scheduled.`);
 
     if (badge) badge.textContent = `${pool.length} Crops Available`;
 
-    grid.innerHTML = pool.map(c => `
+    grid.innerHTML = pool.map(c => {
+      const cropTitle = c.name || c.crop_name || 'Resilient Low-Water Crop';
+      const cat = c.category || 'Alternative Crop';
+      const savings = c.water_savings_percentage || c.water_savings_vs_paddy || '-65% Water';
+      const mspVal = c.msp_rate_per_quintal ? ('₹' + c.msp_rate_per_quintal.toLocaleString() + ' / quintal') : (c.msp_2024_25 || 'MSP Support');
+      const duration = c.duration_days || '90-110 days';
+      const waterReq = c.water_requirement_mm || '300-450 mm';
+      const soilBen = c.soil_health_benefit || c.economic_advisory || (Array.isArray(c.attached_schemes) ? c.attached_schemes[0] : 'High drought resilience.');
+      const varieties = Array.isArray(c.recommended_varieties) ? c.recommended_varieties.join(', ') : (c.recommended_varieties || '');
+
+      return `
       <div class="card" style="border-left: 4px solid #16a34a; margin-bottom: 0;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
           <div>
-            <span class="badge-tag badge-tag-green">${c.category}</span>
-            <h4 style="margin: 0.35rem 0 0.1rem 0; font-size: 1.1rem;">${c.crop_name}</h4>
-            <span style="font-size: 0.82rem; color: var(--text-muted);">${c.telugu_name || ''} • ${c.hindi_name || ''}</span>
+            <span class="badge-tag badge-tag-green">${escapeHtml(cat)}</span>
+            <h4 style="margin: 0.35rem 0 0.1rem 0; font-size: 1.1rem; color: #1e293b;">${escapeHtml(cropTitle)}</h4>
+            ${c.season_suitability ? `<span style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(c.season_suitability)}</span>` : ''}
           </div>
-          <span class="badge-tag badge-tag-amber" style="font-weight: 800;">${c.water_savings_vs_paddy || '-70% Water'}</span>
+          <span class="badge-tag badge-tag-amber" style="font-weight: 800; white-space: nowrap;">${escapeHtml(savings)}</span>
         </div>
-        <div style="margin: 0.75rem 0; background: #f8fafc; padding: 0.6rem; border-radius: 6px; font-size: 0.85rem;">
-          <div><strong>MSP Rate:</strong> ${c.msp_2024_25 || 'Market Linked'}</div>
-          <div><strong>Duration:</strong> ${c.duration_days || '90-120'} days • <strong>Drought Tolerance:</strong> ${c.drought_tolerance || 'High'}</div>
-          <div><strong>Water Req:</strong> ${c.water_requirement_mm || '400-500'} mm (vs Paddy 1200mm)</div>
+        <div style="margin: 0.75rem 0; background: #f8fafc; padding: 0.6rem; border-radius: 6px; font-size: 0.84rem; line-height: 1.5;">
+          <div><strong>MSP Rate:</strong> <span style="color: #15803d; font-weight: 700;">${escapeHtml(mspVal)}</span></div>
+          <div><strong>Duration:</strong> ${escapeHtml(duration)} • <strong>Water Req:</strong> ${escapeHtml(waterReq)}</div>
+          ${varieties ? `<div style="font-size: 0.78rem; color: #475569; margin-top: 0.2rem;"><strong>Seeds:</strong> ${escapeHtml(varieties)}</div>` : ''}
         </div>
-        <p style="font-size: 0.82rem; color: #475569; margin: 0; line-height: 1.4;">
-          ${c.economic_advisory || ''}
+        <p style="font-size: 0.82rem; color: #334155; margin: 0; line-height: 1.4;">
+          ${escapeHtml(soilBen)}
         </p>
       </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   // =========================================================================
