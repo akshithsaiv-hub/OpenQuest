@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "project": "Kisan Setu (OpenQuest)",
+  "hook": {
+    "enabled": true,
+    "lastActivated": "2026-11-05T16:10:00Z",
+    "mode": "strict",
+    "rules": {
+      "noGenericAIGradients": true,
+      "minimumTouchTargetPixels": 48,
+      "contrastRatioStandard": "WCAG_2_1_AA",
+      "minimumFontSize": "14px",
+      "noNestedCardLabyrinths": true,
+      "requirePersistentLanguage": true,
+      "enforceDesignTokens": true,
+      "stateFirstRule": true
+    }
+  },
+  "designSystemFile": "DESIGN.md",
+  "productContextFile": "PRODUCT.md",
+  "frontendPath": "frontend/"
+}
