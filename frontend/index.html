@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Kisan Setu - Unified Farmer Scheme & Subsidy Assistant</title>
-  <meta name="description" content="Discover Central and State agricultural subsidies, crop insurance, and farmer schemes across India with multi-language support.">
+  <meta name="description" content="Discover Central and State agricultural subsidies, crop insurance, and farmer schemes across all 29 Indian states with multi-language support.">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
@@ -47,16 +47,40 @@
         Find Government Schemes & Subsidies for Your Farm
       </h2>
       <p class="hero-subtitle" data-i18n="hero_desc">
-        Select your State or Union Territory below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
+        Select your State below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
       </p>
 
-      <!-- Prominent State Selector Card -->
-      <div class="state-selector-card">
-        <label for="stateSelect" class="selector-label" data-i18n="select_state_label">
-          📍 Select Your State / Union Territory
-        </label>
-        <div class="state-select-wrapper">
-          <span class="state-input-icon" aria-hidden="true">🗺️</span>
+      <!-- Prominent State Selector: 29 States Interactive Clickable Grid -->
+      <div class="states-selection-card">
+        <div class="states-card-header">
+          <div class="states-title-wrap">
+            <h3 class="selector-title" data-i18n="select_state_grid_title">
+              📍 Select Your State (All 29 Indian States)
+            </h3>
+            <p class="selector-subtitle" data-i18n="select_state_hint">
+              Tap your state box below to display available state subsidies and central schemes.
+            </p>
+          </div>
+          <div class="state-search-box">
+            <span class="state-search-icon" aria-hidden="true">🔍</span>
+            <input 
+              id="stateSearchInput" 
+              type="search" 
+              class="state-search-input" 
+              placeholder="Filter 29 states (e.g. Telangana, Punjab, Maharashtra)..." 
+              aria-label="Filter 29 states"
+            >
+          </div>
+        </div>
+
+        <!-- The 29 States Responsive Grid -->
+        <div id="statesGrid" class="states-grid" role="group" aria-label="Select State from 29 Indian States">
+          <!-- Dynamically populated by app.js with 29 clickable state boxes -->
+        </div>
+
+        <!-- Accessible synchronized select element for fallback & audit compliance -->
+        <div class="state-select-wrapper" style="margin-top: 1rem;">
+          <label for="stateSelect" class="sr-only">Or choose state from list</label>
           <select id="stateSelect" class="state-select-input" aria-required="true">
             <!-- Populated dynamically by app.js -->
           </select>
@@ -73,7 +97,7 @@
       Please select your State above to view available schemes and subsidies.
     </h3>
     <p class="guide-text">
-      Agricultural welfare and subsidies vary by State. Once you select your location, the assistant will immediately display both your State Government subsidies and Central Government schemes.
+      Agricultural welfare and subsidies vary by State. Once you click your state box above, the assistant will immediately display both your State Government subsidies and Central Government schemes.
     </p>
   </section>
 
@@ -89,7 +113,7 @@
             <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;" data-i18n="state_selected_banner">Showing Agricultural Schemes for</span>
           </div>
           <span id="bannerStateName" class="banner-state-name">Telangana</span>
-          <span id="bannerStats" class="banner-stats">(2 State + 6 Central)</span>
+          <span id="bannerStats" class="banner-stats">(State Schemes + Central Schemes)</span>
         </div>
       </div>
       <button id="changeStateBtn" class="change-state-btn" type="button">
@@ -166,6 +190,142 @@
 
   </main>
 
+  <!-- Interactive Eligibility Evaluation Modal -->
+  <div id="eligibilityModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalSchemeTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <span id="modalBadge" class="badge-central">🇮🇳 Central Govt Scheme</span>
+          <h3 id="modalSchemeTitle" class="modal-title">Eligibility Evaluation</h3>
+          <p id="modalSchemeSubtitle" class="modal-subtitle">Scheme details</p>
+        </div>
+        <button id="closeModalBtn" class="modal-close-btn" type="button" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Farmer Profile Input Form -->
+        <section class="modal-form-section" aria-label="Farmer Profile Form">
+          <h4 class="form-section-title" data-i18n="farmer_details_heading">
+            🧑‍🌾 Enter Your Farming Profile Details
+          </h4>
+          <p class="form-section-subtitle" data-i18n="form_subtitle">
+            Your details are matched in real-time against this scheme's verified statutory rules.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="evalStateSelect" class="form-label" data-i18n="label_state">
+                📍 State / Location
+              </label>
+              <select id="evalStateSelect" class="form-input">
+                <!-- Populated with all 29 states -->
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="evalFarmerType" class="form-label" data-i18n="label_farmer_type">
+                👥 Farmer Land Ownership Type
+              </label>
+              <select id="evalFarmerType" class="form-input">
+                <option value="owner">👨‍🌾 Landowning Farmer (with Patta / Passbook)</option>
+                <option value="tenant_registered">📑 Tenant Farmer (with written lease / CCRC card)</option>
+                <option value="tenant_oral">🤝 Oral Tenant / Sharecropper (no written agreement)</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="evalLandAcres" class="form-label" data-i18n="label_land_acres">
+                📐 Cultivated Land (in Acres)
+              </label>
+              <input id="evalLandAcres" type="number" step="0.1" min="0" max="1000" class="form-input" value="2.5" placeholder="e.g. 2.5">
+            </div>
+
+            <div class="form-field">
+              <label for="evalCrop" class="form-label" data-i18n="label_crop">
+                🌾 Primary Crop Sown
+              </label>
+              <select id="evalCrop" class="form-input">
+                <option value="Paddy">Paddy / Rice (వరి / धान)</option>
+                <option value="Cotton">Cotton (ప్రత్తి / कपास)</option>
+                <option value="Wheat">Wheat (గోధుమ / गेहूं)</option>
+                <option value="Maize">Maize / Corn (మొక్కజొన్న / मक्का)</option>
+                <option value="Soybean">Soybean (సోయాబీన్ / सोयाबीन)</option>
+                <option value="Groundnut">Groundnut (వేరుశనగ / मूंगफली)</option>
+                <option value="Red Gram">Red Gram / Tur (కందులు / अरहर)</option>
+                <option value="Chilli">Chilli / Spices (మిరప / मिर्च)</option>
+                <option value="Sugarcane">Sugarcane (చెరకు / गन्ना)</option>
+                <option value="Millet">Millets / Jowar / Bajra (చిరుధాన్యాలు / बाजरा)</option>
+                <option value="Mustard">Mustard (ఆవాలు / सरसों)</option>
+                <option value="Apple">Apple / Orchard (ఆపిల్ / सेब)</option>
+                <option value="Cardamom">Cardamom / Spices (ఏలకులు / इलायची)</option>
+                <option value="Ginger">Ginger / Turmeric (అల్లం / अदरक)</option>
+                <option value="Horticulture">Vegetables & Fruits (కూరగాయలు / सब्जियां)</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="evalAge" class="form-label" data-i18n="label_age">
+                🎂 Farmer Age (Years)
+              </label>
+              <input id="evalAge" type="number" min="14" max="100" class="form-input" value="40" placeholder="e.g. 40">
+            </div>
+
+            <div class="form-field">
+              <label for="evalTaxPayer" class="form-label" data-i18n="label_tax_payer">
+                💼 Income Tax Payer Status
+              </label>
+              <select id="evalTaxPayer" class="form-input">
+                <option value="no">❌ No (Non-Taxpayer / Agri Income Only)</option>
+                <option value="yes">✅ Yes (Pays Income Tax on Other Income)</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Live Deterministic Criteria Evaluation Results -->
+        <section class="modal-results-section" aria-live="polite">
+          <h4 class="form-section-title" data-i18n="evaluation_results_heading">
+            📊 Criteria Match Breakdown
+          </h4>
+
+          <!-- Overall Verdict Banner -->
+          <div id="evalVerdictBanner" class="verdict-banner verdict-eligible">
+            <div id="evalVerdictIcon" class="verdict-icon">🟢</div>
+            <div class="verdict-text-box">
+              <div id="evalVerdictTitle" class="verdict-title">Eligible for This Scheme!</div>
+              <div id="evalVerdictDesc" class="verdict-desc">Your profile satisfies all required conditions.</div>
+            </div>
+          </div>
+
+          <!-- Criteria Checklist -->
+          <div id="evalCriteriaList" class="eval-criteria-list">
+            <!-- Dynamically populated with each criterion pass/fail -->
+          </div>
+
+          <!-- Required Documents Section in Modal -->
+          <div class="modal-docs-box">
+            <div class="section-label" style="font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
+              📑 Required Documents Checklist
+            </div>
+            <ul id="modalDocList" class="doc-list">
+              <!-- Documents required -->
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button id="modalDoneBtn" class="modal-secondary-btn" type="button">
+          Done / Close
+        </button>
+        <a id="modalOfficialLink" href="#" target="_blank" rel="noopener noreferrer" class="official-link-btn">
+          <span>Apply on Official Portal</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Accessibility Footer -->
   <footer class="site-footer" role="contentinfo">
     <div class="footer-content">
@@ -173,10 +333,10 @@
         🌾 Kisan Setu / Rythu Sahayata — Unified Farmer Assistant
       </p>
       <p>
-        Grounded in official Central & State Government agricultural portals. Every scheme displays direct official sources, verified eligibility parameters, and emergency intimation windows.
+        Grounded in official Central & State Government agricultural portals across all 29 Indian States. Every scheme displays direct official sources, verified eligibility parameters, and emergency intimation windows.
       </p>
       <p style="font-size: 0.8rem; margin-top: 0.5rem;">
-        Empowering Small, Marginal, and Tenant Farmers across Indian States with Zero Hallucination.
+        Empowering Small, Marginal, and Tenant Farmers across India with 100% Deterministic Rule Matching.
       </p>
     </div>
   </footer>
