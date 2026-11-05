@@ -1,0 +1,150 @@
+[
+  {
+    "scheme_id": "pm_kisan",
+    "scheme_name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+    "level": "Central",
+    "state": "All",
+    "description": "Direct income support of ₹6,000 per year in three equal four-monthly installments of ₹2,000 each directly credited to Aadhaar-seeded bank accounts of landholding farmer families.",
+    "benefit_amount": 6000,
+    "benefit_summary": "₹6,000 per year (3 equal installments of ₹2,000 every 4 months via DBT)",
+    "rules": {
+      "requires_land_ownership": true,
+      "tenant_allowed": false,
+      "max_land_acres": null,
+      "min_age": 18,
+      "max_age": null,
+      "excluded_categories": [
+        "income_tax_payer",
+        "institutional_landholder",
+        "government_employee_retired_or_serving",
+        "pensioner_above_10000_per_month"
+      ]
+    },
+    "documents_required": [
+      "Aadhaar Card linked to active mobile number",
+      "Pahani / Land Record RoR-1B (Dharani/Bhu Bharati passbook in Telangana)",
+      "Bank Account details seeded with Aadhaar and NPCI enabled",
+      "Completed e-KYC on PM-KISAN portal (OTP-based or Biometric at CSC)"
+    ],
+    "deadlines": "Continuous enrollment year-round. e-KYC must be completed prior to the release of each 4-monthly installment tranche.",
+    "claim_window": "Non-insurance DBT scheme. For missed installments, FTO pending issues, or Aadhaar unseeding grievances, redirect to the official Kisan e-Mitra AI chatbot or PM-KISAN grievance portal.",
+    "source_url": "https://pmkisan.gov.in/",
+    "last_verified": "2026-10-25",
+    "kisan_e_mitra_redirect": true
+  },
+  {
+    "scheme_id": "pmfby",
+    "scheme_name": "PMFBY (Pradhan Mantri Fasal Bima Yojana)",
+    "level": "Central / State Shared",
+    "state": "Telangana",
+    "description": "Comprehensive yield-based and localized crop loss insurance against non-preventable natural risks (drought, flood, unseasonal rains, pest epidemics). Nominal farmer premium: 2% for Kharif crops, 1.5% for Rabi crops, and 5% for commercial/horticultural crops.",
+    "benefit_amount": null,
+    "benefit_summary": "Sum-insured payout based on crop yield loss threshold (Farmer pays only 1.5% - 2% premium)",
+    "rules": {
+      "requires_land_ownership": false,
+      "tenant_allowed": true,
+      "max_land_acres": null,
+      "min_age": 18,
+      "max_age": null,
+      "supported_crops": ["Paddy", "Cotton", "Maize", "Red Gram", "Soybean", "Chilli", "Groundnut", "Turmeric"]
+    },
+    "documents_required": [
+      "Aadhaar Card",
+      "Land Record (Pattadar passbook / RoR-1B) OR Tenant Sowing Declaration / Loan Eligibility Card (LEC)",
+      "Sowing Certificate issued by Village Agricultural Extension Officer (AEO)",
+      "Bank Passbook / Cancelled Cheque with IFSC code",
+      "Geo-tagged photographs of crop damage submitted on the Crop Insurance Mobile App"
+    ],
+    "deadlines": "Seasonal enrollment cut-offs: 31st July for Kharif season; 31st December for Rabi season.",
+    "claim_window": "CRITICAL 72-HOUR RULE: Intimation of localized calamities (hailstorm, cloudburst, inundation) and post-harvest damage must be reported within 72 HOURS of occurrence via Crop Insurance App, toll-free helpline 14447, or local bank branch.",
+    "source_url": "https://pmfby.gov.in/",
+    "last_verified": "2026-10-20",
+    "kisan_e_mitra_redirect": false
+  },
+  {
+    "scheme_id": "rythu_bharosa",
+    "scheme_name": "Telangana Rythu Bharosa (Agricultural Investment Support)",
+    "level": "State",
+    "state": "Telangana",
+    "description": "Government of Telangana investment assistance of ₹12,000 per acre per year (disbursed as ₹6,000 per acre for Kharif and ₹6,000 per acre for Rabi) for actively cultivated agricultural lands.",
+    "benefit_amount": 12000,
+    "benefit_summary": "₹12,000 per acre per year (₹6,000/acre in Kharif and ₹6,000/acre in Rabi, up to 10 acres cultivable ceiling)",
+    "rules": {
+      "requires_land_ownership": true,
+      "rofr_patta_allowed": true,
+      "tenant_allowed": false,
+      "max_land_acres": 10.0,
+      "min_age": 18,
+      "max_age": null,
+      "state_restriction": "Telangana"
+    },
+    "documents_required": [
+      "Pattadar Passbook / Dharani (Bhu Bharati) Digital Land Title / RoFR Patta (Tribal forest cultivator title)",
+      "Aadhaar Card of the pattadar",
+      "Active Bank Account seeded with Aadhaar (NPCI enabled)",
+      "Active mobile number linked to land records"
+    ],
+    "deadlines": "Disbursement tranches released at the commencement of agricultural seasons: Kharif (June-July) and Rabi (October-November).",
+    "claim_window": "Grievance redressal window: If payment fails due to IFSC/NPCI mapping, submission of corrected bank verification to Mandal Agricultural Officer (MAO) within 30 days of tranche release.",
+    "source_url": "https://rythubharosa.telangana.gov.in/",
+    "last_verified": "2026-10-15",
+    "kisan_e_mitra_redirect": false
+  },
+  {
+    "scheme_id": "rythu_bima",
+    "scheme_name": "Telangana Rythu Bima (Farmers Group Life Insurance Scheme)",
+    "level": "State",
+    "state": "Telangana",
+    "description": "₹5,00,000 financial relief to the enrolled farmer's nominee within 10 to 15 days in case of death (natural or accidental). The entire annual premium is paid by the Government of Telangana to LIC.",
+    "benefit_amount": 500000,
+    "benefit_summary": "₹5,00,000 life insurance financial security to designated nominee (Zero farmer premium, 100% state funded)",
+    "rules": {
+      "requires_land_ownership": true,
+      "rofr_patta_allowed": true,
+      "tenant_allowed": false,
+      "min_age": 18,
+      "max_age": 59,
+      "state_restriction": "Telangana"
+    },
+    "documents_required": [
+      "Pattadar Passbook showing name on Dharani portal or RoFR Patta",
+      "Aadhaar Card of deceased farmer",
+      "Death Certificate issued by Gram Panchayat / Municipal authority",
+      "Aadhaar Card and Bank Passbook of registered Nominee",
+      "FIR and Post-Mortem Report (strictly required only in case of accidental death)"
+    ],
+    "deadlines": "Annual enrollment / land record linking window typically closes on August 13 of each policy year.",
+    "claim_window": "CRITICAL CLAIM WINDOW: The nominee must submit the death certificate and claim forms to the local Agriculture Extension Officer (AEO) at the Rythu Vedika within 10 DAYS of demise.",
+    "source_url": "https://rythubima.telangana.gov.in/",
+    "last_verified": "2026-10-10",
+    "kisan_e_mitra_redirect": false
+  },
+  {
+    "scheme_id": "kcc",
+    "scheme_name": "Kisan Credit Card (KCC) & Interest Subvention Scheme",
+    "level": "Central",
+    "state": "All",
+    "description": "Institutional short-term crop loans up to ₹3,00,000 at subsidized interest. Base rate is 7%, reduced to 4% effective annual interest with prompt repayment incentive (3% subvention). Collateral-free up to ₹1,60,000.",
+    "benefit_amount": 160000,
+    "benefit_summary": "Subsidized crop credit up to ₹1,60,000 collateral-free @ 4% prompt repayment annual interest rate",
+    "rules": {
+      "requires_land_ownership": false,
+      "tenant_allowed": true,
+      "max_land_acres": null,
+      "min_age": 18,
+      "max_age": 75,
+      "excluded_categories": ["loan_defaulter_with_active_recovery"]
+    },
+    "documents_required": [
+      "Filled KCC Application Form from PACS, Commercial Bank, or RRB",
+      "Land Record (Pahani / 1B) OR Registered Lease Deed / Oral Lessee Crop Declaration",
+      "Identity Proof (Aadhaar Card / Voter ID / PAN)",
+      "No-Due Certificate / Declaration of no active crop loans in the local financial cluster"
+    ],
+    "deadlines": "Continuous enrollment available round-the-year at PACS, Regional Rural Banks (APGVB / TGB), and Commercial Banks.",
+    "claim_window": "Interest subvention credited automatically upon prompt repayment on or before the loan maturity date (typically 12 months).",
+    "source_url": "https://www.myscheme.gov.in/schemes/kcc",
+    "last_verified": "2026-09-30",
+    "kisan_e_mitra_redirect": false
+  }
+]

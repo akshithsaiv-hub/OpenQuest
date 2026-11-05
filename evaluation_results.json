@@ -1,0 +1,364 @@
+{
+  "total_test_profiles": 20,
+  "profiles_passed": 20,
+  "profile_accuracy_percentage": 100.0,
+  "total_scheme_decisions": 100,
+  "correct_scheme_decisions": 100,
+  "decision_accuracy_percentage": 100.0,
+  "true_positives": 69,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "true_negatives": 31,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "edge_cases_covered": [
+    "Landless agricultural laborers (0 acres)",
+    "Tenant farmers with oral leases",
+    "Tribal farmers with RoFR title deeds",
+    "Ceiling limits (exact 10.0 acres vs 10.1 acres)",
+    "Age boundaries (<18, exact 18, exact 59, exact 60, senior >75)",
+    "Income-tax exclusions",
+    "Out-of-state geographic residency filters",
+    "Crop season notification coverage",
+    "Multi-crop diversification"
+  ],
+  "detailed_results": [
+    {
+      "profile_id": "P01",
+      "description": "Standard small landholder, 2.5 acres, age 40, Paddy, Telangana, non-taxpayer",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P02",
+      "description": "Marginal tenant farmer (oral lease), 1.5 acres, age 32, Paddy, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "predicted_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P03",
+      "description": "Large landholder, 15 acres (>10 cap for Rythu Bharosa), age 45, Cotton, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bima",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "rythu_bima",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P04",
+      "description": "Senior farmer age 63 (>59 cap for Rythu Bima), 3.0 acres, Paddy, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bharosa",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "rythu_bharosa",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P05",
+      "description": "Minor age 17 (<18 min age for all schemes), 2.0 acres, Cotton, Telangana",
+      "passed": true,
+      "expected_eligible": [],
+      "predicted_eligible": [],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P06",
+      "description": "Income-tax payer farmer (excluded from PM-KISAN), 4.0 acres, age 42, Paddy, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bharosa",
+        "rythu_bima",
+        "pmfby",
+        "kcc"
+      ],
+      "predicted_eligible": [
+        "rythu_bharosa",
+        "rythu_bima",
+        "pmfby",
+        "kcc"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P07",
+      "description": "Tribal farmer with RoFR patta, 2.0 acres, age 35, Soybean, Adilabad",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P08",
+      "description": "Out-of-state farmer (Andhra Pradesh), 3.0 acres, age 38, Paddy (ineligible for Telangana schemes)",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P09",
+      "description": "Farmer growing unnotified crop (Rubber), 2.0 acres, age 40, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bharosa",
+        "rythu_bima",
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "rythu_bharosa",
+        "rythu_bima",
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P10",
+      "description": "Tenant farmer growing Cotton, 3.0 acres, age 50, Khammam",
+      "passed": true,
+      "expected_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "predicted_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P11",
+      "description": "Landless agricultural worker (0 acres), age 30, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "kcc"
+      ],
+      "predicted_eligible": [
+        "kcc"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P12",
+      "description": "Boundary test: exactly 10.0 acres ceiling for Rythu Bharosa, age 52, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P13",
+      "description": "Boundary test: 10.1 acres (just above 10.0 cap for Rythu Bharosa), age 52, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bima",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "rythu_bima",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P14",
+      "description": "Boundary test: exactly age 18 minimum age limit, 2.0 acres, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P15",
+      "description": "Boundary test: exactly age 59 maximum age limit for Rythu Bima, 3.0 acres, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P16",
+      "description": "Boundary test: age 60 (just above 59 cutoff for Rythu Bima), 3.0 acres, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "rythu_bharosa",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "rythu_bharosa",
+        "pmfby",
+        "kcc",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P17",
+      "description": "Age 76 senior tenant (>75 max age for KCC), 2.0 acres, Paddy",
+      "passed": true,
+      "expected_eligible": [
+        "pmfby"
+      ],
+      "predicted_eligible": [
+        "pmfby"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P18",
+      "description": "Multi-crop diversified farmer (Paddy, Cotton, Maize), 5.0 acres, age 44, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P19",
+      "description": "Commercial horticultural crop grower (Chilli), 2.5 acres, age 39, Warangal",
+      "passed": true,
+      "expected_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "predicted_eligible": [
+        "kcc",
+        "rythu_bima",
+        "pmfby",
+        "rythu_bharosa",
+        "pm_kisan"
+      ],
+      "discrepancies": []
+    },
+    {
+      "profile_id": "P20",
+      "description": "Tax-paying tenant farmer, 3.0 acres, age 41, Paddy, Telangana",
+      "passed": true,
+      "expected_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "predicted_eligible": [
+        "pmfby",
+        "kcc"
+      ],
+      "discrepancies": []
+    }
+  ]
+}

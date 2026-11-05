@@ -1,0 +1,160 @@
+{
+  "crops": {
+    "Paddy": {
+      "season": "Kharif / Rabi",
+      "seed_rate_per_acre": "20-25 kg (Fine) / 30 kg (Coarse)",
+      "estimated_seed_cost_per_acre": 1200,
+      "recommended_fertilizer_schedule": [
+        {
+          "input_name": "Urea (45 kg bag)",
+          "bags_per_acre": 2.5,
+          "statutory_mrp_per_bag": 266.50,
+          "timing": "Split into 3 doses: basal, tillering, panicle initiation"
+        },
+        {
+          "input_name": "DAP - Di-Ammonium Phosphate (50 kg bag)",
+          "bags_per_acre": 1.0,
+          "statutory_mrp_per_bag": 1350.00,
+          "timing": "Full dose at basal (during land preparation)"
+        },
+        {
+          "input_name": "MOP - Muriate of Potash (50 kg bag)",
+          "bags_per_acre": 0.5,
+          "statutory_mrp_per_bag": 1650.00,
+          "timing": "Split between basal and panicle initiation"
+        },
+        {
+          "input_name": "Zinc Sulphate (21% or 33%)",
+          "bags_per_acre": "10 kg",
+          "statutory_mrp_per_bag": 450.00,
+          "timing": "Basal application to prevent khaira disease"
+        }
+      ],
+      "estimated_total_fertilizer_cost_per_acre": 3300,
+      "estimated_crop_protection_cost_per_acre": 1800,
+      "estimated_total_input_budget_per_acre": 6300,
+      "budget_advisory": "Do not pay more than ₹266.50 per 45kg bag of Neem Coated Urea. Check POS receipt and demand bill with farmer Aadhaar."
+    },
+    "Cotton": {
+      "season": "Kharif",
+      "seed_rate_per_acre": "2 packets (450g each Bt-Cotton)",
+      "estimated_seed_cost_per_acre": 1728,
+      "recommended_fertilizer_schedule": [
+        {
+          "input_name": "Urea (45 kg bag)",
+          "bags_per_acre": 3.0,
+          "statutory_mrp_per_bag": 266.50,
+          "timing": "Split in 4 doses at 20, 40, 60, 80 DAS"
+        },
+        {
+          "input_name": "DAP (50 kg bag) or Complex 20:20:0:13",
+          "bags_per_acre": 1.5,
+          "statutory_mrp_per_bag": 1350.00,
+          "timing": "Basal and vegetative stage"
+        },
+        {
+          "input_name": "MOP - Potash (50 kg bag)",
+          "bags_per_acre": 1.0,
+          "statutory_mrp_per_bag": 1650.00,
+          "timing": "Split at boll development stages"
+        },
+        {
+          "input_name": "Magnesium Sulphate + Boron spray",
+          "bags_per_acre": "1 kit",
+          "statutory_mrp_per_bag": 600.00,
+          "timing": "During flowering and boll bursting to prevent leaf reddening"
+        }
+      ],
+      "estimated_total_fertilizer_cost_per_acre": 5075,
+      "estimated_crop_protection_cost_per_acre": 2800,
+      "estimated_total_input_budget_per_acre": 9603,
+      "budget_advisory": "Government capped Bt-Cotton seed price is ₹864 per 450g packet. Beware of unapproved illegal HTBt seeds sold by local brokers."
+    },
+    "Maize": {
+      "season": "Kharif / Rabi",
+      "seed_rate_per_acre": "7-8 kg hybrid seed",
+      "estimated_seed_cost_per_acre": 1800,
+      "recommended_fertilizer_schedule": [
+        {
+          "input_name": "Urea (45 kg bag)",
+          "bags_per_acre": 2.5,
+          "statutory_mrp_per_bag": 266.50,
+          "timing": "Basal, knee-high, and tasseling stages"
+        },
+        {
+          "input_name": "DAP (50 kg bag)",
+          "bags_per_acre": 1.0,
+          "statutory_mrp_per_bag": 1350.00,
+          "timing": "Full dose at sowing"
+        },
+        {
+          "input_name": "MOP (50 kg bag)",
+          "bags_per_acre": 0.5,
+          "statutory_mrp_per_bag": 1650.00,
+          "timing": "Basal / knee-high"
+        }
+      ],
+      "estimated_total_fertilizer_cost_per_acre": 2841,
+      "estimated_crop_protection_cost_per_acre": 1200,
+      "estimated_total_input_budget_per_acre": 5841,
+      "budget_advisory": "Look out for Fall Armyworm (FAW) early. Pheromone traps cost ₹150 and save up to ₹1,500 in repeated chemical sprays."
+    }
+  },
+  "verified_dealers_and_pacs": [
+    {
+      "district": "Warangal",
+      "mandal": "Enumamula / Warangal Urban",
+      "facility_name": "Enumamula Primary Agricultural Cooperative Society (PACS)",
+      "entity_type": "Government Cooperative Society (Subsidized Fertilizers & Certified Seeds)",
+      "contact_person": "M. Raji Reddy (Secretary)",
+      "phone": "+91-98480-12345",
+      "address": "Opposite Agricultural Market Yard Gate No. 2, Enumamula, Warangal",
+      "stocks_available": ["Urea", "DAP", "Certified Paddy Seeds (Telangana Sona / RNR 15048)", "Zinc"],
+      "dealer_type": "Official Cooperative (Zero Brokerage / Statutory MRP)"
+    },
+    {
+      "district": "Warangal",
+      "mandal": "Narsampet",
+      "facility_name": "Narsampet Farmers Producer Company Ltd (FPO)",
+      "entity_type": "Farmer Producer Organization (Direct Farmer to Farmer Inputs)",
+      "contact_person": "K. Srinivas Rao (FPO Manager)",
+      "phone": "+91-94401-23456",
+      "address": "Main Road, Near Bus Stand, Narsampet, Warangal Rural",
+      "stocks_available": ["Cotton Seeds (Govt Approved Bt-II)", "Bio-fertilizers", "Neem Oil", "Micro-nutrients"],
+      "dealer_type": "Registered FPO (Wholesale rates to member & non-member farmers)"
+    },
+    {
+      "district": "Suryapet",
+      "mandal": "Suryapet Town",
+      "facility_name": "Suryapet District Cooperative Central Bank (DCCB / PACS Yard)",
+      "entity_type": "PACS Authorized Fertilizer Depot",
+      "contact_person": "Ch. Venkanna (Fertilizer Incharge)",
+      "phone": "+91-94901-56789",
+      "address": "Market Road, Near Old Bus Stand, Suryapet",
+      "stocks_available": ["Urea", "DAP", "Complex 20:20:0:13", "MOP"],
+      "dealer_type": "Official Cooperative (Biometric POS Billing)"
+    },
+    {
+      "district": "Khammam",
+      "mandal": "Khammam Urban",
+      "facility_name": "Khammam Rythu Seva Sahakara Sangham (PACS)",
+      "entity_type": "Government Certified Agricultural Input Hub",
+      "contact_person": "B. Nageshwar Rao",
+      "phone": "+91-98661-34567",
+      "address": "Beside Agricultural Market Yard, Wyra Road, Khammam",
+      "stocks_available": ["Urea", "Certified Chilli & Paddy Seeds", "MOP", "DAP"],
+      "dealer_type": "Official Cooperative (Strict MRP enforcement)"
+    },
+    {
+      "district": "Nizamabad",
+      "mandal": "Nizamabad Rural",
+      "facility_name": "Nizamabad Rythu Utpatidarula FPO",
+      "entity_type": "Certified Seed Producer & Organic Input Distributor",
+      "contact_person": "T. Gangadhar (FPO Director)",
+      "phone": "+91-97012-78901",
+      "address": "Armoor Road, Near Rythu Bazaar, Nizamabad",
+      "stocks_available": ["Certified Soybean Seeds", "Maize Hybrid Seeds", "Rhizobium Culture", "Urea"],
+      "dealer_type": "Registered FPO / Cooperative"
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+[
+  {
+    "crop": "Paddy (Common)",
+    "variety": "Common Grade (MTU 1010 / IR 64)",
+    "category": "Cereal",
+    "msp_per_quintal": 2300,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "Cabinet Committee on Economic Affairs (CCEA), Govt of India Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Warangal (Enumamula APMC)",
+        "district": "Warangal",
+        "modal_price": 2180,
+        "min_price": 2050,
+        "max_price": 2260,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Nizamabad APMC",
+        "district": "Nizamabad",
+        "modal_price": 2220,
+        "min_price": 2100,
+        "max_price": 2280,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Suryapet Mandi",
+        "district": "Suryapet",
+        "modal_price": 2210,
+        "min_price": 2120,
+        "max_price": 2250,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "PACS Enumamula Yard, Warangal",
+      "Civil Supplies Corporation Paddy Procurement Center (PPC), Suryapet",
+      "IKP / SHG Paddy Procurement Centers at Mandal Rythu Vedikas"
+    ],
+    "quality_standards_advisory": "Moisture content must be strictly <= 17.0% for 100% full MSP payment (₹2,300/qtl). Foreign matter limit < 2.0%."
+  },
+  {
+    "crop": "Paddy (Grade A)",
+    "variety": "Superfine (Telangana Sona / RNR 15048 / BPT 5204)",
+    "category": "Cereal",
+    "msp_per_quintal": 2320,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA, Govt of India",
+    "mandi_reports": [
+      {
+        "mandi_name": "Warangal (Enumamula APMC)",
+        "district": "Warangal",
+        "modal_price": 2650,
+        "min_price": 2400,
+        "max_price": 2820,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Miryalaguda APMC",
+        "district": "Nalgonda",
+        "modal_price": 2700,
+        "min_price": 2450,
+        "max_price": 2880,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "Miryalaguda Millers & Civil Supplies PPC Yard",
+      "Nizamabad Agricultural Market Committee PPC"
+    ],
+    "quality_standards_advisory": "High-demand superfine varieties in open market can fetch premium over MSP. Ensure moisture < 17%."
+  },
+  {
+    "crop": "Cotton (Medium Staple)",
+    "variety": "Kapas (Length 24.5mm - 25.5mm)",
+    "category": "Commercial / Fiber",
+    "msp_per_quintal": 7121,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Warangal (Enumamula APMC)",
+        "district": "Warangal",
+        "modal_price": 7350,
+        "min_price": 6800,
+        "max_price": 7650,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Adilabad Cotton Yard",
+        "district": "Adilabad",
+        "modal_price": 7200,
+        "min_price": 6700,
+        "max_price": 7450,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "Cotton Corporation of India (CCI) Center, Warangal Enumamula",
+      "CCI Center Adilabad Ginning Mills",
+      "Khammam Cotton Market Yard"
+    ],
+    "quality_standards_advisory": "Standard moisture: 8%. Acceptable range 9% to 12% with proportionate dockage. Above 12% moisture is rejected by CCI."
+  },
+  {
+    "crop": "Cotton (Long Staple)",
+    "variety": "Kapas (Length 29.5mm - 30.5mm)",
+    "category": "Commercial / Fiber",
+    "msp_per_quintal": 7521,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Warangal (Enumamula APMC)",
+        "district": "Warangal",
+        "modal_price": 7750,
+        "min_price": 7200,
+        "max_price": 8200,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Kesamudram Sub-Yard",
+        "district": "Mahabubabad",
+        "modal_price": 7680,
+        "min_price": 7150,
+        "max_price": 7950,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "CCI Procurement Center, Enumamula Market Yard",
+      "Kesamudram AMC Cotton Collection Point"
+    ],
+    "quality_standards_advisory": "Clean picked cotton free from trash and yellow spots commands top modal rates."
+  },
+  {
+    "crop": "Maize",
+    "variety": "Yellow Hybrid Grain",
+    "category": "Cereal",
+    "msp_per_quintal": 2225,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Warangal (Enumamula APMC)",
+        "district": "Warangal",
+        "modal_price": 2650,
+        "min_price": 2400,
+        "max_price": 2810,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Nizamabad APMC",
+        "district": "Nizamabad",
+        "modal_price": 2600,
+        "min_price": 2350,
+        "max_price": 2750,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "MARKFED Maize Procurement Center, Nizamabad Yard",
+      "MARKFED Warangal Regional Procurement Yard"
+    ],
+    "quality_standards_advisory": "Current open mandi rate (₹2,600-2,650) is well above MSP (₹2,225) due to high poultry feed demand! Selling in Mandi yields higher margins."
+  },
+  {
+    "crop": "Red Gram (Tur / Arhar)",
+    "variety": "Pigeon Pea (Desi / Asha)",
+    "category": "Pulses",
+    "msp_per_quintal": 7550,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Tandur APMC",
+        "district": "Vikarabad",
+        "modal_price": 8100,
+        "min_price": 7600,
+        "max_price": 8450,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Mahabubnagar Mandi",
+        "district": "Mahabubnagar",
+        "modal_price": 7950,
+        "min_price": 7500,
+        "max_price": 8200,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "NAFED / MARKFED Procurement Center, Tandur",
+      "Vikarabad AMC Centre"
+    ],
+    "quality_standards_advisory": "Tandur red gram is GI-tagged and open market prices are ~₹550/qtl higher than MSP. Mandi sale is optimal."
+  },
+  {
+    "crop": "Soybean",
+    "variety": "Yellow Soybean (JS 335)",
+    "category": "Oilseeds",
+    "msp_per_quintal": 4892,
+    "season": "Kharif 2024-25 / 2025-26",
+    "official_msp_source": "CCEA Notification",
+    "mandi_reports": [
+      {
+        "mandi_name": "Adilabad APMC",
+        "district": "Adilabad",
+        "modal_price": 4450,
+        "min_price": 4150,
+        "max_price": 4600,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      },
+      {
+        "mandi_name": "Nizamabad APMC",
+        "district": "Nizamabad",
+        "modal_price": 4500,
+        "min_price": 4200,
+        "max_price": 4650,
+        "source": "Agmarknet / Telangana Agricultural Marketing Dept",
+        "date": "2026-11-04"
+      }
+    ],
+    "procurement_centers": [
+      "NAFED / HAFED Soybean Procurement Center, Adilabad Yard",
+      "MARKFED Center, Nizamabad"
+    ],
+    "quality_standards_advisory": "Mandi rate (₹4,450-4,500) is ₹392-442 BELOW MSP! Sell at NAFED / MARKFED procurement center for guaranteed ₹4,892."
+  }
+]
