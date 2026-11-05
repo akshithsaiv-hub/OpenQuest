@@ -64,9 +64,9 @@ if (fs.existsSync(htmlPath)) {
 // 3. Check Data Translations
 if (fs.existsSync(dataPath)) {
   const dataCode = fs.readFileSync(dataPath, 'utf8');
-  const hasTelugu = dataCode.includes('te:') && dataCode.includes('రైతు');
-  const hasHindi = dataCode.includes('hi:') && dataCode.includes('किसान');
-  const hasMarathi = dataCode.includes('mr:') && dataCode.includes('शेतकरी');
+  const hasTelugu = (dataCode.includes('te:') || dataCode.includes('"te":')) && dataCode.includes('రైతు');
+  const hasHindi = (dataCode.includes('hi:') || dataCode.includes('"hi":')) && dataCode.includes('किसान');
+  const hasMarathi = (dataCode.includes('mr:') || dataCode.includes('"mr":')) && dataCode.includes('शेतकरी');
   check('Localization: Regional language translations loaded (Telugu, Hindi, Marathi, Tamil, Kannada)', hasTelugu && hasHindi && hasMarathi, 'Incomplete language packs');
 }
 
