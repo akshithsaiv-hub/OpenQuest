@@ -1,0 +1,68 @@
+[
+  {
+    "scheme_id": "PMFBY-2026",
+    "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "category": "Crop Insurance",
+    "deadline": "2026-11-20",
+    "claim_window": {
+      "start": "2026-10-15",
+      "end": "2026-11-10",
+      "window_type": "Kharif Loss Assessment Notification"
+    },
+    "documents_required": [
+      "Aadhaar",
+      "Bank Passbook",
+      "Land Records",
+      "Sowing Certificate"
+    ],
+    "name_match_required": true,
+    "source_url": "https://pmfby.gov.in",
+    "last_verified": "2026-11-01"
+  },
+  {
+    "scheme_id": "PMKISAN-2026",
+    "name": "PM-KISAN Samman Nidhi",
+    "category": "Direct Income Support",
+    "deadline": "2026-11-15",
+    "claim_window": null,
+    "documents_required": [
+      "Aadhaar",
+      "Bank Passbook",
+      "Land Records"
+    ],
+    "name_match_required": true,
+    "source_url": "https://pmkisan.gov.in",
+    "last_verified": "2026-11-01"
+  },
+  {
+    "scheme_id": "RYTHU-BHAROSA-2026",
+    "name": "Rythu Bharosa Support Scheme",
+    "category": "State Agricultural Assistance",
+    "deadline": "2026-11-12",
+    "claim_window": null,
+    "documents_required": [
+      "Aadhaar",
+      "Bank Passbook",
+      "Pattadar Passbook"
+    ],
+    "name_match_required": true,
+    "source_url": "https://rythubharosa.ap.gov.in",
+    "last_verified": "2026-11-01"
+  },
+  {
+    "scheme_id": "PMKSY-2026",
+    "name": "PM Krishi Sinchayee Yojana (Micro-Irrigation)",
+    "category": "Irrigation Equipment Subsidy",
+    "deadline": "2026-12-05",
+    "claim_window": null,
+    "documents_required": [
+      "Aadhaar",
+      "Bank Passbook",
+      "Land Records",
+      "Water Source Certificate"
+    ],
+    "name_match_required": true,
+    "source_url": "https://pmksy.gov.in",
+    "last_verified": "2026-11-01"
+  }
+]

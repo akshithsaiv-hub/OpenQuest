@@ -9,12 +9,12 @@
 
 ## 🏛️ System Architecture & Capabilities
 
-This repository unites deterministic scheme eligibility, real-time climate risk mitigation, statutory insurance countdowns, and institutional credit guidance:
+This repository unites deterministic scheme eligibility, real-time climate risk mitigation, statutory insurance countdowns, institutional credit guidance, and complete farmer backend management:
 
 ```text
 OpenQuest/
 │
-├── 🧠 KNOWLEDGE BASE & DETERMINISTIC ENGINES
+├── 🧠 KNOWLEDGE BASE & DETERMINISTIC ENGINES (Person 1)
 │   ├── schemes.json             # 32+ Pan-India Central & State-Specific Farmer Agriculture Subsidies
 │   ├── data/water_saving_schemes.json # PMKSY-PDMC (Drip/Sprinkler 55-100%), PM-KUSUM B/C, TSMIP
 │   ├── data/disaster_relief.json      # SDRF/NDRF statutory norms (₹8.5k-₹22.5k/ha) & calamity ex-gratia
@@ -24,6 +24,20 @@ OpenQuest/
 │   ├── engine.py                # Deterministic rule engine (check_eligibility, evaluate_farmer_profile)
 │   ├── engine_addons.py         # MSP comparison & input budgeting modules
 │   └── test_profiles.json       # 20 diverse farmer benchmark profiles across Indian states
+│
+├── 💾 FARMER BACKEND, CONSENT & VERIFICATION (Person 3)
+│   ├── person3/
+│   │   ├── farmer_database.py       # SQLite connection manager & auto-schema setup
+│   │   ├── farmer_profiles.py       # Profile CRUD, validations & duplicate prevention
+│   │   ├── consent_manager.py       # Mandatory opt-in terms & instant consent revocation
+│   │   ├── document_checker.py      # RapidFuzz name mismatch detector & document readiness
+│   │   ├── reminder_engine.py       # Smart deadline engine & claim-window priority
+│   │   ├── intermediary_backend.py  # CSC/FPO facilitator operational dashboard backend
+│   │   ├── test_person3.py          # 12 automated unit and integration tests (100% passing)
+│   │   ├── README.md                # Comprehensive Person 3 technical guide
+│   │   └── requirements.txt         # Person 3 dependencies (rapidfuzz)
+│   ├── person3_backend.py           # Unified runnable demo & integration hub
+│   └── database/farmer_data.db      # Auto-generated SQLite database
 │
 ├── ⚡ 72-HOUR CLAIM ASSISTANT & CLIMATE SHIELD
 │   ├── utils/claim_assistant.py # 72-hr countdown timer, geo-tagged photo checklist, legal intimation SMS
@@ -35,7 +49,7 @@ OpenQuest/
 │   ├── utils/llm.py             # Multilingual explainer, strict rules & fallback routing
 │   └── utils/translation.py     # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
 │
-├── 🖥️ USER INTERFACES & RUNNERS
+├── 🖥️ USER INTERFACES & RUNNERS (Person 2)
 │   ├── ui/streamlit_app/app.py  # 8-Tab Unified Web App:
 │   │                            # 0. State & Central Scheme Browser (Mobile-First Explorer)
 │   │                            # 1. Scheme Eligibility & Chat
@@ -51,6 +65,7 @@ OpenQuest/
 │
 └── 🧪 BENCHMARKS & TESTS
     ├── tests/test_assistant.py  # 17 automated unit tests (100% passing)
+    ├── person3/test_person3.py  # 12 Person 3 backend unit tests (100% passing)
     ├── test_runner.js           # 640-decision Pan-India verification suite
     ├── evaluate_engine.py       # Python benchmark evaluation script
     └── demo.py                  # End-to-end multi-scenario CLI test runner
@@ -92,7 +107,14 @@ OpenQuest/
 - When a claim or subsidy is stalled or rejected unlawfully, generates a formal, legally grounded grievance petition.
 - Configured for 4 escalation tiers: AEO (Rythu Vedika) ➔ Mandal Agriculture Officer ➔ District Agriculture Officer / Prajavani ➔ Central CPGRAMS (`pgportal.gov.in`).
 
-### 7. 📶 Offline & Low-Tech Mode
+### 7. 💾 Person 3 Backend: Profile Persistence, Consent & Verification
+- **SQLite Storage**: Zero-configuration local database at `database/farmer_data.db` with indexed `intermediary_id` and `consent_status`.
+- **Mandatory Consent & Revocation**: Enforces explicit opt-in and provides immediate one-click consent withdrawal (`withdraw_consent`).
+- **RapidFuzz Bank-Name Matching**: Detects spelling variations (`Ravi Kumar` vs `Ravi Kumer`) with similarity scores and flags records for manual review to prevent Direct Benefit Transfer (DBT) failures without accusing users of fraud.
+- **Smart Deadline Prioritization**: Automatically prioritizes critical insurance claim-windows (Priority 1) over regular application deadlines.
+- **CSC/FPO Intermediary Mode**: Actionable worklist backend (`get_intermediary_farmers`) filtered by facilitator ID.
+
+### 8. 📶 Offline & Low-Tech Mode
 - Gracefully operates with cached meteorology and deterministic local rules without cloud dependencies.
 - Features standardized SMS keyword syntax for feature phone users without internet access.
 
@@ -104,12 +126,18 @@ OpenQuest/
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run All 17 Unit Tests
+# 2. Run All 17 Core Assistant Tests
 python -m unittest discover -s tests
 
-# 3. Launch Streamlit Web App
+# 3. Run All 12 Person 3 Backend Tests
+python person3/test_person3.py
+
+# 4. Run Person 3 Interactive Demo
+python person3_backend.py
+
+# 5. Launch Streamlit Web App
 python -m streamlit run ui/streamlit_app/app.py
 
-# 4. Launch Telegram Bot (Interactive Test Mode)
+# 6. Launch Telegram Bot (Interactive Test Mode)
 python ui/telegram_bot/bot.py --test
 ```

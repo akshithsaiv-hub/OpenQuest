@@ -1,0 +1,6 @@
+# Person 3 Backend Dependencies
+# Farmer Assistance System
+
+# RapidFuzz for fast, fuzzy Aadhaar-bank account name similarity matching
+# Note: Python standard library fallback is provided if RapidFuzz is not installed
+rapidfuzz>=3.0.0

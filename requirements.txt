@@ -1,0 +1,8 @@
+# OpenQuest - Unified AI Assistant for Farmer Scheme, Subsidy, Insurance and MSP Awareness
+# Dependencies for Backend, Person 3, and Utilities
+
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.0.0
+requests>=2.31.0
+rapidfuzz>=3.0.0
