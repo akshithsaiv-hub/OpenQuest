@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 390" width="100%" height="100%">
+  <defs>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="596" height="386" x="2" y="2" rx="10" fill="#ffffff" stroke="#1d4ed8" stroke-width="2" filter="url(#shadow3)"/>
+  
+  <!-- Bank Header -->
+  <rect x="2" y="2" width="596" height="60" rx="10 10 0 0" fill="#1e40af"/>
+  <circle cx="45" cy="32" r="18" fill="#ffffff"/>
+  <circle cx="45" cy="32" r="9" fill="#1e40af"/>
+  <rect x="42" y="32" width="6" height="15" fill="#ffffff"/>
+  <text x="80" y="28" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">భారతీయ స్టేట్ బ్యాంక్ / STATE BANK OF INDIA</text>
+  <text x="80" y="47" font-family="Arial, sans-serif" font-size="12" fill="#bfdbfe">WARANGAL AGRI-COMMERCIAL BRANCH (0020144)</text>
+
+  <!-- Passbook Header Bar -->
+  <rect x="2" y="62" width="596" height="24" fill="#dbeafe"/>
+  <text x="300" y="78" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">KCC &amp; DBT SAVINGS BANK PASSBOOK (సేవింగ్స్ ఖాతా పాస్‌బుక్)</text>
+
+  <!-- Details Grid -->
+  <g transform="translate(30, 105)" font-family="Arial, sans-serif" font-size="12">
+    <text x="0" y="16" font-weight="bold" fill="#64748b">Account Holder Name (ఖాతాదారుని పేరు):</text>
+    <text x="0" y="36" font-size="15" font-weight="bold" fill="#0f172a">KOMIRELLI RAMULU (కొమిరెల్లి రాములు)</text>
+
+    <text x="0" y="65" font-weight="bold" fill="#64748b">Account Number (ఖాతా సంఖ్య):</text>
+    <text x="0" y="86" font-family="Courier, monospace" font-size="17" font-weight="bold" fill="#1d4ed8">304928173492</text>
+
+    <text x="280" y="65" font-weight="bold" fill="#64748b">CIF Number / Customer ID:</text>
+    <text x="280" y="86" font-family="Courier, monospace" font-size="15" font-weight="bold" fill="#0f172a">88492019481</text>
+
+    <text x="0" y="115" font-weight="bold" fill="#64748b">IFS Code (ఐఎఫ్ఎస్ కోడ్):</text>
+    <text x="0" y="134" font-family="Courier, monospace" font-size="15" font-weight="bold" fill="#0f172a">SBIN0020144</text>
+
+    <text x="280" y="115" font-weight="bold" fill="#64748b">MICR Code:</text>
+    <text x="280" y="134" font-family="Courier, monospace" font-size="15" fill="#0f172a">506002008</text>
+
+    <text x="0" y="165" font-weight="bold" fill="#64748b">Branch Address (శాఖ చిరునామా):</text>
+    <text x="0" y="182" fill="#334155">Main Road, Warangal City, Telangana - 506002. Ph: 0870-2421004</text>
+  </g>
+
+  <!-- DBT & NPCI Active Status Badge -->
+  <g transform="translate(30, 305)">
+    <rect width="540" height="60" rx="6" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+    <circle cx="30" cy="30" r="14" fill="#22c55e"/>
+    <text x="30" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">✓</text>
+    <text x="56" y="24" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#15803d">Aadhaar NPCI Mapping Status: ACTIVE &amp; SEEDED (DBT Enabled)</text>
+    <text x="56" y="44" font-family="Arial, sans-serif" font-size="11" fill="#166534">Eligible for instant Direct Benefit Transfer (PM-KISAN, Rythu Bharosa, PMFBY Claims)</text>
+  </g>
+</svg>

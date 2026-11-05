@@ -187,5 +187,68 @@
         "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
       }
     ]
+  },
+  {
+    "claim_id": "CLM-20261105224019",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105230212",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105231541",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
   }
 ]
