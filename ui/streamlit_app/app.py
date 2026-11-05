@@ -392,12 +392,12 @@ with tab3:
     st.caption("Official Sources: Commission for Agricultural Costs and Prices (cacp.dacnet.nic.in) & Telangana Civil Supplies (epds.telangana.gov.in) | Last Verified: 2026-11-02")
 
 # -------------------------------------------------------------
-# TAB 4: Climate & Rice Water Stress Shield
+# TAB 4: Multi-Crop Climate Risk & Protective Shield
 # -------------------------------------------------------------
 with tab4:
-    st.subheader("💧 Live Climate & Rice Water Stress Shield")
+    st.subheader("🛡️ Pan-India Climate Risk & Multi-Crop Protective Shield")
     st.markdown("""
-    *Protects Paddy/Rice cultivators from severe losses caused by declining water tables, canal dry spells, and terminal moisture heat.*
+    *Protects farmers across crops (Paddy, Cotton, Chilli, Maize, Pulses, Oilseeds) from drought, flash waterlogging, heat stress, and pest flare-ups with tailored ICAR agronomy and PMFBY insurance shields.*
     """)
 
     c_col0, c_col1, c_col2, c_col3 = st.columns([1.1, 1.1, 1.1, 1.1])
@@ -407,16 +407,23 @@ with tab4:
         dist_options = INDIAN_STATES_DISTRICTS.get(w_state, ["Warangal"])
         w_dist = st.selectbox(f"Select District in {w_state}", dist_options, key="w_dist_select")
     with c_col2:
-        w_source = st.selectbox("Primary Irrigation Source", ["Borewell (Deep > 200 ft)", "Canal Tail-end", "Tank / Open Well", "Borewell (Normal)"])
+        w_crop = st.selectbox("Select Cultivated Crop", [
+            "Paddy (Rice)",
+            "Cotton",
+            "Chilli (Red Pepper / Mirchi)",
+            "Maize (Corn)",
+            "Pulses (Bengal Gram / Red Gram / Green Gram)",
+            "Groundnut & Oilseeds"
+        ], key="w_crop_select")
     with c_col3:
-        w_crop_stage = st.selectbox("Paddy Growth Stage", ["Panicle Initiation / Milking (Most Vulnerable)", "Grain Hardening (80-85% Golden)", "Tillering / Vegetative", "Transplanting"])
+        w_source = st.selectbox("Primary Irrigation Source", ["Borewell (Deep > 200 ft)", "Canal Tail-end", "Tank / Open Well", "Rainfed / Rain-dependent", "Borewell (Normal)"])
 
     custom_loc = st.text_input("🔍 Or enter any custom district, tehsil, or city in India (e.g. Ludhiana, Bardhaman, Thanjavur, Kurnool, Varanasi)", "")
     active_dist = custom_loc.strip() if custom_loc.strip() else w_dist
 
     # Fetch live meteorological data
     weather_data = get_live_weather(active_dist, state=w_state)
-    stress_eval = evaluate_water_stress(weather_data, crop="Paddy", water_source=w_source)
+    stress_eval = evaluate_water_stress(weather_data, crop=w_crop, water_source=w_source)
 
     # Meteorological summary cards
     st.markdown(f"#### 🛰️ Live Meteorological Readings: {weather_data['location']} (Open-Meteo IMD Grid)")
@@ -424,20 +431,29 @@ with tab4:
     with wc1:
         st.metric("Current Temperature", f"{weather_data['current_temperature']} °C", f"Avg Max: {weather_data['avg_max_temp']} °C")
     with wc2:
-        st.metric("Relative Humidity", f"{weather_data['current_humidity']} %", "Soil drying rate: High" if weather_data['current_humidity'] < 60 else "Moderate")
+        st.metric("Relative Humidity", f"{weather_data['current_humidity']} %", "Pest outbreak risk" if weather_data['current_humidity'] >= 68 else "Optimal")
     with wc3:
-        st.metric("7-Day Forecast Rain", f"{weather_data['forecast_7day_total_rain_mm']} mm", "Rainfall Deficit" if weather_data['forecast_7day_total_rain_mm'] < 5.0 else "Adequate", delta_color="inverse")
+        st.metric("7-Day Forecast Rain", f"{weather_data['forecast_7day_total_rain_mm']} mm", "Inundation risk" if weather_data['forecast_7day_total_rain_mm'] >= 35 else ("Rain deficit" if weather_data['forecast_7day_total_rain_mm'] < 5.0 else "Adequate"))
     with wc4:
-        st.metric("Consecutive Dry Days", f"{weather_data['consecutive_dry_days']} Days", "Water Stress Critical" if weather_data['consecutive_dry_days'] >= 5 else "Normal", delta_color="inverse")
+        st.metric("Consecutive Dry Days", f"{weather_data['consecutive_dry_days']} Days", "Dry spell critical" if weather_data['consecutive_dry_days'] >= 5 else "Normal")
+
+    # Multi-Hazard Detected Badges
+    st.markdown("**🚨 Active Climate Hazards Detected for Selected Location:**")
+    hazards_list = stress_eval.get("all_hazards", [])
+    if hazards_list:
+        h_cols = st.columns(len(hazards_list))
+        for idx, hz in enumerate(hazards_list):
+            with h_cols[idx]:
+                st.warning(f"⚠️ **{hz['title']}**\n\n*{hz['description']}*")
 
     # Dynamic Alert Card
     alert_box_class = "danger-card" if stress_eval["stress_level"] == "CRITICAL" else ("warning-card" if stress_eval["stress_level"] == "MODERATE" else "metric-card")
     st.markdown(f"""
     <div class="{alert_box_class}">
-        <h3 style="margin:0; color:#b71c1c;">⚠️ {stress_eval['stress_title']}</h3>
+        <h3 style="margin:0; color:#b71c1c;">🛡️ {stress_eval['stress_title']}</h3>
         <p style="margin:0.3rem 0; font-size:1.05rem;">
-            Location <b>{weather_data['location']}</b> is experiencing <b>{weather_data['consecutive_dry_days']} consecutive dry days</b> with only <b>{weather_data['forecast_7day_total_rain_mm']} mm</b> rain forecasted. 
-            Farmers with <i>{w_source}</i> cultivating Paddy at <i>{w_crop_stage}</i> face high risk of mid-season moisture failure.
+            Location <b>{weather_data['location']}</b> has <b>{weather_data['consecutive_dry_days']} dry days</b> forecasted ({weather_data['forecast_7day_total_rain_mm']} mm rain, {weather_data['current_humidity']}% humidity). 
+            Farmers cultivating <b>{w_crop}</b> under <i>{w_source}</i> must implement immediate protective agronomy.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -457,40 +473,29 @@ with tab4:
     col_agri, col_ins = st.columns(2, gap="large")
 
     with col_agri:
-        st.markdown("### 🛡️ Immediate Preventive Agronomy (PJTSAU)")
-        st.markdown("""
-        1. **Alternate Wetting & Drying (AWD)**:
-           - *Action*: Stop continuous standing water. Irrigate only to 5cm depth when water level drops below soil surface.
-           - *Benefit*: Saves **25–30% irrigation water** and aerates root zones to prevent root rot.
-        
-        2. **Anti-Transpirant Foliar Shield**:
-           - *Action*: Spray **1% Potassium Nitrate (13-0-45)** or **2% DAP solution** in late evening hours.
-           - *Benefit*: Regulates stomatal closure, reducing moisture loss and protecting panicles from desiccation.
-        
-        3. **Early Salvage Harvesting Timeline**:
-           - *Action*: If your crop has reached **80–85% golden grains** (milking is done), harvest immediately with combine harvesters.
-           - *Benefit*: Do **not** wait for the plant straw to dry completely. Harvesting early prevents grain shattering and lodging loss from terminal heat.
-        """)
+        st.markdown(f"### 🛡️ Preventive Agronomy for **{w_crop}** (ICAR Approved)")
+        for idx, m in enumerate(stress_eval.get("preventive_measures", [])):
+            with st.container():
+                st.markdown(f"**{idx+1}. {m['step']}**")
+                st.markdown(f"• *Action*: {m['details']}")
+                st.markdown(f"• *Impact*: `{m['impact']}`")
+                st.markdown("")
 
     with col_ins:
-        st.markdown("### 📜 PMFBY Crop Insurance Payout Shield")
+        st.markdown("### 📜 PMFBY Insurance Claim Shield (All Perils)")
         st.markdown("""
-        *Know your statutory policy rights before losing your crop investment:*
-
-        - **⚡ Mid-Season Adversity (25% Immediate Advance)**:
-          If prolonged water shortage or dry spell causes >50% anticipated crop damage, state regulations mandate an **on-account payment of 25% of Sum Insured** directly into the farmer's bank account.
-        
-        - **🚫 Prevented Sowing / Transplantation Claim**:
-          If borewell/canal dry-up prevented planting seedlings on insured land, receive up to **25% of Sum Insured** compensation.
-
-        - **⏱️ Critical 72-Hour Claim Reporting Rule**:
-          Intimate localized crop loss within **72 hours** to be legally eligible.
+        *Your crop is protected under statutory National PMFBY policy provisions across hazards:*
         """)
+        for cl in stress_eval.get("insurance_shield", {}).get("applicable_clauses", []):
+            st.markdown(f"**{cl['clause']}**")
+            st.markdown(f"• *Coverage*: {cl['terms']}")
+            st.markdown(f"• *Action*: `{cl['trigger']}`")
+            st.markdown("")
 
         st.info("📞 **PMFBY National Toll-Free Helpline**: **1800-180-1551** | Portal: [pmfby.gov.in](https://pmfby.gov.in)")
-        if st.button("📲 Generate Loss Intimation Draft / SMS", use_container_width=True):
-            st.success(f"✅ Loss Intimation template generated for {w_dist} District. SMS drafted with Crop Insurance App deep link!")
-            st.code(f"INTIMATION: Farmer Paddy Crop Loss | Dist: {w_dist} | Cause: Severe Water Deficit & Terminal Dry Spell | Intimated within 72 hrs to AEO & PMFBY.", language="text")
+        if st.button("📲 Generate Multi-Peril Loss Intimation Draft", use_container_width=True):
+            st.success(f"✅ Loss Intimation template generated for {w_crop} in {active_dist}!")
+            st.code(f"INTIMATION: Farmer {w_crop} Crop Loss | Location: {weather_data['location']} | Hazard: {stress_eval['primary_hazard']['title']} | Intimated within 72 hrs to AEO/CSC & PMFBY Helpline 1800-180-1551.", language="text")
 
     # Full Multilingual Output Preview
     st.markdown("---")

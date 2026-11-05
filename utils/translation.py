@@ -30,9 +30,9 @@ UI_LABELS = {
         "hi": "⚖️ एमएसपी बनाम मंडी भाव ट्रैकर"
     },
     "tab_climate_shield": {
-        "en": "💧 Climate & Rice Water Shield",
-        "te": "💧 క్లైమేట్ & వరి పంట నీటి రక్షణ",
-        "hi": "💧 मौसम एवं धान जल संकट कवच"
+        "en": "🛡️ Multi-Crop Climate Risk & Protective Shield",
+        "te": "🛡️ బహుళ పంటల వాతావరణ రక్షణ కవచం",
+        "hi": "🛡️ बहु-फसल मौसम एवं आपदा सुरक्षा कवच"
     },
     "profile_header": {
         "en": "📋 Enter Your Farming Profile",
