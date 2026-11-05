@@ -1185,6 +1185,20 @@
       btnRunEco.addEventListener('click', loadWeatherEcosystemData);
     }
 
+    const btnLeft = document.getElementById('btnScrollForecastLeft');
+    const btnRight = document.getElementById('btnScrollForecastRight');
+    const forecastRow = document.getElementById('ecoForecastRow');
+    if (btnLeft && forecastRow) {
+      btnLeft.addEventListener('click', () => {
+        forecastRow.scrollBy({ left: -260, behavior: 'smooth' });
+      });
+    }
+    if (btnRight && forecastRow) {
+      btnRight.addEventListener('click', () => {
+        forecastRow.scrollBy({ left: 260, behavior: 'smooth' });
+      });
+    }
+
     // Trigger initial calculation
     loadWeatherEcosystemData();
 

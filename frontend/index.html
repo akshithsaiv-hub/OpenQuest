@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Kisan Setu - Unified Pan-India Farmer Scheme & Subsidy Assistant</title>
   <meta name="description" content="Discover Central and State agricultural subsidies, 72-hr crop loss claim assistant, water saving subsidies, KCC loans, and higher official escalation across India.">
-  <link rel="stylesheet" href="styles.css?v=2.5">
+  <link rel="stylesheet" href="styles.css?v=2.6">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
 <body>
@@ -832,9 +832,13 @@ Ask me anything about:
           <span style="font-size: 0.85rem; font-weight: 800; color: #1e293b; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
             <span>📅</span> 14-Day Horizontal Agro-Met Weather Forecast
           </span>
-          <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700; background: #e0f2fe; padding: 3px 8px; border-radius: 12px;">
-            Slide Horizontally ↔
-          </span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" id="btnScrollForecastLeft" title="Scroll Left" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">◀</button>
+            <button type="button" id="btnScrollForecastRight" title="Scroll Right" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">▶</button>
+            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700; background: #e0f2fe; padding: 3px 8px; border-radius: 12px;">
+              Slide Horizontally ↔
+            </span>
+          </div>
         </div>
         <div id="ecoForecastRow" class="weather-forecast-row" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 12px !important; overflow-x: auto !important; overflow-y: hidden !important; padding: 8px 4px !important; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; width: 100%; box-sizing: border-box;">
           <!-- Rendered dynamically -->
@@ -1676,7 +1680,7 @@ Ask me anything about:
 
   <!-- Scripts -->
   <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=2.6"></script>
 
   <!-- Sample Document Full-Size Preview Modal -->
   <div id="sampleDocModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sampleDocModalTitle">
