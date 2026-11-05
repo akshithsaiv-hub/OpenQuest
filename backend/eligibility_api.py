@@ -1204,6 +1204,58 @@ def api_download_sample_document(doc_type: str):
         headers={"Content-Disposition": f'attachment; filename="{download_name}"'}
     )
 
+class WeatherAdvisoryRequest(BaseModel):
+    state: Optional[str] = "Telangana"
+    district: Optional[str] = "Warangal"
+    routine_crop: Optional[str] = "Paddy"
+    irrigation_type: Optional[str] = "flood"
+    acres: Optional[float] = 2.5
+    farmer_category: Optional[str] = "small_marginal"
+
+@app.post("/api/weather_advisory")
+def api_weather_advisory(req: WeatherAdvisoryRequest):
+    """
+    Agro-climatic intelligence endpoint:
+    Evaluates near-future weather dry spells, matches Drip Subsidies (Buy vs Rent),
+    and calculates routine crop migration options.
+    """
+    from utils.agro_climate_advisory import compute_agro_climate_ecosystem
+    return compute_agro_climate_ecosystem(
+        state=req.state or "Telangana",
+        district=req.district or "Warangal",
+        routine_crop=req.routine_crop or "Paddy",
+        irrigation_type=req.irrigation_type or "flood",
+        acres=req.acres or 2.5,
+        farmer_category=req.farmer_category or "small_marginal"
+    )
+
+@app.get("/api/weather_advisory")
+def api_weather_advisory_get(
+    state: str = "Telangana",
+    district: Optional[str] = None,
+    routine_crop: str = "Paddy",
+    irrigation_type: str = "flood",
+    acres: float = 2.5,
+    farmer_category: str = "small_marginal"
+):
+    from utils.agro_climate_advisory import compute_agro_climate_ecosystem
+    return compute_agro_climate_ecosystem(
+        state=state,
+        district=district,
+        routine_crop=routine_crop,
+        irrigation_type=irrigation_type,
+        acres=acres,
+        farmer_category=farmer_category
+    )
+
+@app.get("/api/weather_districts/{state}")
+def api_get_weather_districts(state: str):
+    from utils.agro_climate_advisory import DISTRICT_WEATHER_PROFILES
+    districts = list(DISTRICT_WEATHER_PROFILES.get(state, {}).keys())
+    if not districts:
+        districts = ["District Capital / General"]
+    return {"state": state, "districts": districts}
+
 # Mount static files to serve the frontend portal
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
