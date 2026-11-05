@@ -361,6 +361,41 @@ STATE_MICRO_IRRIGATION_BODIES: Dict[str, Dict[str, Any]] = {
     }
 }
 
+
+def generate_14day_forecast_strip(base_temp: float = 37.5, alert_level: str = "CRITICAL") -> List[Dict[str, Any]]:
+    """Generates 14 distinct individual daily weather cards for horizontal agro-met forecast."""
+    icons = ["☀️", "☀️", "☀️", "⛅", "🔥", "☀️", "🌦️", "☀️", "☀️", "🔥", "⛅", "☀️", "☀️", "☀️"]
+    statuses = ["Severe Dry", "Sunny & Dry", "Dry Spell", "Partly Cloudy", "Heatwave Alert", "Clear Sky", "Light Rain", "Dry", "Dry", "Extreme Heat", "Mild Cloud", "Hot & Dry", "Dry", "Dry"]
+    days_data = []
+    
+    for i in range(1, 15):
+        temp = round(base_temp + ((i % 4) - 1.5) * 0.7, 1)
+        if i == 7:
+            rain = "15%"
+            icon = "🌦️"
+            status = "Light Rain"
+        elif i in [4, 11]:
+            rain = "10%"
+            icon = "⛅"
+            status = "Partly Cloudy"
+        elif i in [5, 10]:
+            rain = "0%"
+            icon = "🔥"
+            status = "Heatwave Alert"
+        else:
+            rain = "0%"
+            icon = "☀️"
+            status = "Zero Rain / Dry"
+            
+        days_data.append({
+            "day": f"Day {i}",
+            "temp": f"{temp}°C",
+            "rain_prob": rain,
+            "icon": icon,
+            "status": status
+        })
+    return days_data
+
 def get_district_weather(state: str, district: Optional[str] = None) -> Dict[str, Any]:
     """Retrieves near-future weather forecast and drought stress for a district."""
     state_profiles = DISTRICT_WEATHER_PROFILES.get(state, {})
@@ -368,6 +403,8 @@ def get_district_weather(state: str, district: Optional[str] = None) -> Dict[str
         profile = state_profiles[district]
         profile["state"] = state
         profile["district"] = district
+        profile = profile.copy()
+        profile["forecast_daily"] = generate_14day_forecast_strip(profile.get("max_temp_c", 37.5), profile.get("drought_alert_level", "CRITICAL"))
         return profile
     
     # Return first available in state or default profile

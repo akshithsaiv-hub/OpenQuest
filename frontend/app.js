@@ -956,14 +956,37 @@
     }
 
     if (forecastRow && data.weather.forecast_daily) {
-      forecastRow.innerHTML = data.weather.forecast_daily.map(d => `
-        <div class="weather-day-chip ${d.rain_prob === '0%' ? 'dry-alert' : ''}">
-          <div style="font-size: 0.72rem; font-weight: 700; color: #64748b;">${escapeHtml(d.day)}</div>
-          <div style="font-size: 1.4rem; margin: 0.15rem 0;">${d.icon}</div>
-          <div style="font-size: 0.85rem; font-weight: 800; color: #1e293b;">${escapeHtml(d.temp)}</div>
-          <div style="font-size: 0.72rem; color: #0284c7; font-weight: 600;">Rain: ${escapeHtml(d.rain_prob)}</div>
-        </div>
-      `).join('');
+      forecastRow.innerHTML = data.weather.forecast_daily.map((d, idx) => {
+        const rainNum = parseInt(d.rain_prob) || 0;
+        const isDry = rainNum <= 5;
+        const isHeat = (d.status || '').toLowerCase().includes('heat') || (d.temp && parseFloat(d.temp) >= 38.5);
+        const cardBg = isHeat ? '#fff1f2' : (isDry ? '#fff7ed' : '#f0fdf4');
+        const cardBorder = isHeat ? '#f43f5e' : (isDry ? '#fdba74' : '#86efac');
+        const rainPillBg = isDry ? '#fee2e2' : '#e0f2fe';
+        const rainPillColor = isDry ? '#991b1b' : '#0369a1';
+        const dayLabel = d.day || `Day ${idx + 1}`;
+
+        return `
+          <div class="weather-day-chip" style="flex: 0 0 135px !important; min-width: 135px !important; max-width: 140px !important; background: ${cardBg} !important; border: 2px solid ${cardBorder} !important; border-radius: 12px !important; padding: 10px 8px !important; text-align: center !important; box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid rgba(0,0,0,0.08); width: 100%; padding-bottom: 4px;">
+              ${escapeHtml(dayLabel)}
+            </div>
+            <div style="font-size: 2.2rem; margin: 6px 0 2px 0; line-height: 1;">${d.icon || '☀️'}</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a; line-height: 1.2;">
+              ${escapeHtml(d.temp || '37°C')}
+            </div>
+            <div style="font-size: 0.74rem; font-weight: 700; color: #475569; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+              ${escapeHtml(d.status || (isDry ? 'Dry' : 'Fair'))}
+            </div>
+            <div style="width: 100%; background: ${rainPillBg}; color: ${rainPillColor}; padding: 3px 4px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px;">
+              🌧️ ${escapeHtml(d.rain_prob || '0%')} Rain
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; color: ${isHeat ? '#e11d48' : (isDry ? '#c2410c' : '#15803d')};">
+              ${isHeat ? '🔥 Extreme Heat' : (isDry ? '⚠️ Zero Rain' : '🌦️ Light Rain')}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // 2. Micro-Irrigation Matchmaker (BUY vs RENT)
