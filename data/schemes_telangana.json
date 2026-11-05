@@ -1,0 +1,144 @@
+[
+  {
+    "scheme_id": "TS-RB-01",
+    "name": "Rythu Bharosa (Telangana)",
+    "category": "Direct Income Support",
+    "state": "Telangana",
+    "level": "State",
+    "rules": {
+      "allowed_states": ["Telangana"],
+      "max_land_acres": 100.0,
+      "allowed_categories": ["small", "marginal", "medium", "large", "tenant"],
+      "requires_land_title_or_ccrc": true
+    },
+    "benefits_summary": "₹15,000 per acre per year (₹7,500 per crop season) directly credited via DBT to cultivate crops, covering land-owning farmers and eligible tenant farmers.",
+    "documents_required": [
+      "Pattadar Passbook / Dharani RoR-1B",
+      "Aadhaar Card linked to Mobile",
+      "Bank Account linked to Aadhaar (NPCI active)",
+      "CCRC (Crop Cultivator Rights Card) for tenant farmers"
+    ],
+    "deadlines": {
+      "rabi_enrollment": "2026-11-25",
+      "kharif_enrollment": "2027-06-15"
+    },
+    "claim_window": null,
+    "source_url": "https://agri.telangana.gov.in/rythubharosa",
+    "last_verified": "2026-10-28",
+    "where_to_apply": "Rythu Vedika / Local Agriculture Extension Officer (AEO) or Meeseva Portal"
+  },
+  {
+    "scheme_id": "CENT-PMK-01",
+    "name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+    "category": "Income Support",
+    "state": "All",
+    "level": "Central",
+    "rules": {
+      "allowed_states": ["All", "Telangana"],
+      "max_land_acres": 100.0,
+      "allowed_categories": ["small", "marginal", "medium", "large"],
+      "excluded_categories": ["institutional_landholders", "income_tax_payers", "government_employees"],
+      "requires_land_title_or_ccrc": true
+    },
+    "benefits_summary": "₹6,000 per year paid in three equal 4-monthly installments of ₹2,000 directly into the bank accounts of eligible landholding farmer families.",
+    "documents_required": [
+      "Aadhaar Card with e-KYC completed",
+      "Land Ownership Documents (Dharani/Pahani)",
+      "Aadhaar-seeded Bank Account with NPCI mapping",
+      "Active Mobile Number"
+    ],
+    "deadlines": {
+      "ekyc_deadline": "Ongoing (mandated before every installment cut-off)"
+    },
+    "claim_window": null,
+    "source_url": "https://pmkisan.gov.in",
+    "last_verified": "2026-10-15",
+    "where_to_apply": "PM-KISAN portal (pmkisan.gov.in), Kisan e-Mitra or nearest CSC center"
+  },
+  {
+    "scheme_id": "TS-PMFBY-03",
+    "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY) - Rabi Insurance",
+    "category": "Crop Insurance",
+    "state": "Telangana",
+    "level": "State & Central Co-funded",
+    "rules": {
+      "allowed_states": ["Telangana"],
+      "allowed_crops": ["Paddy", "Bengal Gram", "Groundnut", "Maize", "Cotton", "Chilli"],
+      "allowed_categories": ["small", "marginal", "medium", "large", "tenant"],
+      "season": "Rabi"
+    },
+    "benefits_summary": "Comprehensive crop loss coverage against non-preventable natural risks (drought, flood, unseasonal hail, pests). Nominal premium (1.5% for Rabi food grains/oilseeds, 5% for commercial/horticulture).",
+    "documents_required": [
+      "Sowing Certificate issued by Village Revenue Officer (VRO) or AEO",
+      "Dharani Record of Rights / Tenant lease agreement",
+      "Bank Account Passbook showing IFSC and branch",
+      "Aadhaar Card copy"
+    ],
+    "deadlines": {
+      "rabi_enrollment_cutoff": "2026-11-15",
+      "crop_loss_intimation_window_hours": 72
+    },
+    "claim_window": {
+      "window": "Within 72 hours of localized crop calamity (hailstorm, inundation, post-harvest unseasonal rain)",
+      "helpline": "1800-180-1551 or Crop Insurance Mobile App"
+    },
+    "source_url": "https://pmfby.gov.in",
+    "last_verified": "2026-11-01",
+    "where_to_apply": "Cooperative Bank / Commercial Bank where crop loan is sanctioned, or CSC VLE, or pmfby.gov.in"
+  },
+  {
+    "scheme_id": "TS-MIP-04",
+    "name": "Telangana Micro Irrigation Project (TSMIP)",
+    "category": "Input & Infrastructure Subsidy",
+    "state": "Telangana",
+    "level": "State",
+    "rules": {
+      "allowed_states": ["Telangana"],
+      "min_land_acres": 0.5,
+      "max_land_acres": 12.5,
+      "allowed_categories": ["small", "marginal", "medium", "sc", "st", "bc", "general"],
+      "requires_functional_wells_or_borewells": true
+    },
+    "benefits_summary": "Subsidy on Drip and Sprinkler irrigation systems: 100% subsidy for SC/ST farmers up to 5 acres; 90% subsidy for BC, Small & Marginal farmers; 80% for other farmers.",
+    "documents_required": [
+      "Pattadar Passbook copy",
+      "Caste Certificate (for SC/ST/BC subsidy tier)",
+      "Small / Marginal Farmer Certificate from Tahsildar / AEO",
+      "Aadhaar Card",
+      "Electricity connection bill / water source proof"
+    ],
+    "deadlines": {
+      "financial_year_batch": "2026-12-31"
+    },
+    "claim_window": null,
+    "source_url": "https://tsmip.cgg.gov.in",
+    "last_verified": "2026-10-18",
+    "where_to_apply": "Online on tsmip.cgg.gov.in or submit application to Area Horticulture Officer"
+  },
+  {
+    "scheme_id": "TS-MSP-05",
+    "name": "MSP Procurement Operations (Paddy & Cotton 2026)",
+    "category": "MSP Procurement",
+    "state": "Telangana",
+    "level": "State Procurement Agency",
+    "rules": {
+      "allowed_states": ["Telangana"],
+      "allowed_crops": ["Paddy", "Cotton", "Maize", "Soybean"],
+      "allowed_categories": ["all"]
+    },
+    "benefits_summary": "Assured price procurement at Minimum Support Price: Grade 'A' Paddy at ₹2,320/quintal (plus Telangana state ₹500/quintal bonus on fine varieties), Medium Staple Cotton at ₹7,121/quintal.",
+    "documents_required": [
+      "Pahani / Dharani digital registration with crop booking details",
+      "Aadhaar Card",
+      "Bank Account Details (Aadhaar linked)",
+      "OPMS (Online Procurement Management System) token from Rythu Vedika"
+    ],
+    "deadlines": {
+      "procurement_window_end": "2027-01-31"
+    },
+    "claim_window": null,
+    "source_url": "https://epds.telangana.gov.in/Procurement/",
+    "last_verified": "2026-11-02",
+    "where_to_apply": "Nearest PACS (Primary Agricultural Credit Society) or IKP / Marketing Yard Procurement Centre"
+  }
+]

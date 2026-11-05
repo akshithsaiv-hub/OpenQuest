@@ -30,17 +30,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -49,12 +49,12 @@
       "description": "Marginal tenant farmer (oral lease), 1.5 acres, age 32, Paddy, Telangana",
       "passed": true,
       "expected_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -63,16 +63,16 @@
       "description": "Large landholder, 15 acres (>10 cap for Rythu Bharosa), age 45, Cotton, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bima",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bima",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "rythu_bima",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bima",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -81,16 +81,16 @@
       "description": "Senior farmer age 63 (>59 cap for Rythu Bima), 3.0 acres, Paddy, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bharosa",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "rythu_bharosa",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -107,16 +107,16 @@
       "description": "Income-tax payer farmer (excluded from PM-KISAN), 4.0 acres, age 42, Paddy, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bharosa",
+        "kcc",
         "rythu_bima",
-        "pmfby",
-        "kcc"
+        "rythu_bharosa",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "rythu_bharosa",
+        "kcc",
         "rythu_bima",
-        "pmfby",
-        "kcc"
+        "rythu_bharosa",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -126,17 +126,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -159,16 +159,16 @@
       "description": "Farmer growing unnotified crop (Rubber), 2.0 acres, age 40, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bharosa",
-        "rythu_bima",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "rythu_bima"
       ],
       "predicted_eligible": [
-        "rythu_bharosa",
-        "rythu_bima",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "rythu_bima"
       ],
       "discrepancies": []
     },
@@ -177,12 +177,12 @@
       "description": "Tenant farmer growing Cotton, 3.0 acres, age 50, Khammam",
       "passed": true,
       "expected_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -204,17 +204,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -223,16 +223,16 @@
       "description": "Boundary test: 10.1 acres (just above 10.0 cap for Rythu Bharosa), age 52, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bima",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bima",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "rythu_bima",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bima",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -242,17 +242,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -262,17 +262,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -281,16 +281,16 @@
       "description": "Boundary test: age 60 (just above 59 cutoff for Rythu Bima), 3.0 acres, Telangana",
       "passed": true,
       "expected_eligible": [
-        "rythu_bharosa",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "rythu_bharosa",
-        "pmfby",
         "kcc",
-        "pm_kisan"
+        "pm_kisan",
+        "rythu_bharosa",
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -312,17 +312,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -332,17 +332,17 @@
       "passed": true,
       "expected_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "predicted_eligible": [
         "kcc",
+        "pm_kisan",
         "rythu_bima",
-        "pmfby",
         "rythu_bharosa",
-        "pm_kisan"
+        "pmfby"
       ],
       "discrepancies": []
     },
@@ -351,12 +351,12 @@
       "description": "Tax-paying tenant farmer, 3.0 acres, age 41, Paddy, Telangana",
       "passed": true,
       "expected_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "predicted_eligible": [
-        "pmfby",
-        "kcc"
+        "kcc",
+        "pmfby"
       ],
       "discrepancies": []
     }

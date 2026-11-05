@@ -64,7 +64,10 @@ def compare_msp_mandi(crop_name: str, preferred_mandi: Optional[str] = None) -> 
         "verdict": verdict,
         "advice": advice,
         "procurement_centers": matched_record.get("procurement_centers", []),
-        "quality_rules": matched_record.get("quality_faq", "")
+        "quality_rules": matched_record.get("quality_faq", ""),
+        "mandi_analyzed": selected_mandi.get("mandi_name", "Local Mandi"),
+        "action_advice": advice,
+        "quality_standard_advisory": matched_record.get("quality_faq", "")
     }
 
 def get_input_budget_and_dealers(crop: str, acres: float, district: str = "Warangal") -> Dict[str, Any]:
@@ -93,5 +96,11 @@ def get_input_budget_and_dealers(crop: str, acres: float, district: str = "Waran
         "fertilizer_cost_total": info["estimated_total_fertilizer_cost_per_acre"] * acres,
         "total_budget": info["estimated_total_input_budget_per_acre"] * acres,
         "budget_advisory": info["budget_advisory"],
-        "verified_dealers": matched_dealers
+        "verified_dealers": matched_dealers,
+        "land_acres": acres,
+        "total_estimated_budget": info["estimated_total_input_budget_per_acre"] * acres,
+        "verified_cooperative_dealers": matched_dealers
     }
+
+
+get_input_planning = get_input_budget_and_dealers

@@ -180,3 +180,50 @@ def get_msp_vs_mandi(crop_name: str, preferred_mandi: Optional[str] = None) -> D
     """MSP vs Mandi comparison engine."""
     from engine_addons import compare_msp_mandi
     return compare_msp_mandi(crop_name, preferred_mandi)
+
+
+# Compatibility aliases for demo.py and team interfaces
+
+def evaluate_farmer_profile(profile: Dict[str, Any]) -> Dict[str, Any]:
+    raw_results = check_eligibility(profile)
+    eligible = [s for s in raw_results if s['eligible']]
+    ineligible = [s for s in raw_results if not s['eligible']]
+
+    total_cash = 0.0
+    formatted_eligible = []
+    for s in eligible:
+        formatted_eligible.append({
+            'name': s['scheme'],
+            'level': 'State / Central',
+            'benefit_summary': s['benefit_summary'],
+            'deadlines': s['deadlines'],
+            'required_documents': s['docs'],
+            'official_portal': s['source_url']
+        })
+        if s['scheme_id'] == 'rythu_bharosa':
+            total_cash += 15000.0 * min(float(profile.get('land_acres', 0.0)), 10.0)
+        elif s['scheme_id'] == 'pm_kisan':
+            total_cash += 6000.0
+
+    formatted_ineligible = []
+    for s in ineligible:
+        formatted_ineligible.append({
+            'name': s['scheme'],
+            'reasons': s['reasons']
+        })
+
+    return {
+        'eligible_schemes_count': len(eligible),
+        'total_direct_cash_benefit_annual': total_cash,
+        'eligible_schemes': formatted_eligible,
+        'ineligible_schemes': formatted_ineligible
+    }
+
+
+def compare_msp_mandi(crop_name: str, preferred_mandi: str = None):
+    from engine_addons import compare_msp_mandi as _cmp
+    return _cmp(crop_name, preferred_mandi)
+
+def get_input_planning(crop: str, acres: float, district: str = 'Warangal'):
+    from engine_addons import get_input_planning as _gip
+    return _gip(crop, acres, district)

@@ -1,105 +1,96 @@
-# 🌾 Unified AI Assistant for Farmers: Core Engine & Data (Person 1)
+# 🌾 OpenQuest: Unified AI Assistant for Farmer Scheme, Subsidy, Insurance and MSP Awareness
 
-**Role:** Person 1 (The "Brain" & Data Engine)  
-**Target Focus:** Telangana State (Small & Marginal Farmers, Tenant Farmers)  
-**Location:** `C:\Users\tomka\.gemini\antigravity\scratch\farmer_schemes_engine`
-
----
-
-## 🎯 What Person 1 Delivers
-
-As **Person 1**, you own the **deterministic intelligence and ground truth data** of the system:
-1. **Curated Scheme Knowledge Base (`schemes.json`)**: Central & State schemes with verified eligibility criteria, benefits, documents, and official links.
-2. **Deterministic Eligibility Rule Engine (`engine.py`)**: Clear, rule-based Python logic (`evaluate_farmer_profile`) without hallucination.
-3. **MSP vs Mandi Price Intelligence (`msp_mandi.json` & `compare_msp_mandi`)**: Compares official Minimum Support Prices with live Mandi rates to give clear "Sell at MSP" vs "Sell at Mandi" recommendations.
-4. **Farm Input Planning & Anti-Broker Directory (`farm_inputs.json` & `get_input_planning`)**:
-   - Recommended seed and fertilizer schedules (Urea, DAP, MOP) based on ICAR/Professor Jayashankar Telangana State Agricultural University (PJTSAU) recommendations.
-   - Statutory Government capped MRPs (e.g. Urea @ ₹266.50/bag) to prevent overcharging.
-   - Verified local directory of **Primary Agricultural Credit Societies (PACS)** and **Farmer Producer Organizations (FPOs)** with direct contact persons, phones, and addresses to bypass commission brokers.
+**Theme:** Agriculture and Food Systems  
+**Pilot State:** Telangana  
+**Target Beneficiaries:** Small & Marginal Farmers, Oral Tenant Cultivators, Tribal RoFR Patta Holders, and Village Intermediaries (CSC Operators, AEOs, FPOs)
 
 ---
 
-## 📁 File Structure
+## 🏛️ System Architecture & Team Roles
+
+This repository unites the core intelligence and interactive interfaces across roles:
 
 ```text
-farmer_schemes_engine/
+OpenQuest/
 │
-├── schemes.json        # Central & State scheme database (PM-KISAN, PMFBY, Rythu Bharosa, Rythu Bima, KCC, PM-KMY)
-├── msp_mandi.json      # MSP 2024-25/2026 rates & live Mandi market data across Telangana
-├── farm_inputs.json    # Standard per-acre input budgets & verified PACS/FPO direct contacts
-├── engine.py           # Core rule engine & clean API functions for Person 2 & 3
-├── demo.py             # Test script running 4 distinct farmer profiles & scenarios
-└── README.md           # Interface contract & documentation
+├── 🧠 PERSON 1 (The "Brain" & Knowledge Base)
+│   ├── schemes.json             # Curated, verified Central & Telangana scheme database
+│   ├── msp_mandi.json           # MSP vs Mandi benchmark market data across Telangana APMCs
+│   ├── farm_inputs.json         # PJTSAU/ICAR input budgets & direct PACS/FPO dealer contacts
+│   ├── engine.py                # Deterministic rule engine (check_eligibility, evaluate_farmer_profile)
+│   ├── engine_addons.py         # MSP comparison & input budgeting modules
+│   ├── evaluate_engine.py       # Benchmark evaluation script (100% decision accuracy across 20 profiles)
+│   ├── evaluation_results.json  # Full benchmark metrics report
+│   ├── research_gap_analysis.md # Detailed gap research vs Kisan e-Mitra & Farmer.CHAT
+│   └── technical_report.md      # Person 1 technical evaluation report
+│
+├── 🗣️ PERSON 2 (The "Face" & Multilingual Interface)
+│   ├── ui/
+│   │   ├── streamlit_app/app.py # Interactive web app (Farmer Self-Service + Intermediary Desk + MSP Tracker)
+│   │   └── telegram_bot/bot.py  # Telegram bot with multilingual commands & CLI test mode
+│   ├── utils/
+│   │   ├── llm.py               # Multilingual LLM explainer, strict rules & fallback routing
+│   │   └── translation.py       # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
+│   ├── backend/
+│   │   └── eligibility_api.py   # FastAPI backend with fuzzy document verification & alert dispatch
+│   ├── data/
+│   │   └── schemes_telangana.json # Person 2 complementary scheme catalog
+│   ├── tests/
+│   │   └── test_assistant.py    # 6 automated unit tests validating engine, fallbacks & fuzzy checks
+│   └── DEMO_SCRIPT.md           # 3-minute hackathon presentation script with scene-by-scene narration
+│
+├── ⚙️ RUNNERS & SCRIPTS
+│   ├── demo.py                  # End-to-end multi-scenario CLI test runner
+│   ├── requirements.txt         # All Python dependencies
+│   └── README.md                # Project architecture & user guide
 ```
 
 ---
 
-## 🤝 Team Interface Contract (How Person 2 & 3 Connect to Person 1)
+## 🎯 What Sets This Solution Apart
 
-### 1. Farmer Profile Schema (Shared with Person 3)
-Person 3 saves or loads this dictionary, and Person 2 passes it to Person 1:
-
-```python
-farmer_profile = {
-    "farmer_name": "Ramesh",
-    "state": "Telangana",
-    "district": "Warangal",
-    "land_acres": 2.5,
-    "is_tenant": False,            # Set True for oral lease / tenant farmers
-    "has_rofr_patta": False,       # True if tribal RoFR title holder
-    "crops": ["Paddy", "Cotton"],
-    "age": 42,
-    "category": "small",           # "marginal", "small", "medium", "large"
-    "is_tax_payer": False
-}
-```
-
-### 2. Scheme Eligibility Call
-```python
-from engine import evaluate_farmer_profile
-
-result = evaluate_farmer_profile(farmer_profile)
-
-# Output contains:
-# - result["eligible_schemes"]: List of schemes with benefits, documents, deadlines, links
-# - result["ineligible_schemes"]: Filtered schemes with exact reasons why (e.g. tenant restrictions)
-# - result["total_direct_cash_benefit_annual"]: Total annual direct benefit amount in ₹
-```
-
-### 3. MSP vs Mandi Price Comparison Call
-```python
-from engine import compare_msp_mandi
-
-analysis = compare_msp_mandi(crop_name="Paddy (Common)", preferred_mandi="Warangal")
-
-# Output:
-# - analysis["verdict"]: "SELL AT GOVT MSP CENTER" or "SELL IN OPEN MANDI"
-# - analysis["price_difference_per_quintal"]: -₹120
-# - analysis["action_advice"]: "Mandi price is ₹120 below MSP! Sell at PACS procurement center."
-# - analysis["quality_standard_advisory"]: Moisture must be <17%
-# - analysis["procurement_centers"]: List of local collection yards
-```
-
-### 4. Farm Input Planning & Direct Dealer Connection
-```python
-from engine import get_input_planning
-
-budget_plan = get_input_planning(crop="Paddy", acres=2.5, district="Warangal")
-
-# Output:
-# - budget_plan["total_estimated_budget"]: Estimated seed + fertilizer cost
-# - budget_plan["fertilizer_schedule"]: Exact bags of Urea, DAP, MOP required
-# - budget_plan["budget_advisory"]: Statutory MRP reminder (Urea ₹266.50/bag)
-# - budget_plan["verified_cooperative_dealers"]: List of genuine PACS/FPOs with phone numbers
-```
+| Traditional AI Agricultural Bots | **Our Unified Assistant (OpenQuest)** |
+|---|---|
+| **Hallucinates eligibility:** Guesses if a farmer qualifies for benefits. | **Deterministic eligibility engine:** 100% rule-based matching. LLM **only explains** the verified result. |
+| **No provenance:** Quotas and dates are stated without references. | **Traceable grounding:** **Every** response includes official source URLs and **last verified dates**. |
+| **Duplicates official portals:** Tries and fails to look up PM-KISAN installment status. | **Intelligent fallback routing:** Seamlessly redirects payment queries to the official **Kisan e-Mitra** portal (`https://pmkisan.gov.in`). |
+| **Answers blindly:** Fabricates answers to unverified or out-of-scope policies. | **Graceful escalation:** Directs farmers to their local **Agriculture Extension Officer (AEO) at the nearest Rythu Vedika**. |
+| **Ignores intermediaries:** Designed only for smartphone users typing in English. | **Intermediary mode:** Dedicated dashboard for CSC operators and AEOs with **Aadhaar-Bank fuzzy name mismatch checks (`rapidfuzz`)** to prevent DBT rejections. |
 
 ---
 
-## 🚀 Key Value Adds for Pitch & Demo
+## 🚀 Quick Start Guide
 
-1. **Why not pure LLM for eligibility?**
-   - *Pitch point:* Government scheme eligibility must be 100% deterministic and auditable. An LLM might hallucinate rules; our rule engine uses strict state legislation and circular parameters. The LLM (Person 2) acts as the multilingual explainer over Person 1's trusted decision engine.
-2. **Tenant Farmer Transparency:**
-   - Clearly tells tenant farmers where they qualify (PMFBY crop insurance, KCC loans with declaration) and where current state policy restricts them (Rythu Bharosa requires patta), preventing wasted trips to government offices.
-3. **Zero-Broker Input Buying:**
-   - Instead of giving vague fertilizer advice or pushing private commission dealers, the engine directs the farmer directly to their mandal's **PACS or FPO** with exact statutory MRPs and contact numbers.
+### 1. Install Dependencies
+```powershell
+pip install -r requirements.txt
+```
+
+### 2. Run Person 1 Benchmark Evaluation (100% Accuracy)
+```powershell
+python evaluate_engine.py
+```
+
+### 3. Run Person 1 End-to-End Demo
+```powershell
+python demo.py
+```
+
+### 4. Run Person 2 Automated Test Suite (6 Tests)
+```powershell
+python tests/test_assistant.py
+```
+
+### 5. Run Telegram Bot in CLI Validation Mode
+```powershell
+python ui/telegram_bot/bot.py --test
+```
+
+### 6. Launch the Interactive Web Application (Streamlit)
+```powershell
+python -m streamlit run ui/streamlit_app/app.py
+```
+*Opens at `http://localhost:8501` featuring:*
+1. **Farmer Self-Service Tab:** Multilingual (Telugu/Hindi/English) consent-based scheme eligibility.
+2. **Intermediary Desk Tab:** Pending document tracker, approaching cut-offs, and instant Aadhaar-Bank fuzzy name verification.
+3. **MSP vs Mandi Tracker Tab:** Real-time price delta (+₹640/quintal for Telangana Paddy) and official procurement yard locations.
