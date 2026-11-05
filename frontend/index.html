@@ -1,348 +1,992 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Kisan Setu - Unified Farmer Scheme & Subsidy Assistant</title>
-  <meta name="description" content="Discover Central and State agricultural subsidies, crop insurance, and farmer schemes across all 29 Indian states with multi-language support.">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OpenQuest | Unified AI Assistant for Farmer Scheme, Subsidy, Insurance &amp; MSP Awareness</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Verbatim Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#91d78a",
+            "primary": "#00450d",
+            "error-container": "#ffdad6",
+            "secondary": "#964900",
+            "on-primary-container": "#90d689",
+            "secondary-fixed": "#ffdcc7",
+            "inverse-surface": "#27313f",
+            "on-primary-fixed-variant": "#0c5216",
+            "on-background": "#121c2a",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#acf4a4",
+            "secondary-container": "#fe851f",
+            "inverse-on-surface": "#eaf1ff",
+            "on-surface-variant": "#41493e",
+            "outline-variant": "#c0c9bb",
+            "on-tertiary": "#ffffff",
+            "surface": "#f8f9ff",
+            "background": "#f8f9ff",
+            "inverse-primary": "#91d78a",
+            "on-tertiary-fixed-variant": "#343d96",
+            "on-tertiary-fixed": "#000767",
+            "on-primary-fixed": "#002203",
+            "tertiary": "#262f89",
+            "error": "#ba1a1a",
+            "on-tertiary-container": "#bbc0ff",
+            "surface-container-high": "#dee9fc",
+            "on-secondary-fixed-variant": "#723600",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#1b5e20",
+            "tertiary-fixed-dim": "#bdc2ff",
+            "tertiary-fixed": "#e0e0ff",
+            "surface-container-low": "#eff4ff",
+            "on-surface": "#121c2a",
+            "on-primary": "#ffffff",
+            "surface-variant": "#d9e3f6",
+            "on-secondary-container": "#612d00",
+            "on-error": "#ffffff",
+            "secondary-fixed-dim": "#ffb787",
+            "tertiary-container": "#3f48a1",
+            "surface-tint": "#2a6b2c",
+            "surface-bright": "#f8f9ff",
+            "on-secondary-fixed": "#311300",
+            "on-secondary": "#ffffff",
+            "surface-container": "#e6eeff",
+            "surface-dim": "#d0dbed",
+            "surface-container-highest": "#d9e3f6",
+            "outline": "#717a6d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "margin-desktop": "2.5rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "margin-tablet": "1.5rem"
+          },
+          "fontFamily": {
+            "benefit-number": ["Plus Jakarta Sans"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-badge": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Inter"],
+            "display": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "benefit-number": ["22px", { "lineHeight": "28px", "fontWeight": "800" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "label-badge": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "800" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "700" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
 </head>
-<body>
-
-  <!-- Top Navigation Header -->
-  <header class="site-header" role="banner">
-    <div class="header-container">
-      <div class="brand-wrapper">
-        <span class="brand-icon" aria-hidden="true">🌾</span>
-        <div>
-          <h1 class="brand-name" data-i18n="app_title">Kisan Setu</h1>
-          <p class="brand-tagline" data-i18n="app_subtitle">Unified Farmer Scheme & Subsidy Assistant</p>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+<!-- Sovereign Infrastructure Top Bar (Institutional Verification) -->
+<aside aria-label="National Agriculture Portal Header" class="bg-primary text-on-primary py-1.5 px-4 text-xs">
+<div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-primary-fixed animate-pulse"></span>
+<span class="font-medium">Sovereign AgriStack, PM-KISAN, PMFBY &amp; DigiLocker Gateway</span>
+<span class="hidden sm:inline text-primary-fixed-dim">|</span>
+<span class="hidden sm:inline font-mono">Status: Connected to DBT Bharat Service v3.8</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-semibold">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">support_agent</span> Toll-Free Kisan Call Centre: 1800-180-1551</span>
+<span class="bg-primary-container px-2 py-0.5 rounded text-primary-fixed border border-primary-fixed-dim">Aadhaar Vault Masked</span>
+</div>
+</div>
+</aside>
+<!-- SHARED COMPONENT: TopNavBar (Exact mapping from JSON Specification) -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-4 md:px-8 max-w-7xl mx-auto bg-surface-container-lowest dark:bg-inverse-surface shadow-sm dark:shadow-none border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-6 py-3">
+<!-- Brand Logo -->
+<a class="text-headline-md font-headline-md font-extrabold text-primary dark:text-primary-fixed flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">eco</span>
+<div class="flex flex-col">
+<span class="leading-none tracking-tight">OpenQuest</span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold tracking-normal text-[11px] leading-tight mt-0.5">Kisan Setu Civic Agritech</span>
+</div>
+</a>
+<!-- Desktop Nav Links -->
+<nav class="hidden lg:flex items-center gap-5 ml-4">
+<!-- Active Link: Schemes -->
+<a class="border-b-2 border-primary dark:border-primary-fixed text-primary dark:text-primary-fixed font-bold pb-1 text-label-lg font-label-lg transition-colors" href="#schemes">
+          Schemes
+        </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed text-label-lg font-label-lg transition-colors duration-150" href="#claim-shield">
+          Crop Loss Intimation
+        </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed text-label-lg font-label-lg transition-colors duration-150" href="#dbt-section">
+          Direct Benefit Transfer
+        </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed text-label-lg font-label-lg transition-colors duration-150" href="#mandi-rates">
+          Mandi Rates
+        </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed text-label-lg font-label-lg transition-colors duration-150" href="#csc-portal">
+          CSC Portal
+        </a>
+</nav>
+</div>
+<!-- Nav Actions & Trailing Buttons from JSON -->
+<div class="flex items-center gap-3 py-3">
+<!-- Language Selector -->
+<div class="relative hidden sm:flex items-center bg-surface-container rounded-lg px-2.5 py-1.5 border border-outline-variant text-on-surface-variant">
+<span class="material-symbols-outlined text-lg mr-1.5 text-primary">language</span>
+<select id="lang-select-box" class="bg-transparent border-0 text-label-lg font-label-lg font-bold text-on-surface focus:ring-0 p-0 pr-4 cursor-pointer"><option value="en">English</option><option value="te">తెలుగు (Telugu)</option><option value="hi">हिन्दी (Hindi)</option><option value="mr">मराठी (Marathi)</option><option value="ta">தமிழ் (Tamil)</option></select>
+</div>
+<!-- Action Trailing Icons -->
+<button aria-label="Notifications" class="p-2 text-on-surface-variant hover:bg-surface-container rounded-lg relative transition-colors duration-150" title="Notifications">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+</button>
+<!-- Emergency 72h Hotline (Trailing Primary Action) -->
+<a class="hidden sm:inline-flex items-center gap-1.5 bg-error text-on-error hover:bg-error/90 px-3.5 py-2 rounded-lg text-label-lg font-label-lg font-bold active:scale-95 transition-all shadow-sm" href="#claim-shield" class="dispatch-claim-trigger">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">emergency</span>
+<span>Emergency 72h Hotline</span>
+</a>
+<!-- Citizen Login (Trailing Secondary Action) -->
+<button class="inline-flex items-center gap-1.5 bg-surface-container-lowest border-2 border-primary text-primary hover:bg-primary hover:text-on-primary px-3.5 py-2 rounded-lg text-label-lg font-label-lg font-bold active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-lg">account_circle</span>
+<span>Citizen Login</span>
+</button>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-grow">
+<!-- HERO SECTION: Civic Banner & Deterministic Eligibility Check -->
+<section class="bg-gradient-to-b from-surface-container-lowest via-surface to-surface-container-low border-b border-outline-variant py-10 lg:py-16 px-4 md:px-8">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-7 space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed border border-primary-fixed-dim text-label-badge font-label-badge tracking-wide">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span>OFFICIAL PUBLIC DIGITAL INFRASTRUCTURE</span>
+</div>
+<h1 id="hero-main-title" class="text-display font-display text-primary tracking-tight leading-tight">
+            Empowering Indian Farmers with Instant Subsidy &amp; Loss Claim Intelligence
+          </h1>
+<p id="hero-main-desc" class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl">
+            Pan-India Central &amp; State Schemes • 72-Hour Statutory PMFBY Claim Countdown • AgriStack &amp; DigiLocker Ready • Offline &amp; SMS Capable.
+          </p>
+<!-- Voice / Dialect AI Conversational Input -->
+<div class="p-2.5 bg-surface-container-lowest rounded-xl border-2 border-outline-variant shadow-sm flex items-center gap-2 focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-primary text-2xl pl-2">psychology</span>
+<input id="ai-query-input" class="w-full bg-transparent border-none text-body-md font-body-md focus:ring-0 text-on-surface placeholder:text-outline" placeholder="Ask in Hindi, Telugu, or English: 'KCC scale of finance for 3 acres cotton?'" type="text"/>
+<button id="ai-query-btn" class="bg-primary text-on-primary px-4 py-2.5 rounded-lg text-label-lg font-label-lg font-bold hover:bg-primary-container transition-colors shrink-0">
+              Query AI
+            </button>
+</div>
+<div id="ai-query-result" class="hidden"></div>
+<!-- Live Stat Counters -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+<div class="p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="text-headline-md font-headline-md text-primary">32+</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant text-xs">Verified Schemes</div>
+</div>
+<div class="p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="text-headline-md font-headline-md text-secondary">₹8.5k–22.5k</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant text-xs">SDRF / NDRF per Ha</div>
+</div>
+<div class="p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="text-headline-md font-headline-md text-primary">4% Net</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant text-xs">KCC Subvention Rate</div>
+</div>
+<div class="p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="text-headline-md font-headline-md text-tertiary">640+</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant text-xs">Decision Benchmarks</div>
+</div>
+</div>
+</div>
+<!-- Hero Card: High-Impact Visual Card & Quick State Matcher -->
+<div class="lg:col-span-5">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-md p-6 space-y-5">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">tune</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Interactive Eligibility Matcher</h3>
+</div>
+<span class="text-xs bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded font-bold font-mono">DETERMINISTIC</span>
+</div>
+<!-- Matcher Form -->
+<form id="matcher-form" class="space-y-4">
+<div>
+<label class="block text-label-lg font-label-lg text-on-surface mb-1.5">State &amp; Agro-Climatic Zone</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg py-2.5 px-3 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary" id="state-select"><option value="Telangana">Telangana</option>
+<option value="Andhra Pradesh">Andhra Pradesh</option>
+<option value="Maharashtra">Maharashtra</option>
+<option value="Punjab">Punjab</option>
+<option value="Haryana">Haryana</option>
+<option value="Karnataka">Karnataka</option>
+<option value="Tamil Nadu">Tamil Nadu</option>
+<option value="Uttar Pradesh">Uttar Pradesh</option>
+<option value="Madhya Pradesh">Madhya Pradesh</option>
+<option value="Gujarat">Gujarat</option>
+<option value="Rajasthan">Rajasthan</option>
+<option value="Bihar">Bihar</option>
+<option value="West Bengal">West Bengal</option>
+<option value="Odisha">Odisha</option>
+<option value="Kerala">Kerala</option>
+<option value="Assam">Assam</option>
+<option value="Chhattisgarh">Chhattisgarh</option>
+<option value="Jharkhand">Jharkhand</option>
+<option value="Himachal Pradesh">Himachal Pradesh</option>
+<option value="Uttarakhand">Uttarakhand</option></select>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-label-lg font-label-lg text-on-surface mb-1.5">Land Holding</label>
+<select id="land-select" class="w-full bg-surface border border-outline-variant rounded-lg py-2.5 px-3 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary">
+<option>&lt; 2.5 Acres (Marginal)</option>
+<option>2.5 - 5 Acres (Small)</option>
+<option>&gt; 5 Acres (Medium/Large)</option>
+<option>CCRC Oral Tenant (Lease)</option>
+</select>
+</div>
+<div>
+<label class="block text-label-lg font-label-lg text-on-surface mb-1.5">Social Category</label>
+<select id="category-select" class="w-full bg-surface border border-outline-variant rounded-lg py-2.5 px-3 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary">
+<option>SC / ST (100% Subsidies)</option>
+<option>Backward Class (BC 90%)</option>
+<option>General / Other</option>
+<option>RoFR Forest Patta Holder</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-label-lg font-label-lg text-on-surface mb-1.5">Current Standing Crop</label>
+<input id="crop-input" class="w-full bg-surface border border-outline-variant rounded-lg py-2.5 px-3 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary" type="text" value="Paddy"/>
+</div>
+<button id="matcher-submit-btn" class="w-full bg-primary hover:bg-primary-container text-on-primary py-3 rounded-lg text-label-lg font-label-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm" type="submit">
+<span class="material-symbols-outlined">search_check</span>
+<span>Check Matched Schemes Instantly</span>
+</button>
+</form>
+<!-- Dynamic Result Notice -->
+<div class="p-3 bg-primary-fixed/20 border border-primary-fixed-dim rounded-lg text-body-sm font-body-sm text-primary flex items-start gap-2 hidden" id="match-results">
+<span class="material-symbols-outlined text-primary text-xl shrink-0 mt-0.5">verified</span>
+<div>
+<span class="font-bold">7 Verified Subsidies Available:</span> PMKSY (90% Drip for Small/BC), PM-KUSUM Component B (Solar Pump), TSMIP 100% Sprinkler package &amp; PMFBY coverage verified for current season.
+              </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: URGENT 72-HOUR PMFBY CLAIM SHIELD & CLIMATE COUNTDOWN -->
+<section class="py-12 px-4 md:px-8 max-w-7xl mx-auto" id="claim-shield">
+<div class="bg-surface-container-lowest border-2 border-secondary-container rounded-xl shadow-md overflow-hidden">
+<!-- Header Banner: Urgent Alert Level 3 -->
+<div class="bg-secondary-fixed/50 border-b border-secondary-container p-4 md:p-6 flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-secondary text-on-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl">timer</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-error text-on-error text-label-badge font-label-badge">STATUTORY DEADLINE</span>
+<span class="text-body-sm font-body-sm font-bold text-secondary">PMFBY Section 19(4) Calamity Notice</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface">
+                72-Hour Crop Loss Claim Countdown &amp; Climate Shield
+              </h2>
+</div>
+</div>
+<!-- Countdown Visual Display -->
+<div class="flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-lg border-2 border-secondary text-secondary">
+<span class="material-symbols-outlined animate-spin text-xl">acute</span>
+<div class="font-benefit-number text-benefit-number tracking-wider" id="countdown-timer">
+              48h 12m 30s
+            </div>
+<span class="text-xs font-bold uppercase text-on-surface-variant">Remaining</span>
+</div>
+</div>
+<!-- 4-Step Intimation Checklist & Workflow -->
+<div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">1</div>
+<h4 class="text-headline-sm font-headline-sm text-primary">Geo-Tagged Evidence</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Capture minimum 3 photos with GPS coordinates enabled showing field inundation, hailstorm impact, or pest lodging.
+            </p>
+<div class="flex items-center gap-1.5 text-xs text-primary font-bold">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+<span>In-App Camera Active</span>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">2</div>
+<h4 class="text-headline-sm font-headline-sm text-primary">SMS / WhatsApp Generator</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Deterministic string generation compliant with Insurance Company and State Agriculture Commission format.
+            </p>
+<div class="text-xs font-mono bg-surface-container px-2 py-1 rounded text-on-surface">
+<code>LOSS PMFBY [POL#] 85%</code>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">3</div>
+<h4 class="text-headline-sm font-headline-sm text-primary">Toll-Free PMFBY Call</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Direct connection to 14447 or National Crop Insurance Portal (NCIP) with call reference docket number generation.
+            </p>
+<a class="inline-flex items-center gap-1 text-xs text-secondary font-bold hover:underline" href="tel:14447">
+<span class="material-symbols-outlined text-sm">call</span> Dial 14447 (Free)
+            </a>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant space-y-3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">4</div>
+<h4 class="text-headline-sm font-headline-sm text-primary">Rythu Vedika Escalation</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Immediate physical intimation dispatch to local Agriculture Extension Officer (AEO) and Mandal office.
+            </p>
+<div class="flex items-center gap-1 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">place</span> Rythu Vedika Node #402
+            </div>
+</div>
+</div>
+<!-- Action Tray -->
+<div class="bg-surface-container px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-t border-outline-variant">
+<div class="flex items-center gap-2 text-body-sm font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary">info</span>
+<span>Natural Calamities covered: Inundation, Hailstorm, Landslide, Cloudburst, Post-Harvest Cyclonic Rains.</span>
+</div>
+<button class="dispatch-claim-trigger bg-error hover:bg-error/90 text-on-error px-5 py-2.5 rounded-lg text-label-lg font-label-lg font-bold flex items-center gap-2 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined">send_and_archive</span>
+<span>Dispatch Emergency Loss Intimation Now</span>
+</button>
+</div>
+</div>
+</section>
+<!-- SECTION 4: CORE CAPABILITIES BENTO GRID (Repository Features) -->
+<section class="py-12 px-4 md:px-8 max-w-7xl mx-auto space-y-8" id="schemes">
+<div>
+<div class="inline-block px-3 py-1 rounded bg-surface-container border border-outline-variant text-label-badge font-label-badge text-primary mb-2">
+          ENGINE MODULES &amp; CIVIC ARCHITECTURE
         </div>
-      </div>
+<h2 class="text-headline-lg font-headline-lg text-primary tracking-tight">
+          Comprehensive Public Agritech Capabilities
+        </h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant">
+          Integrating 32+ verified schemes, consent vaults, institutional credit subventions, and local intermediary tooling.
+        </p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1: Water-Saving Subsidy Matcher -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-primary-fixed/30 text-primary">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</span>
+<span class="text-label-badge font-label-badge bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded">18+ SCHEMES</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Diversified Water Subsidy Matcher</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Automated pairing with PMKSY Per Drop More Crop (55% to 100% micro-irrigation grant), PM-KUSUM Component B standalone solar pumps, TSMIP, APMIP, and Magel Tyala Shet Tale farm ponds.
+          </p>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant space-y-1.5 text-xs">
+<div class="flex justify-between font-bold">
+<span>Small/Marginal SC/ST:</span>
+<span class="text-primary font-bold">Up to 100% Grant</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Solar Pump Subsidy:</span>
+<span>60% Central + State Share</span>
+</div>
+</div>
+<a class="inline-flex items-center gap-1 text-label-lg font-label-lg text-primary font-bold hover:underline" href="#water-schemes">
+<span>Explore Water Subsidies</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Card 2: Next-Season Crop & Water Planning -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-surface-container-high text-tertiary">
+<span class="material-symbols-outlined text-2xl">nest_eco_leaf</span>
+</span>
+<span class="text-label-badge font-label-badge bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded">26+ CROPS</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Resilient Crop &amp; Water Planning</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Post-drought resilient recommendations: Bengal Gram (Chana), Sesame (Til), Green Gram (Moong), and Shree Anna Millets (Ragi, Jowar) delivering 85% water savings with assured procurement.
+          </p>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant space-y-1 text-xs">
+<div class="flex justify-between">
+<span>Sesame (Highest MSP Oilseed):</span>
+<span class="font-bold font-mono text-primary">₹9,267 / qtl</span>
+</div>
+<div class="flex justify-between">
+<span>Moong (60-Day Duration):</span>
+<span class="font-bold font-mono text-primary">₹8,682 / qtl</span>
+</div>
+</div>
+<a class="inline-flex items-center gap-1 text-label-lg font-label-lg text-tertiary font-bold hover:underline" href="#crop-planner">
+<span>View Resilient Crop Matrix</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Card 3: Kisan Credit Card (KCC) 4% Subvention -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-secondary-fixed text-secondary">
+<span class="material-symbols-outlined text-2xl">credit_card</span>
+</span>
+<span class="text-label-badge font-label-badge bg-secondary-container text-on-secondary px-2 py-0.5 rounded">4% NET INTEREST</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">KCC &amp; Modified Interest Subvention</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            DLTC Scale of Finance calculator with MISS rules: 9% baseline bank rate - 2% Govt subvention - 3% prompt repayment incentive = 4% net effective annual crop loan rate.
+          </p>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant text-xs space-y-1">
+<div class="flex justify-between text-on-surface">
+<span>Scale of Finance (Paddy):</span>
+<span class="font-bold">₹38,000 / Acre</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span>Prompt Repayment Due Date:</span>
+<span class="font-bold text-secondary">Kharif: Mar 31</span>
+</div>
+</div>
+<a id="kcc-calc-btn" class="inline-flex items-center gap-1 text-label-lg font-label-lg text-secondary font-bold hover:underline cursor-pointer" href="#kcc-calc">
+<span>Calculate KCC Loan Scale</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Card 4: Consent-Driven Document Vault & RapidFuzz -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm" id="dbt-section">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-primary-fixed/30 text-primary">
+<span class="material-symbols-outlined text-2xl">folder_shared</span>
+</span>
+<span class="text-label-badge font-label-badge bg-primary text-on-primary px-2 py-0.5 rounded">DBT SAFE</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Consent Vault &amp; Fuzzy Name Verifier</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Integrated RapidFuzz name detector comparing Bank Passbooks, Pahani/Dharani land records, and Aadhaar to prevent Direct Benefit Transfer rejections before filing.
+          </p>
+<div class="space-y-2 mt-2">
+  <div class="grid grid-cols-2 gap-2 text-xs">
+    <input id="fuzzy-aadhaar-input" type="text" class="bg-surface border border-outline-variant rounded p-1.5 text-xs font-mono" value="Ravi Kumar" placeholder="Aadhaar Name" />
+    <input id="fuzzy-bank-input" type="text" class="bg-surface border border-outline-variant rounded p-1.5 text-xs font-mono" value="Ravi Kumer" placeholder="Bank Name" />
+  </div>
+  <div class="flex items-center justify-between gap-2">
+    <button id="fuzzy-verify-btn" type="button" class="bg-primary text-on-primary px-2.5 py-1 rounded text-xs font-bold hover:bg-primary-container transition-colors">
+      Verify Name Match
+    </button>
+    <button id="consent-toggle-btn" type="button" class="bg-primary text-on-primary px-2 py-1 rounded text-[11px] font-bold">
+      Active Consent (Revoke?)
+    </button>
+  </div>
+  <div id="fuzzy-result-badge" class="hidden p-2.5 rounded text-xs border"></div>
+</div>
+</div>
+<!-- Card 5: 4-Tier Civic Grievance Escalation -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-surface-container-high text-tertiary">
+<span class="material-symbols-outlined text-2xl">account_balance</span>
+</span>
+<span class="text-label-badge font-label-badge bg-surface-container text-on-surface px-2 py-0.5 rounded">CPGRAMS COMPLIANT</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">4-Tier Grievance Petition Engine</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Deterministic statutory appeal drafts for stalled compensation or delayed subsidy payments routed through formal civic administrative channels.
+          </p>
+<div class="flex items-center justify-between text-xs py-1 px-2 bg-surface-container rounded font-medium">
+<span>AEO</span>
+<span>➔</span>
+<span>Mandal</span>
+<span>➔</span>
+<span>District Prajavani</span>
+<span>➔</span>
+<span class="font-bold text-tertiary">CPGRAMS</span>
+</div>
+<div class="text-xs text-on-surface-variant">
+            Pre-formatted legal grounds with RTI and citizen charter reference citations.
+          </div>
+</div>
+<!-- Card 6: CSC & Village Intermediary Mode -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 space-y-4 hover:border-primary-fixed-dim transition-all shadow-sm" id="csc-portal">
+<div class="flex items-center justify-between">
+<span class="p-2.5 rounded-lg bg-secondary-fixed text-secondary">
+<span class="material-symbols-outlined text-2xl">badge</span>
+</span>
+<span class="text-label-badge font-label-badge bg-secondary-fixed-dim text-on-secondary-fixed px-2 py-0.5 rounded">OPERATOR DESK</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Village Intermediary &amp; FPO Portal</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Dedicated multi-tenant dashboard for Village Level Entrepreneurs (VLEs), Rythu Bharosa Kendras, and FPO directors handling bulk farmer verification.
+          </p>
+<div class="bg-surface-container-low p-2.5 rounded border border-outline-variant text-xs space-y-1">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Active Facilitator Batch:</span>
+<span class="font-bold">42 Grama Profiles</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Audit Trail:</span>
+<span class="text-primary font-bold">100% Consent Logged</span>
+</div>
+</div>
+<a class="inline-flex items-center gap-1 text-label-lg font-label-lg text-secondary font-bold hover:underline" href="#csc-desk">
+<span>Launch Operator Console</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- SECTION 5: LIVE MSP VS MANDI PRICE BENCHMARK WIDGET -->
+<section class="py-12 px-4 md:px-8 max-w-7xl mx-auto" id="mandi-rates">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 md:p-8 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">price_change</span>
+<h2 class="text-headline-md font-headline-md text-on-surface">
+                Interactive Live MSP vs APMC Mandi Benchmark
+              </h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+              Deterministic procurement intelligence comparing current APMC market auctions against Cabinet Committee on Economic Affairs (CCEA) Minimum Support Prices.
+            </p>
+</div>
+<div class="flex items-center gap-2 text-xs font-mono bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span>Real-time APMC e-NAM Feed Updated</span>
+</div>
+</div>
+<!-- Benchmark Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left text-body-sm font-body-sm">
+<thead class="bg-surface-container text-on-surface-variant text-label-lg font-label-lg uppercase text-xs border-b border-outline-variant">
+<tr>
+<th class="py-3 px-4">Commodity / Crop</th>
+<th class="py-3 px-4">Category</th>
+<th class="py-3 px-4">Statutory MSP (2024-25)</th>
+<th class="py-3 px-4">Avg Mandi Auction</th>
+<th class="py-3 px-4">Price Variance</th>
+<th class="py-3 px-4">Smart Action Guidance</th>
+</tr>
+</thead>
+<tbody id="msp-table-body" class="divide-y divide-outline-variant">
+<!-- Row 1: Sesame -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-bold flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Sesame (Til / Nuvvulu)</span>
+</td>
+<td class="py-3.5 px-4 text-on-surface-variant">Oilseed (Resilient)</td>
+<td class="py-3.5 px-4 font-benefit-number text-benefit-number text-primary">₹9,267</td>
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">₹8,850</td>
+<td class="py-3.5 px-4 text-secondary font-bold">-₹417 (Below MSP)</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-xs bg-primary-fixed text-on-primary-fixed px-2.5 py-1 rounded font-bold">
+<span class="material-symbols-outlined text-xs">store</span>
+                    Route to NAFED / PACS Center
+                  </span>
+</td>
+</tr>
+<!-- Row 2: Moong -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-bold flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Green Gram (Moong)</span>
+</td>
+<td class="py-3.5 px-4 text-on-surface-variant">Pulse (60-Day)</td>
+<td class="py-3.5 px-4 font-benefit-number text-benefit-number text-primary">₹8,682</td>
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">₹8,920</td>
+<td class="py-3.5 px-4 text-primary font-bold">+₹238 (Above MSP)</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-xs bg-surface-container text-on-surface px-2.5 py-1 rounded font-bold">
+<span class="material-symbols-outlined text-xs">local_shipping</span>
+                    Sell in Open APMC Mandi
+                  </span>
+</td>
+</tr>
+<!-- Row 3: Bengal Gram -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-bold flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Bengal Gram (Chana)</span>
+</td>
+<td class="py-3.5 px-4 text-on-surface-variant">Rabi Pulse</td>
+<td class="py-3.5 px-4 font-benefit-number text-benefit-number text-primary">₹5,440</td>
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">₹5,120</td>
+<td class="py-3.5 px-4 text-secondary font-bold">-₹320 (Below MSP)</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-xs bg-primary-fixed text-on-primary-fixed px-2.5 py-1 rounded font-bold">
+<span class="material-symbols-outlined text-xs">store</span>
+                    FCI Procurement Window Active
+                  </span>
+</td>
+</tr>
+<!-- Row 4: Soybean -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-bold flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Soybean (Yellow)</span>
+</td>
+<td class="py-3.5 px-4 text-on-surface-variant">Kharif Commercial</td>
+<td class="py-3.5 px-4 font-benefit-number text-benefit-number text-primary">₹4,892</td>
+<td class="py-3.5 px-4 font-mono font-bold text-on-surface">₹4,450</td>
+<td class="py-3.5 px-4 text-error font-bold">-₹442 (Market Slump)</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-xs bg-secondary-fixed text-secondary px-2.5 py-1 rounded font-bold">
+<span class="material-symbols-outlined text-xs">warehouse</span>
+                    Utilize e-NWR Warehouse Pledge
+                  </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary">verified</span>
+<span>Price variance calculated live based on Agmarknet 10-day moving average.</span>
+</div>
+<button class="text-primary font-bold hover:underline flex items-center gap-1">
+<span>Locate Nearest PACS &amp; NAFED Center</span>
+<span class="material-symbols-outlined text-xs">navigation</span>
+</button>
+</div>
+</div>
+</section>
+<!-- SECTION 6: INTERMEDIARY VILLAGE OPERATOR CALLOUT & OFFLINE SMS GUIDE -->
+<section class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<!-- Offline SMS Syntax Guide -->
+<div class="lg:col-span-6 bg-inverse-surface text-inverse-on-surface p-6 md:p-8 rounded-xl space-y-5">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container/20 text-xs font-bold text-primary-fixed font-mono">
+<span class="material-symbols-outlined text-sm">signal_cellular_connected_no_internet_4_bar</span>
+<span>OFFLINE LOW-TECH MODE</span>
+</div>
+<span class="text-xs text-outline-variant font-mono">Works with 2G / Feature Phones</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-surface-container-lowest">
+            Standardized SMS Direct Claim Syntax
+          </h3>
+<p class="text-body-sm font-body-sm text-surface-dim">
+            When rural networks fail or smartphones are unavailable, dispatch emergency crop intimation or check PM-KISAN installment status via direct SMS gateway:
+          </p>
+<div class="space-y-3 font-mono text-xs">
+<div class="bg-on-background/40 p-3 rounded-lg border border-outline/30 space-y-1">
+<div class="text-secondary-fixed text-[11px] uppercase">1. PMFBY Emergency Crop Loss Intimation</div>
+<div class="text-primary-fixed text-sm font-bold">CLAIM &lt;VILLAGE&gt; &lt;SURVEY_NO&gt; &lt;LOSS_%&gt;</div>
+<div class="text-surface-dim text-[11px]">Send to: <strong class="text-surface-container-lowest">51969</strong> (Sovereign NIC SMS Hub)</div>
+</div>
+<div class="bg-on-background/40 p-3 rounded-lg border border-outline/30 space-y-1">
+<div class="text-secondary-fixed text-[11px] uppercase">2. KCC Interest Subvention &amp; Scale of Finance</div>
+<div class="text-primary-fixed text-sm font-bold">KCC &lt;STATE&gt; &lt;CROP&gt; &lt;ACRES&gt;</div>
+<div class="text-surface-dim text-[11px]">Send to: <strong class="text-surface-container-lowest">51969</strong></div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-xs text-surface-dim pt-2">
+<span class="material-symbols-outlined text-primary-fixed text-sm">check_circle</span>
+<span>Instant SMS delivery receipt with official government docket number.</span>
+</div>
+</div>
+<!-- Village Operator & CSC Intermediary Tools -->
+<div class="lg:col-span-6 bg-surface-container-lowest border border-outline-variant p-6 md:p-8 rounded-xl space-y-5 shadow-sm">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-secondary-fixed text-on-secondary-fixed text-label-badge font-label-badge">
+<span class="material-symbols-outlined text-sm">groups</span>
+<span>CSC VLE &amp; RYTHU BHAROSA OPERATORS</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-on-surface">
+            Village Facilitator Operational Toolkit
+          </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Empower local CSC operators and FPO field staff with batch upload capabilities, biometric fingerprint authentication, and tenant farmer consent registries.
+          </p>
+<div class="space-y-3">
+  <div class="text-xs font-bold text-primary flex items-center justify-between">
+    <span>Live Grama Priority Cases (SQLite Database)</span>
+    <span class="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded text-[10px]">Sync Active</span>
+  </div>
+  <div id="intermediary-records-container" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+    <div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant text-xs text-on-surface-variant">Loading SQLite database cases...</div>
+  </div>
+</div>
+<div class="pt-2 flex flex-wrap gap-3">
+<button class="bg-primary text-on-primary hover:bg-primary-container px-4 py-2.5 rounded-lg text-label-lg font-label-lg font-bold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+<span>Download Offline Desktop Kit</span>
+</button>
+<button class="border border-outline text-on-surface hover:bg-surface-container px-4 py-2.5 rounded-lg text-label-lg font-label-lg font-bold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-lg">help</span>
+<span>Operator Training Manual</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: Footer (Verbatim mapping from JSON Specification) -->
+<footer class="w-full py-12 px-4 md:px-8 max-w-7xl mx-auto bg-surface-container-low dark:bg-inverse-surface border-t border-outline-variant dark:border-outline">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<!-- Brand Column -->
+<div class="space-y-4 md:col-span-1">
+<a class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span>OpenQuest</span>
+</a>
+<p class="text-body-sm font-body-sm text-on-surface-variant dark:text-outline-variant">
+          Unified AI Assistant for Farmer Scheme, Subsidy, Insurance &amp; MSP Awareness. Open-source civic agriculture initiative.
+        </p>
+<div class="flex items-center gap-2 text-xs font-mono text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary-fixed-dim"></span>
+<span>Gov Stack Ready v3.4</span>
+</div>
+</div>
+<!-- Links Column 1 -->
+<div class="space-y-3">
+<h4 class="text-label-lg font-label-lg text-primary dark:text-primary-fixed">National Integrations</h4>
+<ul class="space-y-2 text-body-sm font-body-sm">
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              PM-KISAN Verification
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              PMFBY Crop Insurance Portal
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              AgriStack Identity
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              DigiLocker Integration
+            </a>
+</li>
+</ul>
+</div>
+<!-- Links Column 2 -->
+<div class="space-y-3">
+<h4 class="text-label-lg font-label-lg text-primary dark:text-primary-fixed">Citizen Services</h4>
+<ul class="space-y-2 text-body-sm font-body-sm">
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              72-Hour Grievance Redressal
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              CSC Intermediary Directory
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              Privacy &amp; Citizen Rights
+            </a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-150" href="#">
+              Accessibility Guidelines
+            </a>
+</li>
+</ul>
+</div>
+<!-- Institutional Badges & Emergency Helplines -->
+<div class="space-y-3">
+<h4 class="text-label-lg font-label-lg text-primary dark:text-primary-fixed">Statutory Helplines</h4>
+<div class="space-y-2 text-xs">
+<div class="p-2.5 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="font-bold text-error">Crop Loss 72h Hotline:</div>
+<div class="font-mono text-sm text-on-surface">14447 / 1800-180-1551</div>
+</div>
+<div class="p-2.5 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="font-bold text-primary">Kisan Credit Card Desk:</div>
+<div class="font-mono text-sm text-on-surface">1800-115-526</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Verbatim Copyright Notice from JSON -->
+<div class="pt-8 border-t border-outline-variant dark:border-outline text-center text-xs text-on-surface-variant dark:text-outline-variant">
+<p>© 2025 OpenQuest Civic Agriculture Network. Integrated with PMFBY, PM-KISAN, AgriStack &amp; DigiLocker. Sovereign Public Digital Infrastructure.</p>
+</div>
+</footer>
+<!-- Vanilla JS for Live Countdown & Form Interactivity -->
+<script>
+    // Live Countdown for the statutory 72-Hour Crop Loss Window
+    let secondsLeft = (48 * 3600) + (12 * 60) + 30;
+    const timerElement = document.getElementById('countdown-timer');
 
-      <!-- Visible Language Selector in Header -->
-      <div class="lang-selector-wrapper" aria-label="Select Language">
-        <span class="lang-icon" aria-hidden="true">🌐</span>
-        <select id="langSelect" class="lang-select" aria-label="Choose Language">
-          <option value="en">English (Default)</option>
-          <option value="te">తెలుగు (Telugu)</option>
-          <option value="hi">हिंदी (Hindi)</option>
-          <option value="mr">मराठी (Marathi)</option>
-          <option value="ta">தமிழ் (Tamil)</option>
-          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+    if (timerElement) {
+      setInterval(() => {
+        if (secondsLeft > 0) {
+          secondsLeft--;
+          const hours = Math.floor(secondsLeft / 3600);
+          const mins = Math.floor((secondsLeft % 3600) / 60);
+          const secs = secondsLeft % 60;
+          timerElement.textContent = `${hours}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`;
+        }
+      }, 1000);
+    }
+  </script>
+
+<!-- KCC Calculator Modal -->
+<div id="kcc-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-surface-container-lowest max-w-lg w-full rounded-2xl border-2 border-secondary p-6 shadow-2xl space-y-4 animate-fade-in">
+    <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-secondary text-2xl">credit_card</span>
+        <h3 class="text-headline-sm font-headline-sm text-on-surface">KCC Loan Scale Calculator</h3>
+      </div>
+      <button id="kcc-modal-close" class="text-on-surface-variant hover:text-on-surface text-xl">✕</button>
+    </div>
+    <form id="kcc-calc-form" class="space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-on-surface mb-1">Crop</label>
+        <select id="kcc-crop-select" class="w-full bg-surface border border-outline-variant rounded-lg p-2.5 text-sm">
+          <option value="Paddy">Paddy (₹42,000 / Acre)</option>
+          <option value="Cotton">Cotton (₹45,000 / Acre)</option>
+          <option value="Chilli">Chilli (₹65,000 / Acre)</option>
+          <option value="Maize">Maize (₹28,000 / Acre)</option>
+          <option value="Bengal Gram">Bengal Gram (₹24,000 / Acre)</option>
+          <option value="Groundnut">Groundnut (₹30,000 / Acre)</option>
         </select>
       </div>
-    </div>
-  </header>
-
-  <!-- Hero & State Selector Section -->
-  <section class="hero-section" aria-labelledby="heroTitle">
-    <div class="hero-container">
-      <div class="hero-badge">
-        <span>🇮🇳</span>
-        <span>Pan-India Agricultural Welfare & Subsidies</span>
-      </div>
-      <h2 id="heroTitle" class="hero-title" data-i18n="hero_title">
-        Find Government Schemes & Subsidies for Your Farm
-      </h2>
-      <p class="hero-subtitle" data-i18n="hero_desc">
-        Select your State below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
-      </p>
-
-      <!-- Prominent State Selector: 29 States Interactive Clickable Grid -->
-      <div class="states-selection-card">
-        <div class="states-card-header">
-          <div class="states-title-wrap">
-            <h3 class="selector-title" data-i18n="select_state_grid_title">
-              📍 Select Your State (All 29 Indian States)
-            </h3>
-            <p class="selector-subtitle" data-i18n="select_state_hint">
-              Tap your state box below to display available state subsidies and central schemes.
-            </p>
-          </div>
-          <div class="state-search-box">
-            <span class="state-search-icon" aria-hidden="true">🔍</span>
-            <input 
-              id="stateSearchInput" 
-              type="search" 
-              class="state-search-input" 
-              placeholder="Filter 29 states (e.g. Telangana, Punjab, Maharashtra)..." 
-              aria-label="Filter 29 states"
-            >
-          </div>
-        </div>
-
-        <!-- The 29 States Responsive Grid -->
-        <div id="statesGrid" class="states-grid" role="group" aria-label="Select State from 29 Indian States">
-          <!-- Dynamically populated by app.js with 29 clickable state boxes -->
-        </div>
-
-        <!-- Accessible synchronized select element for fallback & audit compliance -->
-        <div class="state-select-wrapper" style="margin-top: 1rem;">
-          <label for="stateSelect" class="sr-only">Or choose state from list</label>
-          <select id="stateSelect" class="state-select-input" aria-required="true">
-            <!-- Populated dynamically by app.js -->
-          </select>
-          <span class="state-input-arrow" aria-hidden="true">▼</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Empty State Prompt (Visible BEFORE State is Selected) -->
-  <section id="emptyStatePrompt" class="empty-state-guide" aria-live="polite">
-    <div class="guide-icon" aria-hidden="true">🚜</div>
-    <h3 class="guide-heading" data-i18n="no_state_prompt">
-      Please select your State above to view available schemes and subsidies.
-    </h3>
-    <p class="guide-text">
-      Agricultural welfare and subsidies vary by State. Once you click your state box above, the assistant will immediately display both your State Government subsidies and Central Government schemes.
-    </p>
-  </section>
-
-  <!-- Main Schemes Section (Hidden until State is Selected) -->
-  <main id="mainContent" class="main-content" style="display: none;" role="main">
-    
-    <!-- Active State Summary Banner -->
-    <div id="stateBanner" class="state-banner">
-      <div class="banner-left">
-        <span class="banner-flag" aria-hidden="true">🌾</span>
+      <div class="grid grid-cols-2 gap-3">
         <div>
-          <div>
-            <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;" data-i18n="state_selected_banner">Showing Agricultural Schemes for</span>
-          </div>
-          <span id="bannerStateName" class="banner-state-name">Telangana</span>
-          <span id="bannerStats" class="banner-stats">(State Schemes + Central Schemes)</span>
+          <label class="block text-xs font-bold text-on-surface mb-1">Land (Acres)</label>
+          <input id="kcc-acres-input" type="number" step="0.5" value="2.5" min="0.5" class="w-full bg-surface border border-outline-variant rounded-lg p-2.5 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface mb-1">Existing Debt (₹)</label>
+          <input id="kcc-debt-input" type="number" step="1000" value="0" min="0" class="w-full bg-surface border border-outline-variant rounded-lg p-2.5 text-sm" />
         </div>
       </div>
-      <button id="changeStateBtn" class="change-state-btn" type="button">
-        Change State ↻
+      <button type="submit" class="w-full bg-secondary hover:bg-secondary/90 text-on-secondary py-2.5 rounded-lg font-bold text-sm transition-colors">
+        Compute Statutory Credit Limit
       </button>
-    </div>
-
-    <!-- Toolbar: Tabs, Search & Filters -->
-    <section class="toolbar-container" aria-label="Scheme Filters and Search">
-      
-      <!-- Government Level Tabs -->
-      <div class="level-tabs" role="tablist">
-        <button id="tabAllBtn" class="tab-btn active" role="tab" aria-selected="true" type="button">
-          <span data-i18n="tab_all">All Schemes</span>
-          <span id="countAll" class="tab-count">0</span>
-        </button>
-        <button id="tabStateBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
-          <span id="labelTabState" data-i18n="tab_state">State Schemes</span>
-          <span id="countState" class="tab-count">0</span>
-        </button>
-        <button id="tabCentralBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
-          <span data-i18n="tab_central">Central Schemes</span>
-          <span id="countCentral" class="tab-count">0</span>
-        </button>
-      </div>
-
-      <!-- Instant Search Bar -->
-      <div class="search-wrapper">
-        <span class="search-icon" aria-hidden="true">🔍</span>
-        <input 
-          id="searchInput" 
-          type="search" 
-          class="search-input" 
-          placeholder="Search schemes by name, crop, or keyword (e.g. Paddy, Tractor, Insurance, Loan)..." 
-          aria-label="Search schemes"
-        >
-      </div>
-
-      <!-- Secondary Filters -->
-      <div class="filter-row">
-        <div class="filter-group">
-          <label for="typeFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_type">
-            Scheme Type
-          </label>
-          <select id="typeFilterSelect" class="filter-select">
-            <option value="all">All Scheme Types</option>
-            <option value="income_support">Direct Income / Investment Support</option>
-            <option value="insurance">Crop Loss Insurance</option>
-            <option value="credit">Subsidized Crop Credit / Loan</option>
-            <option value="machinery">Tractor & Farm Machinery Grants</option>
-            <option value="irrigation">Drip, Sprinkler & Solar Pumps</option>
-            <option value="pension">Farmer Pension (Old Age)</option>
-            <option value="fencing">Farm Fencing (Animal Protection)</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="eligibilityFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_eligibility">
-            Farmer Type
-          </label>
-          <select id="eligibilityFilterSelect" class="filter-select">
-            <option value="all">All Farmer Types</option>
-            <option value="small_marginal">Small & Marginal Farmers (&lt; 5 Acres)</option>
-            <option value="tenant">Tenant Farmers & Sharecroppers</option>
-          </select>
-        </div>
-      </div>
-    </section>
-
-    <!-- Schemes Cards Grid -->
-    <section id="schemesGrid" class="schemes-grid" aria-label="List of Agricultural Schemes">
-      <!-- Cards rendered dynamically by app.js -->
-    </section>
-
-  </main>
-
-  <!-- Interactive Eligibility Evaluation Modal -->
-  <div id="eligibilityModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalSchemeTitle">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-header-info">
-          <span id="modalBadge" class="badge-central">🇮🇳 Central Govt Scheme</span>
-          <h3 id="modalSchemeTitle" class="modal-title">Eligibility Evaluation</h3>
-          <p id="modalSchemeSubtitle" class="modal-subtitle">Scheme details</p>
-        </div>
-        <button id="closeModalBtn" class="modal-close-btn" type="button" aria-label="Close modal">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Farmer Profile Input Form -->
-        <section class="modal-form-section" aria-label="Farmer Profile Form">
-          <h4 class="form-section-title" data-i18n="farmer_details_heading">
-            🧑‍🌾 Enter Your Farming Profile Details
-          </h4>
-          <p class="form-section-subtitle" data-i18n="form_subtitle">
-            Your details are matched in real-time against this scheme's verified statutory rules.
-          </p>
-
-          <div class="form-grid">
-            <div class="form-field">
-              <label for="evalStateSelect" class="form-label" data-i18n="label_state">
-                📍 State / Location
-              </label>
-              <select id="evalStateSelect" class="form-input">
-                <!-- Populated with all 29 states -->
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="evalFarmerType" class="form-label" data-i18n="label_farmer_type">
-                👥 Farmer Land Ownership Type
-              </label>
-              <select id="evalFarmerType" class="form-input">
-                <option value="owner">👨‍🌾 Landowning Farmer (with Patta / Passbook)</option>
-                <option value="tenant_registered">📑 Tenant Farmer (with written lease / CCRC card)</option>
-                <option value="tenant_oral">🤝 Oral Tenant / Sharecropper (no written agreement)</option>
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="evalLandAcres" class="form-label" data-i18n="label_land_acres">
-                📐 Cultivated Land (in Acres)
-              </label>
-              <input id="evalLandAcres" type="number" step="0.1" min="0" max="1000" class="form-input" value="2.5" placeholder="e.g. 2.5">
-            </div>
-
-            <div class="form-field">
-              <label for="evalCrop" class="form-label" data-i18n="label_crop">
-                🌾 Primary Crop Sown
-              </label>
-              <select id="evalCrop" class="form-input">
-                <option value="Paddy">Paddy / Rice (వరి / धान)</option>
-                <option value="Cotton">Cotton (ప్రత్తి / कपास)</option>
-                <option value="Wheat">Wheat (గోధుమ / गेहूं)</option>
-                <option value="Maize">Maize / Corn (మొక్కజొన్న / मक्का)</option>
-                <option value="Soybean">Soybean (సోయాబీన్ / सोयाबीन)</option>
-                <option value="Groundnut">Groundnut (వేరుశనగ / मूंगफली)</option>
-                <option value="Red Gram">Red Gram / Tur (కందులు / अरहर)</option>
-                <option value="Chilli">Chilli / Spices (మిరప / मिर्च)</option>
-                <option value="Sugarcane">Sugarcane (చెరకు / गन्ना)</option>
-                <option value="Millet">Millets / Jowar / Bajra (చిరుధాన్యాలు / बाजरा)</option>
-                <option value="Mustard">Mustard (ఆవాలు / सरसों)</option>
-                <option value="Apple">Apple / Orchard (ఆపిల్ / सेब)</option>
-                <option value="Cardamom">Cardamom / Spices (ఏలకులు / इलायची)</option>
-                <option value="Ginger">Ginger / Turmeric (అల్లం / अदरक)</option>
-                <option value="Horticulture">Vegetables & Fruits (కూరగాయలు / सब्जियां)</option>
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="evalAge" class="form-label" data-i18n="label_age">
-                🎂 Farmer Age (Years)
-              </label>
-              <input id="evalAge" type="number" min="14" max="100" class="form-input" value="40" placeholder="e.g. 40">
-            </div>
-
-            <div class="form-field">
-              <label for="evalTaxPayer" class="form-label" data-i18n="label_tax_payer">
-                💼 Income Tax Payer Status
-              </label>
-              <select id="evalTaxPayer" class="form-input">
-                <option value="no">❌ No (Non-Taxpayer / Agri Income Only)</option>
-                <option value="yes">✅ Yes (Pays Income Tax on Other Income)</option>
-              </select>
-            </div>
-          </div>
-        </section>
-
-        <!-- Live Deterministic Criteria Evaluation Results -->
-        <section class="modal-results-section" aria-live="polite">
-          <h4 class="form-section-title" data-i18n="evaluation_results_heading">
-            📊 Criteria Match Breakdown
-          </h4>
-
-          <!-- Overall Verdict Banner -->
-          <div id="evalVerdictBanner" class="verdict-banner verdict-eligible">
-            <div id="evalVerdictIcon" class="verdict-icon">🟢</div>
-            <div class="verdict-text-box">
-              <div id="evalVerdictTitle" class="verdict-title">Eligible for This Scheme!</div>
-              <div id="evalVerdictDesc" class="verdict-desc">Your profile satisfies all required conditions.</div>
-            </div>
-          </div>
-
-          <!-- Criteria Checklist -->
-          <div id="evalCriteriaList" class="eval-criteria-list">
-            <!-- Dynamically populated with each criterion pass/fail -->
-          </div>
-
-          <!-- Required Documents Section in Modal -->
-          <div class="modal-docs-box">
-            <div class="section-label" style="font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">
-              📑 Required Documents Checklist
-            </div>
-            <ul id="modalDocList" class="doc-list">
-              <!-- Documents required -->
-            </ul>
-          </div>
-        </section>
-      </div>
-
-      <div class="modal-footer">
-        <button id="modalDoneBtn" class="modal-secondary-btn" type="button">
-          Done / Close
-        </button>
-        <a id="modalOfficialLink" href="#" target="_blank" rel="noopener noreferrer" class="official-link-btn">
-          <span>Apply on Official Portal</span>
-          <span>↗</span>
-        </a>
-      </div>
-    </div>
+    </form>
+    <div id="kcc-calc-result" class="hidden"></div>
   </div>
+</div>
 
-  <!-- Accessibility Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="footer-content">
-      <p style="font-weight: 700; color: var(--primary);">
-        🌾 Kisan Setu / Rythu Sahayata — Unified Farmer Assistant
-      </p>
-      <p>
-        Grounded in official Central & State Government agricultural portals across all 29 Indian States. Every scheme displays direct official sources, verified eligibility parameters, and emergency intimation windows.
-      </p>
-      <p style="font-size: 0.8rem; margin-top: 0.5rem;">
-        Empowering Small, Marginal, and Tenant Farmers across India with 100% Deterministic Rule Matching.
-      </p>
+<!-- 72-Hour Emergency Loss Claim Modal -->
+<div id="claim-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-surface-container-lowest max-w-lg w-full rounded-2xl border-2 border-error p-6 shadow-2xl space-y-4 animate-fade-in">
+    <div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-error text-2xl">emergency</span>
+        <div>
+          <h3 class="text-headline-sm font-headline-sm text-on-surface">72-Hour Statutory Claim Intimation</h3>
+          <span class="text-[11px] text-error font-bold font-mono">PMFBY Section 19(4) Filing</span>
+        </div>
+      </div>
+      <button id="claim-modal-close" class="text-on-surface-variant hover:text-on-surface text-xl">✕</button>
     </div>
-  </footer>
+    <form id="claim-dispatch-form" class="space-y-3 text-xs">
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block font-bold mb-1">Farmer Name</label>
+          <input id="claim-farmer-name" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="Ravi Kumar" required />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Phone Number</label>
+          <input id="claim-phone" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="9876543210" required />
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div>
+          <label class="block font-bold mb-1">State</label>
+          <input id="claim-state" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="Telangana" required />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">District</label>
+          <input id="claim-district" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="Warangal" required />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Village</label>
+          <input id="claim-village" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="Geesugonda" required />
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div>
+          <label class="block font-bold mb-1">Survey No</label>
+          <input id="claim-survey" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="402/A" required />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Calamity Type</label>
+          <select id="claim-cause" class="w-full bg-surface border border-outline-variant rounded p-2">
+            <option value="Hailstorm">Hailstorm</option>
+            <option value="Inundation">Inundation / Flood</option>
+            <option value="Pest Lodging">Pest Lodging</option>
+            <option value="Cyclonic Rain">Cyclonic Rain</option>
+            <option value="Drought">Drought</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Loss (%)</label>
+          <input id="claim-loss-pct" type="number" min="10" max="100" value="75" class="w-full bg-surface border border-outline-variant rounded p-2" required />
+        </div>
+      </div>
+      <div>
+        <label class="block font-bold mb-1">Field Assessment Notes</label>
+        <input id="claim-notes" type="text" class="w-full bg-surface border border-outline-variant rounded p-2" value="Waterlogging with lodged crop canopy. 3 geo-tagged photos ready." />
+      </div>
+      <button id="claim-submit-btn" type="submit" class="w-full bg-error hover:bg-error/90 text-on-error py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-1.5 transition-colors">
+        <span class="material-symbols-outlined text-base">send_and_archive</span>
+        <span>Submit Official Intimation &amp; Generate Docket</span>
+      </button>
+    </form>
+    <div id="claim-dispatch-result" class="hidden"></div>
+  </div>
+</div>
 
-  <!-- Scripts -->
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+<script src="app.js"></script>
+
+</body></html>

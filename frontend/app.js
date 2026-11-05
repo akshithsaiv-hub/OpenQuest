@@ -1,850 +1,612 @@
-// Kisan Setu: Mobile-First Frontend Application Logic
-// Features: 29 States Responsive Grid, Central & State Badges, Live Eligibility Engine, Multilingual
+/**
+ * OpenQuest - Civic Agritech Client Integration Script
+ * Connects Stitch UI with FastAPI Backend & SQLite Database.
+ */
 
-(function () {
-  'use strict';
+// Global State
+const API_BASE = "";
 
-  // Application State
-  const appState = {
-    lang: localStorage.getItem('kisan_lang') || 'en',
-    selectedState: localStorage.getItem('kisan_state') || '',
-    activeTab: 'all', // 'all' | 'state' | 'central'
-    typeFilter: 'all',
-    eligibilityFilter: 'all',
-    searchQuery: '',
-    stateFilterQuery: '',
-    activeEvaluationSchemeId: null,
-    farmerProfile: JSON.parse(localStorage.getItem('kisan_farmer_profile') || JSON.stringify({
-      state: localStorage.getItem('kisan_state') || 'Telangana',
-      farmerType: 'owner',
-      landAcres: 2.5,
-      crop: 'Paddy',
-      age: 40,
-      isTaxPayer: 'no'
-    }))
-  };
+// Document Ready
+document.addEventListener("DOMContentLoaded", () => {
+  initCountdownTimer();
+  initLanguageSelector();
+  initEligibilityMatcher();
+  initQueryAI();
+  initNameMatcher();
+  initKCCCalculator();
+  initClaimDispatcher();
+  initIntermediaryPortal();
+  loadMspComparison();
+});
 
-  // DOM Elements
-  const langSelect = document.getElementById('langSelect');
-  const statesGrid = document.getElementById('statesGrid');
-  const stateSearchInput = document.getElementById('stateSearchInput');
-  const stateSelect = document.getElementById('stateSelect');
-  const emptyStatePrompt = document.getElementById('emptyStatePrompt');
-  const mainContent = document.getElementById('mainContent');
-  const stateBanner = document.getElementById('stateBanner');
-  const bannerStateName = document.getElementById('bannerStateName');
-  const bannerStats = document.getElementById('bannerStats');
-  const changeStateBtn = document.getElementById('changeStateBtn');
-  const schemesGrid = document.getElementById('schemesGrid');
-  const searchInput = document.getElementById('searchInput');
-  const typeFilterSelect = document.getElementById('typeFilterSelect');
-  const eligibilityFilterSelect = document.getElementById('eligibilityFilterSelect');
+// 1. Live Countdown Timer (72-Hour PMFBY Statutory Window)
+function initCountdownTimer() {
+  let secondsLeft = 48 * 3600 + 12 * 60 + 30;
+  const timerElement = document.getElementById("countdown-timer");
+  if (!timerElement) return;
 
-  const tabAllBtn = document.getElementById('tabAllBtn');
-  const tabStateBtn = document.getElementById('tabStateBtn');
-  const tabCentralBtn = document.getElementById('tabCentralBtn');
-  const countAll = document.getElementById('countAll');
-  const countState = document.getElementById('countState');
-  const countCentral = document.getElementById('countCentral');
+  setInterval(() => {
+    if (secondsLeft > 0) {
+      secondsLeft--;
+      const hours = Math.floor(secondsLeft / 3600);
+      const mins = Math.floor((secondsLeft % 3600) / 60);
+      const secs = secondsLeft % 60;
+      timerElement.textContent = `${hours}h ${mins.toString().padStart(2, "0")}m ${secs.toString().padStart(2, "0")}s`;
+    }
+  }, 1000);
+}
 
-  // Modal Elements
-  const eligibilityModal = document.getElementById('eligibilityModal');
-  const modalBadge = document.getElementById('modalBadge');
-  const modalSchemeTitle = document.getElementById('modalSchemeTitle');
-  const modalSchemeSubtitle = document.getElementById('modalSchemeSubtitle');
-  const closeModalBtn = document.getElementById('closeModalBtn');
-  const modalDoneBtn = document.getElementById('modalDoneBtn');
-  const modalOfficialLink = document.getElementById('modalOfficialLink');
-
-  const evalStateSelect = document.getElementById('evalStateSelect');
-  const evalFarmerType = document.getElementById('evalFarmerType');
-  const evalLandAcres = document.getElementById('evalLandAcres');
-  const evalCrop = document.getElementById('evalCrop');
-  const evalAge = document.getElementById('evalAge');
-  const evalTaxPayer = document.getElementById('evalTaxPayer');
-
-  const evalVerdictBanner = document.getElementById('evalVerdictBanner');
-  const evalVerdictIcon = document.getElementById('evalVerdictIcon');
-  const evalVerdictTitle = document.getElementById('evalVerdictTitle');
-  const evalVerdictDesc = document.getElementById('evalVerdictDesc');
-  const evalCriteriaList = document.getElementById('evalCriteriaList');
-  const modalDocList = document.getElementById('modalDocList');
-
-  // Helper to fetch translated UI label
-  function t(key) {
-    const dict = UI_TRANSLATIONS[appState.lang] || UI_TRANSLATIONS['en'];
-    return dict[key] || UI_TRANSLATIONS['en'][key] || key;
+// 2. Multilingual Translations Dictionary
+const I18N_STRINGS = {
+  en: {
+    heroTitle: "Empowering Indian Farmers with Instant Subsidy & Loss Claim Intelligence",
+    heroDesc: "Pan-India Central & State Schemes • 72-Hour Statutory PMFBY Claim Countdown • AgriStack & DigiLocker Ready • Offline & SMS Capable.",
+    matcherTitle: "Interactive Eligibility Matcher",
+    checkBtn: "Check Matched Schemes Instantly",
+    emergencyBtn: "Dispatch Emergency Loss Intimation Now",
+    mandiTitle: "Interactive Live MSP vs APMC Mandi Benchmark",
+    operatorTitle: "Village Facilitator Operational Toolkit",
+  },
+  te: {
+    heroTitle: "రైతులకు తక్షణ రాయితీలు & పంట నష్ట పరిహార సమాచారం అందించే వేదిక",
+    heroDesc: "అన్ని రాష్ట్రాల & కేంద్ర పథకాలు • 72 గంటల PMFBY నష్ట నివేదిక కౌంట్‌డౌన్ • అగ్రిస్టాక్ & డిజిలాకర్ అనుసంధానం • ఆఫ్‌లైన్ & SMS మోడ్.",
+    matcherTitle: "అర్హత పథకాల తనిఖీ యంత్రం",
+    checkBtn: "అర్హత ఉన్న పథకాలను ఇప్పుడే చూడండి",
+    emergencyBtn: "72 గంటల నష్ట నివేదికను పంపండి",
+    mandiTitle: "ప్రత్యక్ష మద్దతు ధర (MSP) vs మార్కెట్ ధరల విశ్లేషణ",
+    operatorTitle: "గ్రామ స్థాయి ఆపరేటర్ / CSC డాష్‌బోర్డ్",
+  },
+  hi: {
+    heroTitle: "भारतीय किसानों के लिए तत्काल सब्सिडी और फसल क्षति दावा मंच",
+    heroDesc: "अखिल भारतीय केंद्रीय एवं राज्य योजनाएं • 72 घंटे की पीएमएफबीवाई क्षति सूचना • एग्रीस्टैक एवं डिजिलॉकर एकीकृत • ऑफलाइन एवं एसएमएस सक्षम।",
+    matcherTitle: "इंटरएक्टिव पात्रता मिलानकर्ता",
+    checkBtn: "तत्काल पात्र योजनाओं की जांच करें",
+    emergencyBtn: "72 घंटे की आपातकालीन फसल हानि दर्ज करें",
+    mandiTitle: "लाइव एमएसपी बनाम मंडी मूल्य तुलना",
+    operatorTitle: "ग्राम सुविधा प्रदाता एवं सीएससी ऑपरेटर डेस्क",
+  },
+  mr: {
+    heroTitle: "शेतकऱ्यांसाठी त्वरित अनुदान व पीक विमा नुकसान भरपाई सहाय्यक",
+    heroDesc: "सर्व राज्य व केंद्र योजना • ७२ तासांत पीक नुकसान सूचना • ॲग्रीस्टॅक व डिजी-लॉकर सक्षम • ऑफलाइन एसएमएस मोड.",
+    matcherTitle: "पात्रता तपासणी यंत्र",
+    checkBtn: "पात्र योजनांची त्वरित तपासणी करा",
+    emergencyBtn: "७२ तासांत पीक नुकसान सूचना पाठवा",
+    mandiTitle: "थेट हमीभाव (MSP) वि. बाजार समिती दर",
+    operatorTitle: "ग्रामस्तरीय ऑपरेटर व सीएससी डेस्क",
+  },
+  ta: {
+    heroTitle: "விவசாயிகளுக்கான உடனடி மானியம் மற்றும் பயிர் இழப்பீடு தகவல் தளம்",
+    heroDesc: "அனைத்து மாநில மற்றும் மத்திய திட்டங்கள் • 72 மணி நேர PMFBY இழப்பீட்டு அறிக்கை • அக்ரிஸ்டாக் & டிஜிலாக்கர் இணைப்பு.",
+    matcherTitle: "திட்ட தகுதி சரிபார்ப்பு",
+    checkBtn: "தகுதியான திட்டங்களை பார்க்கவும்",
+    emergencyBtn: "72 மணி நேர அவசர இழப்பீட்டு அறிக்கை அனுப்பவும்",
+    mandiTitle: "நேரடி குறைந்தபட்ச ஆதரவு விலை vs மண்டி விலை",
+    operatorTitle: "கிராம சேவை மைய ஆபரேட்டர் தளம்",
   }
+};
 
-  // Populate States & UTs dropdown and 29 States Grid
-  function populateStates() {
-    // 1. Populate responsive 29 states grid
-    if (statesGrid) {
-      statesGrid.innerHTML = '';
-      const query = appState.stateFilterQuery.toLowerCase().trim();
-      const filteredStates = ALL_29_STATES.filter(function (st) {
-        return st.name.toLowerCase().includes(query) || st.code.toLowerCase().includes(query);
+function initLanguageSelector() {
+  const langSelect = document.getElementById("lang-select-box");
+  if (!langSelect) return;
+
+  langSelect.addEventListener("change", (e) => {
+    const lang = e.target.value;
+    const trans = I18N_STRINGS[lang] || I18N_STRINGS.en;
+
+    const heroTitle = document.getElementById("hero-main-title");
+    if (heroTitle) heroTitle.textContent = trans.heroTitle;
+
+    const heroDesc = document.getElementById("hero-main-desc");
+    if (heroDesc) heroDesc.textContent = trans.heroDesc;
+
+    const matcherBtn = document.getElementById("matcher-submit-btn");
+    if (matcherBtn) {
+      const span = matcherBtn.querySelector("span:last-child");
+      if (span) span.textContent = trans.checkBtn;
+    }
+  });
+}
+
+// 3. Interactive Eligibility Matcher
+function initEligibilityMatcher() {
+  const form = document.getElementById("matcher-form");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const state = document.getElementById("state-select")?.value || "Telangana";
+    const landVal = document.getElementById("land-select")?.value || "2.5";
+    const category = document.getElementById("category-select")?.value || "BC";
+    const cropInput = document.getElementById("crop-input")?.value || "Paddy";
+
+    let landAcres = 2.5;
+    let isTenant = false;
+    if (landVal.includes("< 2.5")) landAcres = 1.5;
+    else if (landVal.includes("2.5 - 5")) landAcres = 3.5;
+    else if (landVal.includes("> 5")) landAcres = 6.0;
+    else if (landVal.includes("Tenant") || landVal.includes("CCRC")) {
+      landAcres = 2.0;
+      isTenant = true;
+    }
+
+    const payload = {
+      state: state,
+      land_acres: landAcres,
+      is_tenant: isTenant,
+      crops: cropInput.split("/").map(c => c.trim()).filter(Boolean),
+      category: category,
+      has_rofr_patta: category.includes("RoFR"),
+      age: 40,
+      is_tax_payer: false
+    };
+
+    const submitBtn = document.getElementById("matcher-submit-btn");
+    const resultsContainer = document.getElementById("match-results");
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
+      const data = await res.json();
 
-      if (filteredStates.length === 0) {
-        statesGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.95rem;">
-            No states match "${appState.stateFilterQuery}".
-          </div>
-        `;
-      } else {
-        filteredStates.forEach(function (st) {
-          const isSelected = st.name.toLowerCase() === appState.selectedState.toLowerCase();
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = `state-box-btn ${isSelected ? 'selected' : ''}`;
-          btn.setAttribute('data-state', st.name);
-          btn.setAttribute('role', 'button');
-          btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      if (resultsContainer && data.status === "success") {
+        resultsContainer.classList.remove("hidden");
+        
+        let cashFormatted = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(data.total_direct_cash_annual);
 
-          btn.innerHTML = `
-            <div class="state-box-left">
-              <span class="state-pin-icon" aria-hidden="true">🏛️</span>
-              <span class="state-box-name">${st.name}</span>
+        let schemesHtml = `
+          <div class="space-y-4 w-full">
+            <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-primary-fixed/30 border border-primary-fixed-dim rounded-lg">
+              <div>
+                <span class="font-extrabold text-primary text-base">✅ ${data.total_eligible} Verified Schemes Matched</span>
+                <span class="text-xs text-on-surface-variant block">For ${state} • ${landAcres} Acres • ${cropInput}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-on-surface-variant uppercase font-bold block">Annual Direct Support</span>
+                <span class="text-lg font-extrabold text-primary font-mono">${cashFormatted}</span>
+              </div>
             </div>
-            <div style="display:flex; align-items:center; gap:0.35rem;">
-              <span class="state-code-badge">${st.code}</span>
-              <span class="state-check-mark" aria-hidden="true">✓</span>
+
+            <div class="max-h-80 overflow-y-auto space-y-2.5 pr-1">
+        `;
+
+        data.eligible_schemes.forEach((s) => {
+          schemesHtml += `
+            <div class="p-3 bg-surface border border-outline-variant rounded-lg space-y-1.5 hover:border-primary transition-all">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-sm text-primary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-base">check_circle</span>
+                  ${s.scheme || s.name}
+                </span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded ${s.level === 'Central' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-primary-fixed text-on-primary-fixed'}">
+                  ${s.level} Scheme
+                </span>
+              </div>
+              <p class="text-xs text-on-surface-variant leading-relaxed">${s.benefit_summary || s.benefits_summary || ''}</p>
+              <div class="flex flex-wrap items-center justify-between text-[11px] pt-1 border-t border-outline-variant/60 text-outline">
+                <span>📋 Docs: ${(s.docs || s.documents_required || []).slice(0, 2).join(', ')}...</span>
+                ${s.source_url ? `<a href="${s.source_url}" target="_blank" class="text-primary font-bold hover:underline flex items-center gap-0.5">Portal <span class="material-symbols-outlined text-xs">open_in_new</span></a>` : ''}
+              </div>
             </div>
           `;
-
-          btn.addEventListener('click', function () {
-            selectState(st.name);
-          });
-
-          statesGrid.appendChild(btn);
         });
-      }
-    }
 
-    // 2. Populate fallback dropdown
-    if (stateSelect) {
-      stateSelect.innerHTML = `<option value="">-- ${t('select_state_placeholder')} --</option>`;
-      ALL_STATES_UT.forEach(function (st) {
-        const opt = document.createElement('option');
-        opt.value = st;
-        opt.textContent = st;
-        if (st.toLowerCase() === appState.selectedState.toLowerCase()) {
-          opt.selected = true;
+        if (data.total_ineligible > 0) {
+          schemesHtml += `
+            <details class="text-xs pt-2">
+              <summary class="cursor-pointer text-outline font-semibold hover:text-primary py-1">
+                View ${data.total_ineligible} filtered out schemes (with statutory reasons)
+              </summary>
+              <div class="space-y-1.5 mt-2">
+                ${data.ineligible_schemes.slice(0, 5).map(ins => `
+                  <div class="p-2 bg-surface-container rounded border border-outline-variant/40">
+                    <span class="font-bold text-on-surface">${ins.scheme || ins.name}:</span>
+                    <span class="text-error">${ins.reasons ? ins.reasons.join(', ') : 'Criteria not met'}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </details>
+          `;
         }
-        stateSelect.appendChild(opt);
-      });
-    }
 
-    // 3. Populate evalStateSelect in modal
-    if (evalStateSelect) {
-      evalStateSelect.innerHTML = '';
-      ALL_29_STATES.forEach(function (st) {
-        const opt = document.createElement('option');
-        opt.value = st.name;
-        opt.textContent = st.name;
-        if (st.name.toLowerCase() === (appState.farmerProfile.state || appState.selectedState || 'Telangana').toLowerCase()) {
-          opt.selected = true;
+        schemesHtml += `</div></div>`;
+        resultsContainer.innerHTML = schemesHtml;
+      }
+    } catch (err) {
+      console.error("Match error:", err);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+}
+
+// 4. Conversational AI Query Bar
+function initQueryAI() {
+  const queryInput = document.getElementById("ai-query-input");
+  const queryBtn = document.getElementById("ai-query-btn");
+  const resultBox = document.getElementById("ai-query-result");
+
+  if (!queryBtn || !queryInput) return;
+
+  const runQuery = async () => {
+    const q = queryInput.value.trim();
+    if (!q) return;
+
+    queryBtn.disabled = true;
+    queryBtn.textContent = "Querying...";
+
+    try {
+      const res = await fetch(`${API_BASE}/api/query_ai`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: q, language: "en" })
+      });
+      const data = await res.json();
+
+      if (resultBox) {
+        resultBox.classList.remove("hidden");
+        resultBox.innerHTML = `
+          <div class="p-4 bg-surface-container-lowest border-2 border-primary rounded-xl shadow-md space-y-2 mt-3 animate-fade-in">
+            <div class="flex items-center justify-between pb-2 border-b border-outline-variant">
+              <span class="font-bold text-sm text-primary flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-lg">smart_toy</span>
+                OpenQuest Agricultural Intelligence
+              </span>
+              <button onclick="document.getElementById('ai-query-result').classList.add('hidden')" class="text-xs text-outline hover:text-on-surface">✕ Close</button>
+            </div>
+            <div class="text-xs text-on-surface leading-relaxed whitespace-pre-line">${data.response || data.message || 'No response returned.'}</div>
+            ${data.url ? `<div class="pt-1"><a href="${data.url}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-primary underline">Visit Official Portal ↗</a></div>` : ''}
+          </div>
+        `;
+      }
+    } catch (err) {
+      console.error("AI query failed:", err);
+    } finally {
+      queryBtn.disabled = false;
+      queryBtn.textContent = "Query AI";
+    }
+  };
+
+  queryBtn.addEventListener("click", runQuery);
+  queryInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      runQuery();
+    }
+  });
+}
+
+// 5. RapidFuzz Aadhaar vs Bank Account Name Matcher & Consent Vault
+function initNameMatcher() {
+  const aadhaarInput = document.getElementById("fuzzy-aadhaar-input");
+  const bankInput = document.getElementById("fuzzy-bank-input");
+  const verifyBtn = document.getElementById("fuzzy-verify-btn");
+  const resultBox = document.getElementById("fuzzy-result-badge");
+  const consentToggleBtn = document.getElementById("consent-toggle-btn");
+
+  if (verifyBtn && aadhaarInput && bankInput) {
+    verifyBtn.addEventListener("click", async () => {
+      const aName = aadhaarInput.value.trim();
+      const bName = bankInput.value.trim();
+      if (!aName || !bName) {
+        alert("Please enter both Aadhaar Name and Bank Account Name.");
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/verify_name_match`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ aadhaar_name: aName, bank_name: bName })
+        });
+        const data = await res.json();
+
+        if (resultBox) {
+          resultBox.classList.remove("hidden");
+          const isGood = data.similarity_score >= 80;
+          resultBox.className = `p-3 rounded-lg border text-xs space-y-1 ${isGood ? 'bg-primary-fixed/20 border-primary-fixed-dim text-primary' : 'bg-error-container border-error text-on-error-container'}`;
+          resultBox.innerHTML = `
+            <div class="flex items-center justify-between font-bold">
+              <span>Score: ${data.similarity_score}% (${data.status})</span>
+              <span>${data.similarity_score >= 90 ? '🟢 DBT Active' : (data.similarity_score >= 80 ? '🟡 CSC Review' : '🔴 Severe Mismatch')}</span>
+            </div>
+            <div>${data.action_required}</div>
+          `;
         }
-        evalStateSelect.appendChild(opt);
-      });
-    }
-  }
-
-  // Handle selecting a state
-  function selectState(stateName) {
-    if (!stateName) return;
-    appState.selectedState = stateName;
-    localStorage.setItem('kisan_state', stateName);
-    appState.farmerProfile.state = stateName;
-    localStorage.setItem('kisan_farmer_profile', JSON.stringify(appState.farmerProfile));
-
-    // Update active class on grid boxes
-    if (statesGrid) {
-      statesGrid.querySelectorAll('.state-box-btn').forEach(function (box) {
-        const isMatch = box.getAttribute('data-state').toLowerCase() === stateName.toLowerCase();
-        box.classList.toggle('selected', isMatch);
-        box.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
-      });
-    }
-
-    // Sync select dropdown
-    if (stateSelect) {
-      stateSelect.value = stateName;
-    }
-
-    render();
-
-    // Scroll smoothly to schemes list
-    setTimeout(function () {
-      mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  }
-
-  // Translate static interface elements
-  function updateStaticTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(function (el) {
-      const key = el.getAttribute('data-i18n');
-      if (key && t(key)) {
-        el.textContent = t(key);
+      } catch (err) {
+        console.error("Name match failed:", err);
+      } finally {
+        verifyBtn.disabled = false;
       }
     });
-
-    if (searchInput) {
-      searchInput.placeholder = t('search_placeholder');
-    }
-    if (stateSearchInput) {
-      stateSearchInput.placeholder = t('state_filter_placeholder');
-    }
-
-    if (langSelect) {
-      langSelect.value = appState.lang;
-    }
   }
 
-  // Filter schemes based on active state, level, category, and search query
-  function getFilteredSchemes() {
-    if (!appState.selectedState) return [];
-
-    const activeStateLower = appState.selectedState.toLowerCase();
-
-    // Base pool: Central schemes + Selected State schemes
-    let pool = SCHEMES_DATA.filter(function (s) {
-      if (s.state === 'All') return true;
-      return s.state.toLowerCase() === activeStateLower;
+  if (consentToggleBtn) {
+    consentToggleBtn.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/consent/toggle`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ farmer_id: "DEMO_F001" })
+        });
+        const data = await res.json();
+        alert(data.message || "Consent status updated in SQLite database.");
+        consentToggleBtn.textContent = data.consent_status ? "Active Consent (Revoke?)" : "Consent Revoked (Grant?)";
+        consentToggleBtn.className = data.consent_status 
+          ? "text-[11px] font-bold px-2 py-1 rounded bg-primary text-on-primary"
+          : "text-[11px] font-bold px-2 py-1 rounded bg-error text-on-error";
+      } catch (err) {
+        console.error("Consent toggle error:", err);
+      }
     });
-
-    // 1. Tab filter (All / State / Central)
-    if (appState.activeTab === 'central') {
-      pool = pool.filter(function (s) { return s.level === 'Central'; });
-    } else if (appState.activeTab === 'state') {
-      pool = pool.filter(function (s) { return s.level === 'State'; });
-    }
-
-    // 2. Scheme Type Filter
-    if (appState.typeFilter !== 'all') {
-      pool = pool.filter(function (s) {
-        return s.category === appState.typeFilter;
-      });
-    }
-
-    // 3. Farmer Eligibility Filter
-    if (appState.eligibilityFilter === 'tenant') {
-      pool = pool.filter(function (s) {
-        const text = (s.eligibility['en'] || '').toLowerCase();
-        return !text.includes('oral tenants not eligible') && !text.includes('not covered') && !text.includes('tenants excluded');
-      });
-    } else if (appState.eligibilityFilter === 'small_marginal') {
-      pool = pool.filter(function (s) {
-        const text = (s.eligibility['en'] || '').toLowerCase();
-        return text.includes('small and marginal') || text.includes('5 acres') || text.includes('10 acres') || text.includes('all farmers');
-      });
-    }
-
-    // 4. Search Query Filter
-    if (appState.searchQuery.trim() !== '') {
-      const q = appState.searchQuery.toLowerCase().trim();
-      pool = pool.filter(function (s) {
-        const nameText = (s.name[appState.lang] || s.name['en'] || '').toLowerCase();
-        const descText = (s.description[appState.lang] || s.description['en'] || '').toLowerCase();
-        const benefitText = (s.benefit || '').toLowerCase();
-        return nameText.includes(q) || descText.includes(q) || benefitText.includes(q);
-      });
-    }
-
-    return pool;
   }
+}
 
-  // Count schemes for tabs
-  function updateTabCounts() {
-    if (!appState.selectedState) {
-      countAll.textContent = '0';
-      countState.textContent = '0';
-      countCentral.textContent = '0';
-      return;
-    }
+// 6. Interactive KCC Scale of Finance & 4% MISS Calculator
+function initKCCCalculator() {
+  const calcBtn = document.getElementById("kcc-calc-btn");
+  const modal = document.getElementById("kcc-modal");
+  const closeBtn = document.getElementById("kcc-modal-close");
+  const form = document.getElementById("kcc-calc-form");
+  const resultDiv = document.getElementById("kcc-calc-result");
 
-    const activeStateLower = appState.selectedState.toLowerCase();
-    const allForState = SCHEMES_DATA.filter(function (s) {
-      return s.state === 'All' || s.state.toLowerCase() === activeStateLower;
+  if (calcBtn && modal) {
+    calcBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      modal.classList.remove("hidden");
     });
-
-    const stateCount = allForState.filter(function (s) { return s.level === 'State'; }).length;
-    const centralCount = allForState.filter(function (s) { return s.level === 'Central'; }).length;
-
-    countAll.textContent = allForState.length;
-    countState.textContent = stateCount;
-    countCentral.textContent = centralCount;
-
-    // Update Tab Labels
-    document.getElementById('labelTabState').textContent = `${appState.selectedState} ${t('tab_state')}`;
   }
 
-  // Render Scheme Card HTML
-  function createSchemeCard(scheme) {
-    const isCentral = scheme.level === 'Central';
-    const badgeClass = isCentral ? 'badge-central' : 'badge-state';
-    const badgeText = isCentral ? t('badge_central') : `🏛️ ${appState.selectedState} ${t('badge_state')}`;
+  if (closeBtn && modal) {
+    closeBtn.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+  }
 
-    const localizedName = scheme.name[appState.lang] || scheme.name['en'];
-    const localizedDesc = scheme.description[appState.lang] || scheme.description['en'];
-    const localizedEligibility = scheme.eligibility[appState.lang] || scheme.eligibility['en'];
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const crop = document.getElementById("kcc-crop-select")?.value || "Paddy";
+      const acres = parseFloat(document.getElementById("kcc-acres-input")?.value || "2.5");
+      const debt = parseFloat(document.getElementById("kcc-debt-input")?.value || "0.0");
 
-    const docItemsHtml = (scheme.documents || []).map(function (doc) {
-      return `<li class="doc-item"><span class="doc-check-icon">✓</span><span>${doc}</span></li>`;
-    }).join('');
+      try {
+        const res = await fetch(`${API_BASE}/api/kcc/calculate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ crop: crop, land_acres: acres, existing_debt: debt })
+        });
+        const json = await res.json();
+        const d = json.data;
 
-    const claimWindowHtml = scheme.claim_window ? `
-      <div class="claim-window-alert">
-        <span>⚠️</span>
-        <span><strong>${t('emergency_rule')}:</strong> ${scheme.claim_window}</span>
-      </div>
-    ` : '';
+        if (resultDiv && d) {
+          resultDiv.classList.remove("hidden");
+          const fmt = (num) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(num);
 
-    const criteria = scheme.criteria || {
-      farmer_category: "All eligible farmers",
-      landholding: "Standard landholding limits",
-      crops: "All notified agricultural crops",
-      location: scheme.state === 'All' ? "Pan-India" : `Resident of ${scheme.state}`,
-      restrictions: "Aadhaar and land record documentation required"
-    };
-
-    return `
-      <article class="scheme-card" data-scheme-id="${scheme.scheme_id}">
-        <div class="card-header-area">
-          <div class="badge-row">
-            <span class="${badgeClass}">${badgeText}</span>
-            <span class="scheme-category-tag">${(scheme.category || 'subsidy').replace('_', ' ')}</span>
-          </div>
-          <h3 class="scheme-card-title">${localizedName}</h3>
-          <p class="scheme-card-desc">${localizedDesc}</p>
-        </div>
-
-        <div class="card-body-area">
-          <!-- Key Benefit -->
-          <div class="benefit-highlight-box">
-            <div class="benefit-title">💰 ${t('benefit_label')}</div>
-            <div class="benefit-value">${scheme.benefit}</div>
-          </div>
-
-          <!-- Eligibility Summary & Detailed Criteria -->
-          <div class="eligibility-box">
-            <div class="section-label">🎯 ${t('eligibility_label')}</div>
-            <p class="eligibility-text">${localizedEligibility}</p>
-
-            <!-- Structured Criteria Breakdown -->
-            <div class="criteria-card-grid">
-              <div class="criterion-row">
-                <span class="crit-icon">👥</span>
-                <div class="crit-body">
-                  <span class="crit-label">${t('criteria_category')}:</span>
-                  <span class="crit-value">${criteria.farmer_category}</span>
-                </div>
+          resultDiv.innerHTML = `
+            <div class="p-4 bg-surface-container-low border border-outline-variant rounded-xl space-y-3 text-xs">
+              <div class="flex justify-between items-center pb-2 border-b border-outline-variant">
+                <span class="font-bold text-sm text-secondary">Year 1 Sanction Limit:</span>
+                <span class="font-benefit-number text-lg text-secondary font-mono">${fmt(d.total_sanction_limit_year1)}</span>
               </div>
-              <div class="criterion-row">
-                <span class="crit-icon">📐</span>
-                <div class="crit-body">
-                  <span class="crit-label">${t('criteria_landholding')}:</span>
-                  <span class="crit-value">${criteria.landholding}</span>
-                </div>
+              <div class="grid grid-cols-2 gap-2 text-on-surface">
+                <div>Scale of Finance: <strong>${fmt(d.scale_of_finance_per_acre)} / acre</strong></div>
+                <div>5-Year Limit: <strong>${fmt(d.five_year_limit)}</strong></div>
+                <div>Crop Cultivation: <strong>${fmt(d.crop_cultivation_cost)}</strong></div>
+                <div>Post-Harvest (20%): <strong>${fmt(d.post_harvest_consumption_add_on)}</strong></div>
               </div>
-              <div class="criterion-row">
-                <span class="crit-icon">🌾</span>
-                <div class="crit-body">
-                  <span class="crit-label">${t('criteria_crops')}:</span>
-                  <span class="crit-value">${criteria.crops}</span>
-                </div>
+              <div class="p-2.5 rounded bg-primary-fixed/20 border border-primary-fixed-dim text-primary">
+                <div class="font-bold">Modified Interest Subvention Scheme (MISS):</div>
+                <div>7.0% Bank Rate - 3.0% Prompt Repayment = <strong>4.0% Net Annual Interest</strong></div>
               </div>
-              <div class="criterion-row">
-                <span class="crit-icon">📍</span>
-                <div class="crit-body">
-                  <span class="crit-label">${t('criteria_location')}:</span>
-                  <span class="crit-value">${criteria.location}</span>
-                </div>
+              <div class="text-[11px] text-on-surface-variant">${d.collateral_note}</div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("KCC calculation error:", err);
+      }
+    });
+  }
+}
+
+// 7. Emergency 72-Hour Crop Loss Claim Dispatcher
+function initClaimDispatcher() {
+  const dispatchBtns = document.querySelectorAll(".dispatch-claim-trigger");
+  const modal = document.getElementById("claim-modal");
+  const closeBtn = document.getElementById("claim-modal-close");
+  const form = document.getElementById("claim-dispatch-form");
+  const resultDiv = document.getElementById("claim-dispatch-result");
+
+  dispatchBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (modal) modal.classList.remove("hidden");
+    });
+  });
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        farmer_name: document.getElementById("claim-farmer-name")?.value || "Ravi Kumar",
+        phone: document.getElementById("claim-phone")?.value || "9876543210",
+        state: document.getElementById("claim-state")?.value || "Telangana",
+        district: document.getElementById("claim-district")?.value || "Warangal",
+        village: document.getElementById("claim-village")?.value || "Geesugonda",
+        survey_no: document.getElementById("claim-survey")?.value || "402/A",
+        crop: document.getElementById("claim-crop")?.value || "Paddy",
+        calamity_cause: document.getElementById("claim-cause")?.value || "Hailstorm",
+        loss_percentage: parseInt(document.getElementById("claim-loss-pct")?.value || "75"),
+        notes: document.getElementById("claim-notes")?.value || "Lodged field photos attached."
+      };
+
+      const submitBtn = document.getElementById("claim-submit-btn");
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/claim/dispatch`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (resultDiv && data.status === "dispatched") {
+          resultDiv.classList.remove("hidden");
+          resultDiv.innerHTML = `
+            <div class="p-4 bg-primary-fixed/30 border-2 border-primary rounded-xl space-y-2 text-xs text-primary animate-fade-in">
+              <div class="flex items-center justify-between font-extrabold text-sm pb-1 border-b border-primary/20">
+                <span>✅ Emergency Loss Intimation Logged</span>
+                <span class="font-mono text-xs bg-primary text-on-primary px-2 py-0.5 rounded">${data.docket_number}</span>
               </div>
-              <div class="criterion-row">
-                <span class="crit-icon">🚫</span>
-                <div class="crit-body">
-                  <span class="crit-label">${t('criteria_restrictions')}:</span>
-                  <span class="crit-value">${criteria.restrictions}</span>
-                </div>
+              <p>Your loss declaration has been queued with the State Crop Calamity Portal.</p>
+              <div class="bg-surface-container p-2.5 rounded font-mono text-[11px] text-on-surface">
+                <strong>Statutory SMS String (Sent to 51969):</strong><br/>
+                <code>${data.sms_string}</code>
+              </div>
+              <div class="text-[11px] text-on-surface-variant">
+                <strong>Next Step:</strong> ${data.next_step}<br/>
+                <strong>Helpline:</strong> ${data.pmfby_toll_free}
               </div>
             </div>
-
-            <!-- Check My Eligibility Button -->
-            <button class="check-eligibility-btn" data-scheme-id="${scheme.scheme_id}" type="button">
-              <span>🎯</span>
-              <span>${t('check_eligibility_btn')}</span>
-            </button>
-          </div>
-
-          <!-- Required Documents -->
-          <div class="documents-box">
-            <div class="section-label">📑 ${t('documents_label')}</div>
-            <ul class="doc-list">${docItemsHtml}</ul>
-          </div>
-
-          <!-- Deadlines & Claim Windows -->
-          <div class="deadline-box">
-            <div class="section-label">⏰ ${t('deadline_label')}</div>
-            <p class="deadline-text">${scheme.deadline || 'Continuous enrollment'}</p>
-            ${claimWindowHtml}
-          </div>
-        </div>
-
-        <div class="card-footer-area">
-          <div class="last-verified-text">
-            ${t('last_verified_label')}: <strong>${scheme.last_verified || '2026-10-25'}</strong>
-          </div>
-          <a href="${scheme.source_url}" target="_blank" rel="noopener noreferrer" class="official-link-btn">
-            <span>${t('apply_button')}</span>
-            <span>↗</span>
-          </a>
-        </div>
-      </article>
-    `;
-  }
-
-  // Render the Grid
-  function render() {
-    updateStaticTranslations();
-    updateTabCounts();
-
-    if (!appState.selectedState) {
-      emptyStatePrompt.style.display = 'block';
-      mainContent.style.display = 'none';
-      return;
-    }
-
-    emptyStatePrompt.style.display = 'none';
-    mainContent.style.display = 'block';
-
-    // Update banner
-    bannerStateName.textContent = appState.selectedState;
-    const allForState = SCHEMES_DATA.filter(function (s) {
-      return s.state === 'All' || s.state.toLowerCase() === appState.selectedState.toLowerCase();
-    });
-    const stateCount = allForState.filter(function (s) { return s.level === 'State'; }).length;
-    const centralCount = allForState.filter(function (s) { return s.level === 'Central'; }).length;
-    bannerStats.textContent = `(${stateCount} State Schemes + ${centralCount} Central Schemes Available)`;
-
-    // Filter & render schemes
-    const filtered = getFilteredSchemes();
-
-    if (filtered.length === 0) {
-      schemesGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: #ffffff; border-radius: 12px; border: 2px dashed #cbd5e1;">
-          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔍</div>
-          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem;">${t('no_results')}</h3>
-          <button id="resetFiltersBtn" style="background: var(--primary); color: #ffffff; border: none; padding: 0.75rem 1.4rem; border-radius: 9999px; font-weight: 700; cursor: pointer; min-height: 48px; margin-top: 0.5rem;">
-            ${t('clear_filters')}
-          </button>
-        </div>
-      `;
-
-      document.getElementById('resetFiltersBtn')?.addEventListener('click', function () {
-        appState.activeTab = 'all';
-        appState.typeFilter = 'all';
-        appState.eligibilityFilter = 'all';
-        appState.searchQuery = '';
-        searchInput.value = '';
-        typeFilterSelect.value = 'all';
-        eligibilityFilterSelect.value = 'all';
-        updateTabsUI();
-        render();
-      });
-      return;
-    }
-
-    schemesGrid.innerHTML = filtered.map(createSchemeCard).join('');
-
-    // Attach listeners to "Check my eligibility" buttons
-    schemesGrid.querySelectorAll('.check-eligibility-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const schemeId = btn.getAttribute('data-scheme-id');
-        openEligibilityModal(schemeId);
-      });
-    });
-  }
-
-  // Update visual state of level tabs
-  function updateTabsUI() {
-    [tabAllBtn, tabStateBtn, tabCentralBtn].forEach(function (btn) {
-      btn.classList.remove('active');
-    });
-
-    if (appState.activeTab === 'all') tabAllBtn.classList.add('active');
-    else if (appState.activeTab === 'state') tabStateBtn.classList.add('active');
-    else if (appState.activeTab === 'central') tabCentralBtn.classList.add('active');
-  }
-
-  // ==========================================================================
-  // Deterministic Eligibility Evaluation Modal Logic
-  // ==========================================================================
-
-  function openEligibilityModal(schemeId) {
-    const scheme = SCHEMES_DATA.find(function (s) { return s.scheme_id === schemeId; });
-    if (!scheme) return;
-
-    appState.activeEvaluationSchemeId = schemeId;
-
-    // Populate modal header
-    const isCentral = scheme.level === 'Central';
-    modalBadge.className = isCentral ? 'badge-central' : 'badge-state';
-    modalBadge.textContent = isCentral ? t('badge_central') : `🏛️ ${scheme.state || appState.selectedState} ${t('badge_state')}`;
-    modalSchemeTitle.textContent = scheme.name[appState.lang] || scheme.name['en'];
-    modalSchemeSubtitle.textContent = scheme.benefit;
-    modalOfficialLink.href = scheme.source_url;
-
-    // Load saved farmer profile into modal inputs
-    evalStateSelect.value = appState.farmerProfile.state || appState.selectedState || 'Telangana';
-    evalFarmerType.value = appState.farmerProfile.farmerType || 'owner';
-    evalLandAcres.value = appState.farmerProfile.landAcres !== undefined ? appState.farmerProfile.landAcres : 2.5;
-    evalCrop.value = appState.farmerProfile.crop || 'Paddy';
-    evalAge.value = appState.farmerProfile.age !== undefined ? appState.farmerProfile.age : 40;
-    evalTaxPayer.value = appState.farmerProfile.isTaxPayer || 'no';
-
-    // Populate documents list
-    modalDocList.innerHTML = (scheme.documents || []).map(function (doc) {
-      return `<li class="doc-item"><span class="doc-check-icon">✓</span><span>${doc}</span></li>`;
-    }).join('');
-
-    // Run evaluation
-    evaluateFarmerEligibility(scheme);
-
-    // Show modal
-    eligibilityModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeEligibilityModal() {
-    eligibilityModal.style.display = 'none';
-    document.body.style.overflow = '';
-    appState.activeEvaluationSchemeId = null;
-  }
-
-  // Deterministic evaluation engine matching engine.py / test_runner.js exactly
-  function evaluateFarmerEligibility(scheme) {
-    if (!scheme) return;
-
-    const r = scheme.rules || {};
-    const profile = {
-      state: evalStateSelect.value || appState.selectedState || 'Telangana',
-      farmerType: evalFarmerType.value || 'owner',
-      landAcres: parseFloat(evalLandAcres.value) || 0,
-      crop: evalCrop.value || 'Paddy',
-      age: parseInt(evalAge.value, 10) || 40,
-      isTaxPayer: evalTaxPayer.value === 'yes'
-    };
-
-    // Save profile state
-    appState.farmerProfile = {
-      state: profile.state,
-      farmerType: profile.farmerType,
-      landAcres: profile.landAcres,
-      crop: profile.crop,
-      age: profile.age,
-      isTaxPayer: evalTaxPayer.value
-    };
-    localStorage.setItem('kisan_farmer_profile', JSON.stringify(appState.farmerProfile));
-
-    const criteriaResults = [];
-
-    // 1. Location / State Criterion
-    const stateReq = r.state_restriction || scheme.state || 'All';
-    if (stateReq === 'All') {
-      criteriaResults.push({
-        title: "📍 Location / State Requirement",
-        pass: true,
-        message: `Pan-India Central Scheme: Available in all 29 Indian States & UTs (including ${profile.state}).`
-      });
-    } else {
-      const match = stateReq.toLowerCase() === profile.state.toLowerCase();
-      criteriaResults.push({
-        title: "📍 Location / State Requirement",
-        pass: match,
-        message: match 
-          ? `Resident of ${stateReq}: Matches state qualification requirement.`
-          : `Restricted to resident farmers of ${stateReq} (Your selected profile state is ${profile.state}).`
-      });
-    }
-
-    // 2. Farmer Land Ownership / Category Criterion
-    const requiresLand = Boolean(r.requires_land_ownership);
-    const tenantAllowed = r.tenant_allowed !== undefined ? Boolean(r.tenant_allowed) : true;
-
-    if (profile.farmerType === 'tenant_oral') {
-      if (!tenantAllowed || requiresLand) {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: false,
-          message: "Scheme legally requires registered landownership patta passbook. Oral tenants / sharecroppers excluded."
-        });
-      } else if (profile.landAcres <= 0) {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: false,
-          message: "Requires positive cultivated lease acreage (> 0 acres)."
-        });
-      } else {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: true,
-          message: "Tenant cultivators and sharecroppers are covered under this scheme."
-        });
-      }
-    } else if (profile.farmerType === 'tenant_registered') {
-      if (!tenantAllowed) {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: false,
-          message: "Direct landownership required; tenant farmers not covered under this specific DBT scheme."
-        });
-      } else {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: true,
-          message: "Registered tenant farmers with valid lease agreement / CCRC / Loan Eligibility Card are eligible."
-        });
-      }
-    } else {
-      // Landowner
-      if (requiresLand && profile.landAcres <= 0) {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: false,
-          message: "Requires positive agricultural landholding acreage in farmer's name."
-        });
-      } else {
-        criteriaResults.push({
-          title: "👥 Farmer Ownership & Leasehold",
-          pass: true,
-          message: "Landowning farmer with valid patta / revenue land record verified."
-        });
-      }
-    }
-
-    // 3. Landholding Ceiling Criterion
-    if (r.max_land_acres !== null && r.max_land_acres !== undefined) {
-      const withinLimit = profile.landAcres <= r.max_land_acres;
-      criteriaResults.push({
-        title: "📐 Landholding Size Limit",
-        pass: withinLimit,
-        message: withinLimit 
-          ? `Your landholding (${profile.landAcres} acres) is within the small/marginal ceiling of ${r.max_land_acres} acres.`
-          : `Your landholding (${profile.landAcres} acres) exceeds the statutory maximum ceiling of ${r.max_land_acres} acres.`
-      });
-    } else {
-      criteriaResults.push({
-        title: "📐 Landholding Size Limit",
-        pass: true,
-        message: `No upper landholding ceiling for this scheme (${profile.landAcres} acres fully eligible).`
-      });
-    }
-
-    // 4. Cultivated Crop Criterion
-    if (r.supported_crops && r.supported_crops.length > 0) {
-      const suppCrops = r.supported_crops.map(function (c) { return c.toLowerCase(); });
-      const cropMatch = suppCrops.includes(profile.crop.toLowerCase()) || 
-                        suppCrops.some(function (c) { return c.includes(profile.crop.toLowerCase()); });
-      criteriaResults.push({
-        title: "🌾 Crop Notification",
-        pass: cropMatch,
-        message: cropMatch 
-          ? `${profile.crop} is an eligible notified crop for this season's scheme benefits.`
-          : `${profile.crop} is not covered under this notification (Notified: ${r.supported_crops.slice(0, 5).join(', ')}...).`
-      });
-    } else {
-      criteriaResults.push({
-        title: "🌾 Crop Notification",
-        pass: true,
-        message: `Applicable to all agricultural and horticultural crops (${profile.crop} eligible).`
-      });
-    }
-
-    // 5. Age Threshold Criterion
-    let agePass = true;
-    let ageMsg = `Farmer age (${profile.age} years) is within the eligible age threshold.`;
-    if (r.min_age !== null && r.min_age !== undefined && profile.age < r.min_age) {
-      agePass = false;
-      ageMsg = `Farmer age (${profile.age} years) is below the minimum required age of ${r.min_age} years.`;
-    } else if (r.max_age !== null && r.max_age !== undefined && profile.age > r.max_age) {
-      agePass = false;
-      ageMsg = `Farmer age (${profile.age} years) exceeds the maximum age limit of ${r.max_age} years.`;
-    }
-    criteriaResults.push({
-      title: "🎂 Farmer Age Requirement",
-      pass: agePass,
-      message: ageMsg
-    });
-
-    // 6. Income Tax Payer Exclusions Criterion
-    const isTaxExcluded = (r.excluded_categories || []).includes('income_tax_payer');
-    if (profile.isTaxPayer && isTaxExcluded) {
-      criteriaResults.push({
-        title: "💼 Income Tax Exclusion",
-        pass: false,
-        message: "Income-tax paying farmers are legally excluded from this DBT welfare subsidy."
-      });
-    } else {
-      criteriaResults.push({
-        title: "💼 Income Tax Exclusion",
-        pass: true,
-        message: "Non-taxpayer status confirmed. Eligible for DBT subsidy release."
-      });
-    }
-
-    // Determine Overall Verdict
-    const allPassed = criteriaResults.every(function (c) { return c.pass; });
-
-    // Update Verdict Banner
-    if (allPassed) {
-      evalVerdictBanner.className = 'verdict-banner verdict-eligible';
-      evalVerdictIcon.textContent = '🟢';
-      evalVerdictTitle.textContent = t('verdict_eligible_title');
-      evalVerdictDesc.textContent = t('verdict_eligible_desc');
-    } else {
-      const failedCount = criteriaResults.filter(function (c) { return !c.pass; }).length;
-      evalVerdictBanner.className = 'verdict-banner verdict-ineligible';
-      evalVerdictIcon.textContent = '🔴';
-      evalVerdictTitle.textContent = `${t('verdict_ineligible_title')} (${failedCount} Condition${failedCount > 1 ? 's' : ''} Not Met)`;
-      evalVerdictDesc.textContent = t('verdict_ineligible_desc');
-    }
-
-    // Render Criteria Breakdown Checklist
-    evalCriteriaList.innerHTML = criteriaResults.map(function (c) {
-      return `
-        <div class="eval-criterion-item ${c.pass ? 'pass' : 'fail'}">
-          <span class="eval-crit-status-icon" aria-hidden="true">${c.pass ? '✓' : '✗'}</span>
-          <div class="eval-crit-content">
-            <span class="eval-crit-title">${c.title}</span>
-            <span class="eval-crit-msg">${c.message}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // ==========================================================================
-  // Event Listeners & Interactive Handlers
-  // ==========================================================================
-
-  // Language Change Listener
-  langSelect.addEventListener('change', function (e) {
-    appState.lang = e.target.value;
-    localStorage.setItem('kisan_lang', appState.lang);
-    populateStates();
-    render();
-    if (appState.activeEvaluationSchemeId) {
-      const activeScheme = SCHEMES_DATA.find(function (s) { return s.scheme_id === appState.activeEvaluationSchemeId; });
-      if (activeScheme) {
-        evaluateFarmerEligibility(activeScheme);
-      }
-    }
-  });
-
-  // State Search Filter Input
-  if (stateSearchInput) {
-    stateSearchInput.addEventListener('input', function (e) {
-      appState.stateFilterQuery = e.target.value;
-      populateStates();
-    });
-  }
-
-  // Fallback select dropdown listener
-  if (stateSelect) {
-    stateSelect.addEventListener('change', function (e) {
-      selectState(e.target.value);
-    });
-  }
-
-  // Change State Button in Banner
-  changeStateBtn?.addEventListener('click', function () {
-    if (stateSearchInput) {
-      stateSearchInput.focus();
-    }
-    window.scrollTo({ top: statesGrid.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
-  });
-
-  // Level Tabs
-  tabAllBtn.addEventListener('click', function () {
-    appState.activeTab = 'all';
-    updateTabsUI();
-    render();
-  });
-
-  tabStateBtn.addEventListener('click', function () {
-    appState.activeTab = 'state';
-    updateTabsUI();
-    render();
-  });
-
-  tabCentralBtn.addEventListener('click', function () {
-    appState.activeTab = 'central';
-    updateTabsUI();
-    render();
-  });
-
-  // Instant Search Input
-  searchInput.addEventListener('input', function (e) {
-    appState.searchQuery = e.target.value;
-    render();
-  });
-
-  // Filters
-  typeFilterSelect.addEventListener('change', function (e) {
-    appState.typeFilter = e.target.value;
-    render();
-  });
-
-  eligibilityFilterSelect.addEventListener('change', function (e) {
-    appState.eligibilityFilter = e.target.value;
-    render();
-  });
-
-  // Modal Close Listeners
-  closeModalBtn.addEventListener('click', closeEligibilityModal);
-  modalDoneBtn.addEventListener('click', closeEligibilityModal);
-
-  eligibilityModal.addEventListener('click', function (e) {
-    if (e.target === eligibilityModal) {
-      closeEligibilityModal();
-    }
-  });
-
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && eligibilityModal.style.display !== 'none') {
-      closeEligibilityModal();
-    }
-  });
-
-  // Live evaluation triggers on modal input changes
-  [evalStateSelect, evalFarmerType, evalLandAcres, evalCrop, evalAge, evalTaxPayer].forEach(function (input) {
-    input.addEventListener('change', function () {
-      if (appState.activeEvaluationSchemeId) {
-        const activeScheme = SCHEMES_DATA.find(function (s) { return s.scheme_id === appState.activeEvaluationSchemeId; });
-        if (activeScheme) {
-          evaluateFarmerEligibility(activeScheme);
+          `;
+          form.reset();
         }
+      } catch (err) {
+        console.error("Claim dispatch error:", err);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
-    if (input.tagName === 'INPUT') {
-      input.addEventListener('input', function () {
-        if (appState.activeEvaluationSchemeId) {
-          const activeScheme = SCHEMES_DATA.find(function (s) { return s.scheme_id === appState.activeEvaluationSchemeId; });
-          if (activeScheme) {
-            evaluateFarmerEligibility(activeScheme);
-          }
-        }
+  }
+}
+
+// 8. Intermediary & Village Operator Desk (SQLite Driven)
+async function initIntermediaryPortal() {
+  const container = document.getElementById("intermediary-records-container");
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/intermediary`);
+    const data = await res.json();
+
+    if (data.status === "success" && data.records) {
+      if (data.records.length === 0) {
+        container.innerHTML = `<div class="p-4 text-xs text-on-surface-variant">No active follow-up actions required. All profiles verified.</div>`;
+        return;
+      }
+
+      let html = `<div class="space-y-3">`;
+      data.records.slice(0, 6).forEach((rec) => {
+        const isUrgent = rec.priority_label?.includes("CRITICAL") || rec.remaining_days <= 7;
+        html += `
+          <div class="p-3 bg-surface-container-low border ${isUrgent ? 'border-error' : 'border-outline-variant'} rounded-lg space-y-2 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-1">
+              <span class="font-bold text-on-surface flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base ${isUrgent ? 'text-error' : 'text-primary'}">person</span>
+                ${rec.farmer_name} (${rec.farmer_id})
+              </span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded ${isUrgent ? 'bg-error text-on-error' : 'bg-secondary-fixed text-on-secondary-fixed'}">
+                ${rec.priority_label || 'Attention Required'}
+              </span>
+            </div>
+            <div class="text-on-surface-variant">
+              Scheme: <strong>${rec.scheme}</strong> • Days Left: <strong class="${rec.remaining_days <= 5 ? 'text-error' : ''}">${rec.remaining_days}</strong>
+            </div>
+            ${rec.missing_documents?.length ? `
+              <div class="text-[11px] text-error font-medium">
+                Missing Docs: ${rec.missing_documents.join(", ")}
+              </div>
+            ` : ''}
+            ${rec.name_mismatch_warning ? `
+              <div class="text-[11px] text-secondary font-medium">
+                ${rec.name_mismatch_warning}
+              </div>
+            ` : ''}
+            <div class="flex items-center justify-end gap-2 pt-1 border-t border-outline-variant/60">
+              <button onclick="sendAlert('${rec.farmer_id}', '${rec.farmer_name}')" class="bg-primary hover:bg-primary-container text-on-primary px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">send</span> Dispatch SMS
+              </button>
+            </div>
+          </div>
+        `;
       });
+      html += `</div>`;
+      container.innerHTML = html;
     }
-  });
+  } catch (err) {
+    console.error("Intermediary loading error:", err);
+  }
+}
 
-  // ==========================================================================
-  // Initialization
-  // ==========================================================================
-  populateStates();
-  updateTabsUI();
-  render();
+// Global alert dispatcher
+window.sendAlert = async function(farmerId, farmerName) {
+  try {
+    const res = await fetch(`${API_BASE}/api/send_alert`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        farmer_id: farmerId,
+        channel: "sms",
+        message: `Kisan Setu Alert: Please submit missing scheme documents before deadline.`
+      })
+    });
+    const d = await res.json();
+    alert(`✅ Alert successfully sent to ${farmerName} (${d.sent_to}) via ${d.channel.toUpperCase()}`);
+  } catch (err) {
+    alert("Alert dispatch failed. Check network.");
+  }
+};
 
-})();
+// 9. Live MSP vs Mandi Benchmark Table Loader
+async function loadMspComparison() {
+  const tbody = document.getElementById("msp-table-body");
+  if (!tbody) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/msp_comparison`);
+    const list = await res.json();
+
+    if (Array.isArray(list) && list.length > 0) {
+      tbody.innerHTML = list.map((item) => {
+        const isPositive = item.price_delta >= 0;
+        const fmt = (n) => `₹${n.toLocaleString('en-IN')}`;
+        return `
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td class="py-3.5 px-4 font-bold flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${isPositive ? 'bg-primary' : 'bg-secondary'}"></span>
+              <span>${item.crop}</span>
+            </td>
+            <td class="py-3.5 px-4 text-on-surface-variant">${item.category}</td>
+            <td class="py-3.5 px-4 font-benefit-number text-benefit-number text-primary">${fmt(item.msp_rate)}</td>
+            <td class="py-3.5 px-4 font-mono font-bold text-on-surface">${fmt(item.average_mandi_price)}</td>
+            <td class="py-3.5 px-4 font-bold ${isPositive ? 'text-primary' : 'text-secondary'}">
+              ${isPositive ? '+' : ''}${fmt(item.price_delta)}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="inline-flex items-center gap-1 text-xs ${isPositive ? 'bg-surface-container text-on-surface' : 'bg-primary-fixed text-on-primary-fixed'} px-2.5 py-1 rounded font-bold">
+                <span class="material-symbols-outlined text-xs">${isPositive ? 'local_shipping' : 'store'}</span>
+                ${item.recommendation.split('.')[0]}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error("MSP loading error:", err);
+  }
+}
