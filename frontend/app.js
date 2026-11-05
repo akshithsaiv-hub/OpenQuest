@@ -1926,66 +1926,287 @@ Automated SLA follow-up alerts have been scheduled.`);
   }
 
   // =========================================================================
-  // 6. TAB 4: KCC CREDIT & STATUS TRACKER
+  // 6. TAB 4: KCC CREDIT & APPLICATION TRACKER (CLEAN & DEDUPLICATED)
   // =========================================================================
   function initKccAndTrackerTab() {
+    const kccCrop = document.getElementById('kccCrop');
+    const kccAcres = document.getElementById('kccAcres');
+    const kccDebt = document.getElementById('kccDebt');
     const kccForm = document.getElementById('kccForm');
+
+    const kccScaleMap = {
+      'Paddy': 42000,
+      'Cotton': 45000,
+      'Chilli': 65000,
+      'Maize': 28000,
+      'Groundnut': 30000,
+      'Bengal Gram': 24000,
+      'Soybean': 32000,
+      'Wheat': 38000,
+      'Sugarcane': 70000
+    };
+
+    function recalculateKcc() {
+      const cropVal = kccCrop ? kccCrop.value : 'Paddy';
+      const acresVal = parseFloat(kccAcres ? kccAcres.value : 3.0) || 3.0;
+      const debtVal = parseFloat(kccDebt ? kccDebt.value : 0.0) || 0.0;
+
+      const baseSof = kccScaleMap[cropVal] || 35000;
+      const cropCost = baseSof * acresVal;
+      const consumptionAddon = cropCost * 0.20;
+      const totalLimit = Math.round(cropCost + consumptionAddon);
+      const drawingPower = Math.max(0, totalLimit - debtVal);
+
+      const isCollateralFree = totalLimit <= 160000;
+      const commercialRate = 0.24; // 24% informal moneylender
+      const kccRate = 0.04; // 4% net subsidized
+      const annualSavings = Math.round(totalLimit * (commercialRate - kccRate));
+
+      const dispLimit = document.getElementById('dispKccLimit');
+      const dispPower = document.getElementById('dispKccDrawingPower');
+      const dispBadge = document.getElementById('dispKccCollateralBadge');
+      const dispSavings = document.getElementById('dispKccSavings');
+      const dispDueDate = document.getElementById('dispKccDueDate');
+
+      if (dispLimit) dispLimit.textContent = `₹${totalLimit.toLocaleString('en-IN')}`;
+      if (dispPower) {
+        dispPower.innerHTML = `Available Drawing Power: <strong>₹${drawingPower.toLocaleString('en-IN')}</strong>` +
+          (debtVal > 0 ? ` (after deducting ₹${debtVal.toLocaleString('en-IN')} existing loan)` : '');
+      }
+
+      if (dispBadge) {
+        if (isCollateralFree) {
+          dispBadge.className = 'badge-tag badge-tag-green';
+          dispBadge.textContent = '✅ 100% Collateral-Free (Under ₹1.60L)';
+        } else {
+          dispBadge.className = 'badge-tag badge-tag-blue';
+          dispBadge.textContent = 'ℹ️ Charge creation on RoR-1B (> ₹1.60L)';
+        }
+      }
+
+      if (dispSavings) {
+        dispSavings.innerHTML = `Saves <strong>₹${annualSavings.toLocaleString('en-IN')}</strong>/year compared to moneylender rates (24% p.a.)`;
+      }
+
+      const currMonth = new Date().getMonth() + 1;
+      const nextYear = new Date().getFullYear() + 1;
+      const dueStr = (currMonth >= 4 && currMonth <= 9) ? `March 31, ${nextYear}` : `June 30, ${currMonth <= 3 ? new Date().getFullYear() : nextYear}`;
+      if (dispDueDate) dispDueDate.textContent = dueStr;
+    }
+
     if (kccForm) {
-      kccForm.addEventListener('submit', async function (e) {
+      kccForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const crop = document.getElementById('kccCrop').value;
-        const acres = parseFloat(document.getElementById('kccAcres').value) || 3.0;
-        const debt = parseFloat(document.getElementById('kccDebt').value) || 0.0;
-
-        let res = null;
-        try {
-          const resp = await fetch(`${API_BASE}/calculate_kcc`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ crop: crop, land_acres: acres, existing_debt: debt })
-          });
-          if (resp.ok) res = await resp.json();
-        } catch (err) {
-          console.warn('Backend /calculate_kcc unavailable, calculating locally.');
-        }
-
-        if (!res) {
-          // Local Scale of finance values
-          const scaleMap = {
-            'Paddy': 38000, 'Cotton': 42000, 'Chilli': 65000,
-            'Maize': 28000, 'Soybean': 24000, 'Bengal Gram': 22000,
-            'Groundnut': 26000, 'Sugarcane': 70000
-          };
-          const baseScale = scaleMap[crop] || 35000;
-          const cropCost = baseScale * acres;
-          const postHarvest = cropCost * 0.10;
-          const maintenance = cropCost * 0.20;
-          const totalLimit = cropCost + postHarvest + maintenance;
-          res = {
-            crop: crop,
-            acres: acres,
-            base_scale_of_finance: baseScale,
-            crop_cultivation_cost: cropCost,
-            post_harvest_household_10pct: postHarvest,
-            farm_maintenance_insurance_20pct: maintenance,
-            total_sanctioned_kcc_limit: totalLimit,
-            net_disbursable_limit: Math.max(0, totalLimit - debt),
-            effective_interest_rate_pct: 4.0,
-            annual_interest_savings_vs_informal: Math.round(totalLimit * (0.24 - 0.04))
-          };
-        }
-
-        const dispLimit = document.getElementById('dispKccLimit');
-        if (dispLimit) dispLimit.textContent = `₹${res.total_sanctioned_kcc_limit.toLocaleString('en-IN')}`;
+        recalculateKcc();
       });
     }
 
-    // Claims Tracker
-    loadClaimsList();
+    [kccCrop, kccAcres, kccDebt].forEach(el => {
+      if (el) {
+        el.addEventListener('input', recalculateKcc);
+        el.addEventListener('change', recalculateKcc);
+      }
+    });
+
+    // Initial calculation
+    recalculateKcc();
+
+    // 1-Page KCC Bank Form Download
+    const btnDownloadKcc = document.getElementById('btnDownloadKccForm');
+    if (btnDownloadKcc) {
+      btnDownloadKcc.addEventListener('click', async () => {
+        const cropVal = kccCrop ? kccCrop.value : 'Paddy';
+        const acresVal = parseFloat(kccAcres ? kccAcres.value : 3.0) || 3.0;
+        const debtVal = parseFloat(kccDebt ? kccDebt.value : 0.0) || 0.0;
+
+        btnDownloadKcc.textContent = '⏳ Preparing Form...';
+        let formContent = '';
+
+        try {
+          const resp = await fetch(`${API_BASE}/api/kcc/application_form`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              farmer_name: 'Komirelli Ramulu',
+              phone: '9848022338',
+              crop: cropVal,
+              land_acres: acresVal,
+              village: 'Geesugonda',
+              district: 'Warangal',
+              survey_no: '284/B',
+              existing_debt: debtVal
+            })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            formContent = data.form_text;
+          }
+        } catch (err) {
+          console.warn('Backend KCC form generation failed, creating local form.');
+        }
+
+        if (!formContent) {
+          formContent = `SIMPLIFIED KCC 1-PAGE APPLICATION FORM\nCrop: ${cropVal} (${acresVal} Acres)\nSanctioned Limit: ₹${document.getElementById('dispKccLimit').textContent}\nNet Interest Rate: 4.0% p.a.\nCollateral Waiver: Valid per RBI guidelines.`;
+        }
+
+        const blob = new Blob([formContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `KCC_Bank_Application_${cropVal}_${acresVal}Acres.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        btnDownloadKcc.innerHTML = '<span>📄</span> Download 1-Page KCC Bank Form (.txt)';
+      });
+    }
+
+    const btnCopyKccRules = document.getElementById('btnCopyKccRules');
+    if (btnCopyKccRules) {
+      btnCopyKccRules.addEventListener('click', () => {
+        const rules = `[KCC 4% INTEREST SUBVENTION & COLLATERAL RULES]\n` +
+          `• 7.0% Standard Short-Term Agricultural Bank Rate\n` +
+          `• - 3.0% Prompt Repayment Incentive (PRI)\n` +
+          `• = 4.0% Net Annual Effective Rate (for loans up to ₹3,00,000)\n` +
+          `• 100% Collateral-Free: No land mortgage or stamp duty for limits up to ₹1,60,000.\n` +
+          `• Mandatory Bank SLA: 14 Days from complete application receipt.`;
+        navigator.clipboard.writeText(rules).then(() => {
+          btnCopyKccRules.textContent = '✅ Copied to Clipboard!';
+          setTimeout(() => { btnCopyKccRules.innerHTML = '<span>📋</span> Copy Rules Summary'; }, 2000);
+        });
+      });
+    }
+
+    // --- CLEAN APPLICATION STATUS TRACKER ---
+    let trackerFilter = 'all';
+
+    const filterBtns = document.querySelectorAll('.tracker-filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        trackerFilter = this.getAttribute('data-filter') || 'all';
+        renderCleanClaims();
+      });
+    });
+
+    const btnToggleAdd = document.getElementById('btnToggleAddClaim');
+    const addDrawer = document.getElementById('addClaimDrawer');
+    const btnCloseAdd = document.getElementById('btnCloseAddClaim');
+
+    if (btnToggleAdd && addDrawer) {
+      btnToggleAdd.addEventListener('click', () => {
+        addDrawer.style.display = addDrawer.style.display === 'none' ? 'block' : 'none';
+      });
+    }
+    if (btnCloseAdd && addDrawer) {
+      btnCloseAdd.addEventListener('click', () => {
+        addDrawer.style.display = 'none';
+      });
+    }
+
+    let loadedClaims = [];
+
+    async function fetchClaims() {
+      try {
+        const resp = await fetch(`${API_BASE}/claims`);
+        if (resp.ok) {
+          const raw = await resp.json();
+          // Filter out duplicate TEST/REF/01 records
+          const seenRefs = new Set();
+          loadedClaims = [];
+          for (let i = raw.length - 1; i >= 0; i--) {
+            const c = raw[i];
+            const ref = c.reference_number;
+            if (ref === 'TEST/REF/01' && seenRefs.has('TEST/REF/01')) continue;
+            if (ref && seenRefs.has(ref)) continue;
+            if (ref) seenRefs.add(ref);
+            loadedClaims.unshift(c);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch claims, using fallback.');
+      }
+      renderCleanClaims();
+    }
+
+    function renderCleanClaims() {
+      const container = document.getElementById('claimsListContainer');
+      if (!container) return;
+
+      let filtered = loadedClaims;
+      if (trackerFilter === 'active') {
+        filtered = loadedClaims.filter(c => c.status_code !== 'SANCTIONED' && c.status_code !== 'DISBURSED');
+      } else if (trackerFilter === 'overdue') {
+        filtered = loadedClaims.filter(c => c.urgency_meta && c.urgency_meta.is_overdue);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 2rem; text-align: center; color: #64748b; font-size: 0.9rem;">
+            No applications found matching the selected filter. Click "➕ New Entry" above to add an application.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const isOverdue = c.urgency_meta && c.urgency_meta.is_overdue;
+        const badgeColor = isOverdue ? 'badge-tag-red' : (c.status_code === 'SANCTIONED' ? 'badge-tag-green' : 'badge-tag-blue');
+        const statusBanner = c.urgency_meta ? c.urgency_meta.status_banner : c.status;
+
+        return `
+          <div class="claim-item-card" id="claim-card-${c.reference_number.replace(/[^a-zA-Z0-9]/g, '_')}">
+            <div class="claim-item-header">
+              <div>
+                <h4 class="claim-item-title">${escapeHtml(c.scheme_name)}</h4>
+                <div class="claim-item-meta">
+                  Ref: <strong style="color: #1e3a8a;">${escapeHtml(c.reference_number)}</strong> • Farmer: ${escapeHtml(c.farmer_name)}
+                </div>
+              </div>
+              <span class="badge-tag ${badgeColor}">${escapeHtml(c.status)}</span>
+            </div>
+
+            <div class="claim-item-notes">
+              ${escapeHtml(c.notes || 'Application under official review at Mandal / District Level.')}
+            </div>
+
+            <div class="claim-item-footer">
+              <span style="font-weight: 600; color: ${isOverdue ? '#b91c1c' : '#15803d'};">
+                ${statusBanner}
+              </span>
+              <button type="button" class="btn btn-secondary btn-del-claim" data-ref="${escapeHtml(c.reference_number)}" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; color: #dc2626;">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Wire delete buttons
+      container.querySelectorAll('.btn-del-claim').forEach(btn => {
+        btn.addEventListener('click', async function () {
+          const ref = this.getAttribute('data-ref');
+          if (confirm(`Remove application ref: ${ref} from tracker?`)) {
+            try {
+              await fetch(`${API_BASE}/claims/${encodeURIComponent(ref)}`, { method: 'DELETE' });
+            } catch (e) {
+              console.warn('Failed to delete on server');
+            }
+            loadedClaims = loadedClaims.filter(c => c.reference_number !== ref);
+            renderCleanClaims();
+          }
+        });
+      });
+    }
 
     const btnRefreshClaims = document.getElementById('btnRefreshClaims');
     if (btnRefreshClaims) {
-      btnRefreshClaims.addEventListener('click', loadClaimsList);
+      btnRefreshClaims.addEventListener('click', () => {
+        btnRefreshClaims.textContent = '⏳';
+        fetchClaims().then(() => {
+          btnRefreshClaims.textContent = '↻ Refresh';
+        });
+      });
     }
 
     const addClaimForm = document.getElementById('addClaimForm');
@@ -1993,12 +2214,12 @@ Automated SLA follow-up alerts have been scheduled.`);
       addClaimForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         const newClaim = {
-          farmer_name: document.getElementById('trkFarmerName').value,
-          phone: document.getElementById('trkPhone').value,
-          scheme_name: document.getElementById('trkScheme').value,
-          reference_number: document.getElementById('trkRef').value,
-          status: document.getElementById('trkStatus').value,
-          notes: document.getElementById('trkNotes').value
+          farmer_name: document.getElementById('trkFarmerName').value || 'Farmer',
+          phone: document.getElementById('trkPhone').value || '9848022338',
+          scheme_name: document.getElementById('trkScheme').value || 'Scheme Application',
+          reference_number: document.getElementById('trkRef').value || `REF-${Date.now().toString().slice(-6)}`,
+          status: document.getElementById('trkStatus').value || 'Application Submitted',
+          notes: document.getElementById('trkNotes').value || 'Submitted at Mandal Office'
         };
 
         try {
@@ -2008,69 +2229,17 @@ Automated SLA follow-up alerts have been scheduled.`);
             body: JSON.stringify(newClaim)
           });
         } catch (err) {
-          console.warn('Backend /claims POST failed, saved to local session.');
+          console.warn('Backend /claims POST failed, adding locally.');
         }
 
+        if (addDrawer) addDrawer.style.display = 'none';
         alert('Application added to tracking registry!');
-        loadClaimsList();
+        fetchClaims();
       });
     }
-  }
 
-  async function loadClaimsList() {
-    const container = document.getElementById('claimsListContainer');
-    if (!container) return;
-
-    let claims = [];
-    try {
-      const resp = await fetch(`${API_BASE}/claims`);
-      if (resp.ok) claims = await resp.json();
-    } catch (err) {
-      console.warn('Backend /claims GET failed, using mock list.');
-    }
-
-    if (!claims || claims.length === 0) {
-      claims = [
-        {
-          claim_id: 'CLM-2026-TS-001',
-          farmer_name: 'Komirelli Ramulu',
-          scheme_name: 'PMFBY Hailstorm Crop Loss Claim',
-          reference_number: 'PMFBY/TS/2026/092144',
-          status: 'Joint Field Survey Completed',
-          urgency_meta: { status_banner: '⚠️ Overdue by 3 days! Escalate to District Officer.', color: 'red' },
-          notes: 'Joint survey photos uploaded. Compensation calculation pending.'
-        },
-        {
-          claim_id: 'CLM-2026-TS-002',
-          farmer_name: 'B. Lakshmi',
-          scheme_name: 'TSMIP Micro-Irrigation Drip Subsidy',
-          reference_number: 'TSMIP/NAL/2026/5521',
-          status: 'Administrative Sanction Approved',
-          urgency_meta: { status_banner: '⏱️ In Progress (8/21 days elapsed).', color: 'green' },
-          notes: 'Farmer 10% DD paid. Company pipeline installation pending.'
-        }
-      ];
-    }
-
-    container.innerHTML = claims.map(c => `
-      <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem; margin-bottom: 0.85rem; background: #ffffff;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <h4 style="margin: 0; font-size: 1rem; color: #1e293b;">${c.scheme_name}</h4>
-            <span style="font-size: 0.82rem; color: var(--text-muted);">Ref: <strong>${c.reference_number}</strong> • Farmer: ${c.farmer_name}</span>
-          </div>
-          <span class="badge-tag ${c.urgency_meta && c.urgency_meta.color === 'red' ? 'badge-tag-red' : 'badge-tag-green'}">
-            ${c.status}
-          </span>
-        </div>
-        <div style="margin: 0.5rem 0; font-size: 0.85rem; color: #475569;">
-          ${c.notes || ''}
-        </div>
-        <div style="font-size: 0.82rem; font-weight: 600; color: ${c.urgency_meta && c.urgency_meta.color === 'red' ? '#b91c1c' : '#15803d'};">
-          ${c.urgency_meta ? c.urgency_meta.status_banner : 'Active tracking'}
-        </div>
-      </div>
-    `).join('');
+    // Initial load
+    fetchClaims();
   }
 
   // =========================================================================

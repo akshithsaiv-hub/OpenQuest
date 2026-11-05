@@ -97,3 +97,74 @@ def calculate_kcc_eligibility(
         ],
         "last_verified": "2026-11-05"
     }
+
+
+def generate_kcc_application_form(
+    farmer_name: str,
+    phone: str,
+    crop: str,
+    land_acres: float,
+    village: str = "Geesugonda",
+    district: str = "Warangal",
+    survey_no: str = "284/B",
+    existing_debt: float = 0.0
+) -> str:
+    """
+    Generates official, standard 1-page pre-filled KCC loan application
+    compliant with RBI & NABARD simplified formats.
+    """
+    kcc_data = calculate_kcc_eligibility(crop, land_acres, existing_debt)
+    date_str = datetime.now().strftime("%d-%b-%Y")
+    collateral_status = "APPLIED (100% Collateral-Free under RBI Rs 1.60 Lakh threshold)" if kcc_data['is_collateral_free'] else "Charge creation on RoR-1B required (> Rs 1.60 Lakh)"
+    
+    return f"""================================================================================
+SIMPLIFIED 1-PAGE KISAN CREDIT CARD (KCC) APPLICATION FORM
+Prescribed by Reserve Bank of India (FIDD.CO.FSD.BC.No.6/05.05.010/2019-20)
+Empanelled Banks: State Bank of India / TGB / APGVB / Canara Bank / DCCB
+================================================================================
+Date of Application: {date_str}
+Branch Name: _______________________ Branch Code: _____________
+
+1. APPLICANT DETAILS
+   - Full Name of Farmer: {farmer_name}
+   - Mobile Number: {phone}
+   - Residential Address: Village {village}, Mandal: _____________, District {district}
+   - Aadhaar Number: XXXX-XXXX-_________________
+   - Category: Small / Marginal Farmer (< 5 Acres)
+
+2. LAND & CULTIVATION PARTICULARS
+   - Survey / Khata / Passbook No: {survey_no}
+   - Total Operational Holding: {land_acres} Acres
+   - Primary Crop to be Cultivated: {crop}
+   - Land Ownership Status: Owner-Cultivator / CCRC Tenant Cultivator
+
+3. STATUTORY CREDIT REQUIREMENT (DLTC SCALE OF FINANCE)
+   - Crop Cultivation Scale of Finance: Rs {kcc_data['scale_of_finance_per_acre']:,} per acre
+   - Crop Cultivation Cost (A): Rs {kcc_data['scale_of_finance_per_acre'] * land_acres:,.2f}
+   - 20% Post-Harvest / Household Maintenance (B): Rs {kcc_data['first_year_limit'] - (kcc_data['scale_of_finance_per_acre'] * land_acres):,.2f}
+   - Total Sanctioned Limit for Year 1 (A + B): Rs {kcc_data['first_year_limit']:,.2f}
+   - Existing Crop Loan Outstanding: Rs {existing_debt:,.2f}
+   - NET ELIGIBLE DRAWING LIMIT: Rs {kcc_data['available_limit']:,.2f}
+
+4. REGULATORY PRIVILEGES APPLIED
+   - Collateral Waiver: {collateral_status}
+   - Subvention Scheme: 4.0% p.a. Net Interest under Central MISS (7% Base - 3% PRI)
+   - RuPay KCC ATM Card: Demanded for direct debit & input procurement.
+
+5. DECLARATION BY APPLICANT
+   I hereby declare that the particulars given above are true and correct. I undertake
+   to repay the borrowed amount along with interest on or before the statutory due date
+   ({kcc_data['repayment_reminder']['statutory_due_date']}) to remain eligible for the 3% Prompt Repayment Incentive.
+
+Enclosures Attached:
+[ ] 1. Copy of Aadhaar Card
+[ ] 2. Certified Digital Land Record (Pahani / Dharani / RoR-1B) or CCRC Agreement
+[ ] 3. Two Passport-size Photographs
+[ ] 4. Sowing Proof / Self-Declaration of Cultivation
+
+Signature / Thumb Impression of Farmer: _________________________
+For Bank Branch Use Only:
+Date Received: ________________ Processing Officer: ___________________
+Mandated RBI Clearance SLA: Within 14 Days
+================================================================================
+"""

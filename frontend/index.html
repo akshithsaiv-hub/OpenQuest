@@ -1280,146 +1280,233 @@ Ask me anything about:
   <!-- TAB 4: KCC CREDIT & STATUS TRACKER -->
   <div id="view-tab4" class="tab-view" role="tabpanel" aria-labelledby="btn-tab4">
     <div class="view-header">
-      <h2 class="view-title"><span>💳</span> Kisan Credit Card (KCC) Guidance & Application Tracker</h2>
+      <h2 class="view-title"><span>💳</span> Kisan Credit Card (KCC) 4% Subvention Engine & Application Hub</h2>
       <p class="view-desc">
-        Calculate official DLTC Scale of Finance limits, 4% Modified Interest Subvention Scheme (MISS) savings, and track your pending scheme applications with SLA countdowns.
+        Calculate your statutory DLTC Scale of Finance credit limit, 4% net interest under Central Modified Interest Subvention Scheme (MISS), 100% collateral-free limit verification, and track your pending scheme applications with SLA countdowns.
       </p>
     </div>
 
     <div class="content-grid-2">
-      <!-- Section A: KCC Scale of Finance Calculator -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title"><span>💰</span> KCC Scale of Finance Calculator</h3>
-          <p class="card-subtitle">RBI & NABARD standardized credit computation for crop production.</p>
+      <!-- Section A: Crystal Clear KCC Scale of Finance & 4% Subvention Hub -->
+      <div>
+        <!-- 1. KCC Parameter Calculator Card -->
+        <div class="card" style="border-top: 4px solid #16a34a;">
+          <div class="card-header">
+            <h3 class="card-title" style="color: #15803d;"><span>🧮</span> KCC Credit Limit & 4% Rate Calculator</h3>
+            <p class="card-subtitle">RBI & NABARD standardized scale of finance computation for crop production.</p>
+          </div>
+
+          <form id="kccForm">
+            <div class="form-group">
+              <label class="form-label" for="kccCrop">Crop to be Cultivated</label>
+              <select id="kccCrop" class="form-select">
+                <option value="Paddy" selected>Paddy / Rice (₹42,000 / acre)</option>
+                <option value="Cotton">Cotton (₹45,000 / acre)</option>
+                <option value="Chilli">Chilli / Spices (₹65,000 / acre)</option>
+                <option value="Maize">Maize / Corn (₹28,000 / acre)</option>
+                <option value="Groundnut">Groundnut (₹30,000 / acre)</option>
+                <option value="Bengal Gram">Bengal Gram (₹24,000 / acre)</option>
+                <option value="Soybean">Soybean (₹32,000 / acre)</option>
+                <option value="Wheat">Wheat (₹38,000 / acre)</option>
+              </select>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="kccAcres">Land Holding (Acres)</label>
+                <input type="number" id="kccAcres" class="form-input" value="3.0" step="0.5" min="0.5" max="50">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="kccDebt">Existing Crop Loan Debt (₹)</label>
+                <input type="number" id="kccDebt" class="form-input" value="0" step="5000" min="0">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="btnCalcKcc">
+              <span>🧮</span> Recalculate KCC Limit & Subvention
+            </button>
+          </form>
+
+          <!-- 2. Clean, Prominent Sanction Highlight Banner -->
+          <div class="kcc-hero-card" id="kccResultDisplay" style="margin-top: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: #166534; letter-spacing: 0.05em;">
+                  Sanctioned First-Year Limit
+                </span>
+                <div class="kcc-highlight-val" id="dispKccLimit">₹1,51,200</div>
+                <div style="font-size: 0.82rem; color: #166534; margin-top: 0.2rem;" id="dispKccDrawingPower">
+                  Available Drawing Power: <strong>₹1,51,200</strong>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span class="badge-tag badge-tag-green" id="dispKccCollateralBadge">✅ 100% Collateral-Free</span>
+                <div style="font-size: 1.3rem; font-weight: 800; color: #15803d; margin-top: 0.25rem;" id="dispKccRate">
+                  4.0% p.a.
+                </div>
+                <div style="font-size: 0.72rem; color: #64748b;">Net Effective Rate</div>
+              </div>
+            </div>
+
+            <!-- Clear Step-Down Subvention Breakdown -->
+            <div class="kcc-stepper-row">
+              <div class="kcc-step-badge">
+                <div>7.0% p.a.</div>
+                <small style="color: #64748b;">Bank Base Rate</small>
+              </div>
+              <span style="font-weight: 800; color: #dc2626;">-</span>
+              <div class="kcc-step-badge">
+                <div>3.0% p.a.</div>
+                <small style="color: #64748b;">Prompt Incentive (PRI)</small>
+              </div>
+              <span style="font-weight: 800; color: #16a34a;">=</span>
+              <div class="kcc-step-badge highlight">
+                <div>4.0% Net Rate</div>
+                <small style="color: #166534; font-weight: bold;">Only ₹400 / ₹10k / yr!</small>
+              </div>
+            </div>
+
+            <!-- Clear Savings & Due Date Notice -->
+            <div class="kcc-subvention-calc-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <div>
+                  <strong style="color: #15803d; font-size: 0.92rem;">💰 Annual Farmer Savings:</strong>
+                  <div style="font-size: 0.82rem; color: #334155;" id="dispKccSavings">
+                    Saves <strong>₹30,240</strong>/year compared to moneylender rates (24% p.a.)
+                  </div>
+                </div>
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.4rem 0.65rem; font-size: 0.78rem;">
+                  ⏱️ Statutory Repayment Due Date: <strong id="dispKccDueDate">March 31, 2027</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Pre-Filled 1-Page KCC Bank Application Download -->
+          <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" id="btnDownloadKccForm" style="flex: 1.2;">
+              <span>📄</span> Download 1-Page KCC Bank Form (.txt)
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnCopyKccRules" style="flex: 1;">
+              <span>📋</span> Copy Rules Summary
+            </button>
+          </div>
         </div>
 
-        <form id="kccForm">
-          <div class="form-group">
-            <label class="form-label" for="kccCrop">Crop Cultivated</label>
-            <select id="kccCrop" class="form-select">
-              <option value="Paddy">Paddy (₹38,000/acre)</option>
-              <option value="Cotton">Cotton (₹42,000/acre)</option>
-              <option value="Chilli">Chilli / Spices (₹65,000/acre)</option>
-              <option value="Maize">Maize (₹28,000/acre)</option>
-              <option value="Soybean">Soybean (₹24,000/acre)</option>
-              <option value="Bengal Gram">Bengal Gram (₹22,000/acre)</option>
-              <option value="Groundnut">Groundnut (₹26,000/acre)</option>
-              <option value="Sugarcane">Sugarcane (₹70,000/acre)</option>
-            </select>
+        <!-- 4. Regulatory Guidelines & RBI Privileges Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><span>🏛️</span> Official RBI & NABARD KCC Norms</h3>
+            <p class="card-subtitle">Statutory guidelines protecting farmers from predatory processing fees.</p>
           </div>
 
-          <div class="form-row form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="kccAcres">Land Holding (Acres)</label>
-              <input type="number" id="kccAcres" class="form-input" value="3.0" step="0.5" min="0.5" max="50">
+          <div class="checklist-box" style="background: #f8fafc; border-color: #cbd5e1;">
+            <div class="check-step">
+              <span class="check-num" style="background: #2563eb;">1</span>
+              <div>
+                <strong>Zero Processing Fees:</strong> RBI mandates zero processing, inspection, and ledger charges on KCC limits up to ₹3,00,000.
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="kccDebt">Existing Bank Loan (₹)</label>
-              <input type="number" id="kccDebt" class="form-input" value="0" step="5000" min="0">
+            <div class="check-step">
+              <span class="check-num" style="background: #2563eb;">2</span>
+              <div>
+                <strong>No Land Mortgage up to ₹1.60 Lakh:</strong> Banks are strictly prohibited from demanding land deed mortgage or charge creation for loans up to ₹1.60 Lakh.
+              </div>
             </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block" id="btnCalcKcc">
-            <span>🧮</span> Calculate Sanctioned KCC Limit
-          </button>
-        </form>
-
-        <!-- KCC Calculation Output -->
-        <div id="kccResultDisplay" style="margin-top: 1.25rem;">
-          <div class="metric-row">
-            <div class="metric-card">
-              <div class="metric-val" id="dispKccLimit">₹1,48,200</div>
-              <div class="metric-lbl">Total Sanctioned Limit</div>
+            <div class="check-step">
+              <span class="check-num" style="background: #2563eb;">3</span>
+              <div>
+                <strong>Tenant Cultivators & Sharecroppers Eligible:</strong> Tenant farmers can secure KCC via CCRC or Joint Liability Groups (JLGs) without land ownership.
+              </div>
             </div>
-            <div class="metric-card">
-              <div class="metric-val" id="dispKccRate" style="color: #15803d;">4.0% p.a.</div>
-              <div class="metric-lbl">Effective Interest Rate</div>
+            <div class="check-step">
+              <span class="check-num" style="background: #2563eb;">4</span>
+              <div>
+                <strong>Mandatory 14-Day Bank SLA:</strong> Banks must sanction and disburse complete KCC applications within 14 days of receipt.
+              </div>
             </div>
-          </div>
-
-          <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 0.85rem; font-size: 0.9rem;">
-            <div><strong>Interest Subvention Breakdown:</strong></div>
-            <ul style="margin: 0.35rem 0 0 1.2rem; line-height: 1.5;">
-              <li>7.0% Standard Short-Term Agricultural Lending Rate</li>
-              <li>- 3.0% Prompt Repayment Incentive (PRI)</li>
-              <li>= <strong>4.0% Net Annual Rate</strong> (for loans up to ₹3,00,000)</li>
-              <li style="color: #15803d; font-weight: bold;">Saves ₹26,676 annually vs informal money lenders (24% p.a.)</li>
-            </ul>
           </div>
         </div>
       </div>
 
-      <!-- Section B: Application & Claim Status Tracker -->
+      <!-- Section B: Clean, Uncluttered Application & Claim Status Tracker -->
       <div>
         <div class="card">
-          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
             <div>
-              <h3 class="card-title"><span>📌</span> Claim & Application Status Tracker</h3>
-              <p class="card-subtitle">Farmer-entered status tracking with SLA breach alarms.</p>
+              <h3 class="card-title" style="color: #1e3a8a;"><span>📌</span> Scheme Application & Claim Tracker</h3>
+              <p class="card-subtitle">Clean, farmer-entered status tracking with SLA breach alarms.</p>
             </div>
-            <button class="btn btn-secondary" id="btnRefreshClaims" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
-              ↻ Refresh
-            </button>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn btn-secondary" id="btnRefreshClaims" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;">
+                ↻ Refresh
+              </button>
+              <button class="btn btn-secondary" id="btnToggleAddClaim" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;">
+                ➕ New Entry
+              </button>
+            </div>
           </div>
 
-          <!-- Existing Logged Claims List -->
+          <!-- Clean Filter Bar -->
+          <div class="tracker-filter-bar">
+            <button type="button" class="tracker-filter-btn active" data-filter="all">All Applications</button>
+            <button type="button" class="tracker-filter-btn" data-filter="active">Active & In Progress</button>
+            <button type="button" class="tracker-filter-btn" data-filter="overdue">Overdue / SLA Alerts</button>
+          </div>
+
+          <!-- Collapsible Add New Application Form -->
+          <div id="addClaimDrawer" style="display: none; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <strong style="color: #1e293b; font-size: 0.95rem;">➕ Log New Application / Grievance</strong>
+              <button type="button" id="btnCloseAddClaim" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #64748b;">✕</button>
+            </div>
+            <form id="addClaimForm">
+              <div class="form-row form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="trkFarmerName">Farmer Name</label>
+                  <input type="text" id="trkFarmerName" class="form-input" value="Komirelli Ramulu" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="trkPhone">Phone Number</label>
+                  <input type="tel" id="trkPhone" class="form-input" value="9848022338" required>
+                </div>
+              </div>
+              <div class="form-row form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="trkScheme">Scheme / Application Name</label>
+                  <input type="text" id="trkScheme" class="form-input" value="PMFBY Crop Loss Claim" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="trkRef">Acknowledgment / Ref No</label>
+                  <input type="text" id="trkRef" class="form-input" value="APP/2026/0122" required>
+                </div>
+              </div>
+              <div class="form-row form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="trkStatus">Current Stage</label>
+                  <select id="trkStatus" class="form-select">
+                    <option value="Application Submitted">Application Submitted</option>
+                    <option value="Document Verification">Document Verification</option>
+                    <option value="Joint Field Inspection">Joint Field Inspection</option>
+                    <option value="Administrative Sanction Approved">Administrative Sanction Approved</option>
+                    <option value="Disbursed / Completed">Disbursed / Completed</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="trkNotes">Notes / Handling Office</label>
+                  <input type="text" id="trkNotes" class="form-input" value="AEO Geesugonda / Mandal Office">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id="btnAddClaim">
+                <span>💾</span> Save Application to Tracker
+              </button>
+            </form>
+          </div>
+
+          <!-- Deduplicated, Clean Claims List Container -->
           <div id="claimsListContainer">
-            <!-- Dynamically populated -->
+            <!-- Dynamically populated with clean cards -->
           </div>
-        </div>
-
-        <!-- Add New Application Log Form -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title"><span>➕</span> Log New Application / Claim</h3>
-            <p class="card-subtitle">Keep an audit trail of your subsidy filings to prevent bureaucratic delays.</p>
-          </div>
-
-          <form id="addClaimForm">
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label" for="trkFarmerName">Farmer Name</label>
-                <input type="text" id="trkFarmerName" class="form-input" value="B. Venkanna" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="trkPhone">Phone Number</label>
-                <input type="tel" id="trkPhone" class="form-input" value="9701133445" required>
-              </div>
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label" for="trkScheme">Scheme / Application Name</label>
-                <input type="text" id="trkScheme" class="form-input" value="PM-KUSUM Solar Pump Component B" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="trkRef">Acknowledgment / Ref No</label>
-                <input type="text" id="trkRef" class="form-input" value="KUSUM/TG/2026/8821" required>
-              </div>
-            </div>
-
-            <div class="form-row form-row-2">
-              <div class="form-group">
-                <label class="form-label" for="trkStatus">Current Stage</label>
-                <select id="trkStatus" class="form-select">
-                  <option value="Application Submitted">Application Submitted</option>
-                  <option value="Document Verification">Document Verification</option>
-                  <option value="Joint Field Inspection">Joint Field Inspection</option>
-                  <option value="Administrative Sanction Approved">Administrative Sanction Approved</option>
-                  <option value="Disbursed / Completed">Disbursed / Completed</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="trkNotes">Notes / Handling Officer</label>
-                <input type="text" id="trkNotes" class="form-input" value="REDCO District Office">
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block" id="btnAddClaim">
-              <span>💾</span> Save Application to Tracker
-            </button>
-          </form>
         </div>
       </div>
     </div>

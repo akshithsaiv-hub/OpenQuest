@@ -1,243 +1,117 @@
 [
   {
-    "claim_id": "CLM-2026-TS-001",
-    "farmer_id": "F-DEMO-01",
+    "claim_id": "CLM-20261101-001",
+    "farmer_id": "F-1021",
     "farmer_name": "Komirelli Ramulu",
     "phone": "9848022338",
     "scheme_name": "PMFBY Hailstorm Crop Loss Claim",
     "reference_number": "PMFBY/TS/2026/092144",
-    "filing_date": "2026-10-18",
+    "filing_date": "2026-10-28",
     "status": "Joint Field Survey Completed",
-    "status_code": "UNDER_VERIFICATION",
-    "handling_officer": "AEO K. Srinivas (Rythu Vedika Geesugonda)",
-    "expected_sla_days": 15,
-    "notes": "Joint survey photos uploaded. Compensation calculation pending approval at DAO office.",
+    "status_code": "ACTIVE",
+    "handling_officer": "DAO Office / Empanelled Insurer",
+    "expected_sla_days": 10,
+    "notes": "Joint survey photos uploaded. Compensation calculation pending final sanction at DAO office.",
     "reminders": [
       {
         "date": "2026-11-02",
-        "type": "SLA_BREACH",
-        "msg": "15-day PMFBY joint survey assessment window crossed. Follow up with Insurance Assessor."
+        "type": "SURVEY_COMPLETED",
+        "msg": "Joint field survey completed. Loss assessed at 80%."
       }
     ]
   },
   {
-    "claim_id": "CLM-2026-TS-002",
-    "farmer_id": "F-DEMO-02",
+    "claim_id": "CLM-20261101-002",
+    "farmer_id": "F-2045",
     "farmer_name": "B. Lakshmi",
-    "phone": "9440188219",
+    "phone": "9848123456",
     "scheme_name": "TSMIP Micro-Irrigation Drip Subsidy",
     "reference_number": "TSMIP/NAL/2026/5521",
-    "filing_date": "2026-10-28",
+    "filing_date": "2026-10-27",
     "status": "Administrative Sanction Approved",
-    "status_code": "SANCTIONED",
-    "handling_officer": "Horticulture Officer Nalgonda",
+    "status_code": "IN_PROGRESS",
+    "handling_officer": "District Horticulture Officer",
     "expected_sla_days": 21,
-    "notes": "Farmer 10% DD paid. Company allotment for drip pipeline installation pending.",
+    "notes": "Farmer 10% DD paid. Company allotment for drip pipeline installation in progress.",
     "reminders": [
       {
-        "date": "2026-11-18",
-        "type": "UPCOMING",
-        "msg": "Installation scheduled within next 13 days."
+        "date": "2026-11-06",
+        "type": "COMPANY_DISPATCH",
+        "msg": "Drip materials allocated for survey parcel."
       }
     ]
   },
   {
-    "claim_id": "CLM-20261105161214",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
+    "claim_id": "CLM-20261101-003",
+    "farmer_id": "F-3091",
+    "farmer_name": "K. Venkaiah",
+    "phone": "9848987654",
+    "scheme_name": "Kisan Credit Card (KCC) Crop Loan Renewal",
+    "reference_number": "KCC/WGL/2026/4109",
+    "filing_date": "2026-11-01",
+    "status": "Sanctioned at 4% Interest Subvention",
+    "status_code": "SANCTIONED",
+    "handling_officer": "Telangana Grameena Bank (TGB)",
+    "expected_sla_days": 14,
+    "notes": "Credit limit sanctioned: \u20b91,48,200 collateral-free. RuPay KCC ATM card issued.",
     "reminders": [
       {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+        "date": "2026-11-15",
+        "type": "CARD_DISPATCH",
+        "msg": "Collect personalized RuPay KCC Debit Card from Geesugonda branch."
       }
     ]
   },
   {
-    "claim_id": "CLM-20261105212843",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105213058",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105213611",
-    "farmer_id": "F-3210",
-    "farmer_name": "Ravi Kumar",
-    "phone": "9876543210",
-    "scheme_name": "PMFBY 72-Hour Emergency Claim",
-    "reference_number": "PMFBY/TE/2026/894771",
-    "filing_date": "2026-11-05",
-    "status": "Loss Intimation Received (SLA: 72 Hours)",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Survey: 402/A, Cause: Hailstorm, Loss: 75%. ",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for PMFBY 72-Hour Emergency Claim (Ref: PMFBY/TE/2026/894771)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105213637",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105222818",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105222953",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105224019",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105230112",
-    "farmer_id": "F-3445",
+    "claim_id": "CLM-20261101-004",
+    "farmer_id": "F-4180",
     "farmer_name": "B. Venkanna",
     "phone": "9701133445",
     "scheme_name": "PM-KUSUM Solar Pump Component B",
     "reference_number": "KUSUM/TG/2026/8821",
-    "filing_date": "2026-11-05",
-    "status": "Application Submitted",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "REDCO District Office",
+    "filing_date": "2026-10-20",
+    "status": "Document Verification Passed",
+    "status_code": "IN_PROGRESS",
+    "handling_officer": "TSREDCO District Manager",
+    "expected_sla_days": 30,
+    "notes": "Groundwater NOC and Dharani land records verified. Site survey scheduled.",
     "reminders": [
       {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for PM-KUSUM Solar Pump Component B (Ref: KUSUM/TG/2026/8821)"
+        "date": "2026-11-10",
+        "type": "SITE_SURVEY",
+        "msg": "Technical team visiting for 5HP solar borehole inspection."
       }
     ]
   },
   {
-    "claim_id": "CLM-20261105230212",
+    "claim_id": "CLM-20261101-005",
+    "farmer_id": "F-5520",
+    "farmer_name": "Ravi Kumar",
+    "phone": "9988776655",
+    "scheme_name": "PMFBY 72-Hour Emergency Intimation",
+    "reference_number": "PMFBY/TE/2026/894771",
+    "filing_date": "2026-11-04",
+    "status": "Docket Generated (Awaiting Joint Survey)",
+    "status_code": "ACTIVE",
+    "handling_officer": "Village AEO & Insurance Assessor",
+    "expected_sla_days": 7,
+    "notes": "Intimation submitted within 72 hrs with geo-tagged photos.",
+    "reminders": [
+      {
+        "date": "2026-11-12",
+        "type": "JOINT_SURVEY",
+        "msg": "Be present in field for joint acreage assessment."
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261106002036",
     "farmer_id": "F-8888",
     "farmer_name": "Test Farmer",
     "phone": "9999988888",
     "scheme_name": "TSMIP Subsidy",
     "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
+    "filing_date": "2026-11-06",
     "status": "Under Review",
     "status_code": "ACTIVE",
     "handling_officer": "Local Agriculture Office / CSC",
@@ -245,112 +119,7 @@
     "notes": "Testing status tracker",
     "reminders": [
       {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105231541",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105233232",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105233900",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105234734",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
-        "type": "FOLLOWUP_SCHEDULED",
-        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
-      }
-    ]
-  },
-  {
-    "claim_id": "CLM-20261105235424",
-    "farmer_id": "F-8888",
-    "farmer_name": "Test Farmer",
-    "phone": "9999988888",
-    "scheme_name": "TSMIP Subsidy",
-    "reference_number": "TEST/REF/01",
-    "filing_date": "2026-11-05",
-    "status": "Under Review",
-    "status_code": "ACTIVE",
-    "handling_officer": "Local Agriculture Office / CSC",
-    "expected_sla_days": 15,
-    "notes": "Testing status tracker",
-    "reminders": [
-      {
-        "date": "2026-11-20",
+        "date": "2026-11-21",
         "type": "FOLLOWUP_SCHEDULED",
         "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
       }

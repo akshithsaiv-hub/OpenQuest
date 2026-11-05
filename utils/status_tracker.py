@@ -59,7 +59,18 @@ def get_all_claims() -> List[Dict[str, Any]]:
     init_claims_store()
     try:
         with open(CLAIMS_FILE_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
+            raw_claims = json.load(f)
+            # Deduplicate by reference number, keeping the latest entry
+            seen_refs = set()
+            deduped = []
+            for c in reversed(raw_claims):
+                ref = c.get("reference_number", "")
+                if ref and ref in seen_refs:
+                    continue
+                if ref:
+                    seen_refs.add(ref)
+                deduped.append(c)
+            return list(reversed(deduped))
     except Exception:
         return DEFAULT_CLAIMS_DATA
 
@@ -135,3 +146,21 @@ def compute_claim_urgency(claim: Dict[str, Any]) -> Dict[str, Any]:
         "status_banner": status_banner,
         "color": color
     }
+
+def delete_claim_entry(ref_or_id: str) -> bool:
+    """
+    Removes a claim or application entry by reference number or claim_id.
+    """
+    init_claims_store()
+    try:
+        with open(CLAIMS_FILE_PATH, "r", encoding="utf-8") as f:
+            claims = json.load(f)
+        
+        filtered = [c for c in claims if c.get("reference_number") != ref_or_id and c.get("claim_id") != ref_or_id]
+        if len(filtered) < len(claims):
+            with open(CLAIMS_FILE_PATH, "w", encoding="utf-8") as f:
+                json.dump(filtered, f, indent=2)
+            return True
+        return False
+    except Exception:
+        return False

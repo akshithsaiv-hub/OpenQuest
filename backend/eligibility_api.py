@@ -1228,6 +1228,40 @@ def api_add_claim_direct(req: ClaimEntryRequest):
         notes=req.notes or ""
     )
 
+
+class KCCApplicationFormRequest(BaseModel):
+    farmer_name: str = "Komirelli Ramulu"
+    phone: str = "9848022338"
+    crop: str = "Paddy"
+    land_acres: float = 3.0
+    village: str = "Geesugonda"
+    district: str = "Warangal"
+    survey_no: str = "284/B"
+    existing_debt: float = 0.0
+
+@app.delete("/claims/{ref_or_id}")
+@app.delete("/api/claims/{ref_or_id}")
+def api_delete_claim_direct(ref_or_id: str):
+    from utils.status_tracker import delete_claim_entry
+    ok = delete_claim_entry(ref_or_id)
+    return {"status": "success" if ok else "not_found", "reference_number": ref_or_id}
+
+@app.post("/api/kcc/application_form")
+def api_kcc_application_form_direct(req: KCCApplicationFormRequest):
+    from utils.credit_kcc import generate_kcc_application_form
+    form_text = generate_kcc_application_form(
+        farmer_name=req.farmer_name,
+        phone=req.phone,
+        crop=req.crop,
+        land_acres=req.land_acres,
+        village=req.village,
+        district=req.district,
+        survey_no=req.survey_no,
+        existing_debt=req.existing_debt
+    )
+    return {"status": "success", "form_text": form_text}
+
+
 @app.post("/feedback")
 @app.post("/api/feedback")
 def api_record_feedback_direct(req: FeedbackRequest):
