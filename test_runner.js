@@ -1,4 +1,4 @@
-// Test runner in Node to verify the 20 benchmark profiles against the exact rule logic
+// Pan-India Multi-State Benchmark Test Runner
 const fs = require('fs');
 const path = require('path');
 
@@ -13,6 +13,11 @@ function checkEligibility(profile) {
   const crops = (profile.crops || []).map(c => c.toLowerCase());
   const age = Number(profile.age !== undefined ? profile.age : 35);
   const is_tax_payer = Boolean(profile.is_tax_payer);
+
+  const cropLossSchemes = [
+    'pmfby', 'ap_free_crop_insurance', 'mh_one_rupee_crop_insurance',
+    'wb_bangla_shasya_bima', 'br_fasal_sahayata', 'kl_state_crop_insurance'
+  ];
 
   return schemes.map(scheme => {
     const rules = scheme.rules || {};
@@ -49,7 +54,7 @@ function checkEligibility(profile) {
       }
     }
 
-    if (scheme.scheme_id === 'pmfby') {
+    if (cropLossSchemes.includes(scheme.scheme_id)) {
       if (land_acres <= 0 || crops.length === 0) {
         eligible = false;
         reasons.push('Crop insurance requires positive cultivated acreage and at least one sown crop.');
@@ -82,15 +87,10 @@ function checkEligibility(profile) {
     return {
       scheme_id: scheme.scheme_id,
       scheme_name: scheme.scheme_name,
+      level: scheme.level,
+      state: scheme.state,
       eligible,
-      reasons,
-      docs: scheme.documents_required,
-      source_url: scheme.source_url,
-      last_verified: scheme.last_verified,
-      deadlines: scheme.deadlines,
-      claim_window: scheme.claim_window,
-      benefit_summary: scheme.benefit_summary,
-      kisan_e_mitra_redirect: scheme.kisan_e_mitra_redirect
+      reasons
     };
   });
 }
@@ -122,6 +122,10 @@ testProfiles.forEach(tpItem => {
   if (!isMatch) {
     console.log(`   Expected: ${expEligible.join(', ')}`);
     console.log(`   Got     : ${predEligible.join(', ')}`);
+    const missing = expEligible.filter(x => !predEligible.includes(x));
+    const unexpected = predEligible.filter(x => !expEligible.includes(x));
+    if (missing.length) console.log(`   Missing : ${missing.join(', ')}`);
+    if (unexpected.length) console.log(`   Extra   : ${unexpected.join(', ')}`);
   }
 });
 
@@ -147,8 +151,9 @@ const evaluationData = {
 
 fs.writeFileSync(path.join(__dirname, 'evaluation_results.json'), JSON.stringify(evaluationData, null, 2));
 
-console.log('='.repeat(60));
+console.log('='.repeat(65));
 console.log(`Total Profiles: ${testProfiles.length} | Passed: ${passedCount} (100%)`);
+console.log(`Total Scheme Decisions Tested: ${totalDecisions} | Correct: ${correctDecisions}`);
 console.log(`Decision Accuracy: ${(correctDecisions / totalDecisions * 100).toFixed(1)}%`);
 console.log(`Precision: ${precision} | Recall: ${recall} | F1 Score: ${f1}`);
-console.log('='.repeat(60));
+console.log('='.repeat(65));

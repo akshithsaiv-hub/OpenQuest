@@ -1,5 +1,6 @@
 """
 farmer_schemes_engine: Core Rule Engine (Person 1 Component)
+Supports Pan-India Central & State-Specific Farmer Agriculture Subsidies.
 Strictly deterministic if/else eligibility matching.
 LLM NEVER decides eligibility; it only explains the outputs returned here.
 """
@@ -28,18 +29,18 @@ class EligibilityEngine:
     def check_eligibility(self, profile: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
         Primary interface function agreed across Person 1, Person 2, and Person 3.
-        Evaluates a farmer profile against all schemes using deterministic rules.
+        Evaluates a farmer profile against all Central and State schemes using deterministic rules.
         
         Input profile shape:
         {
             "farmer_id": Optional[str],
             "farmer_name": str,
-            "state": str,                  # e.g. "Telangana"
-            "district": str,               # e.g. "Warangal"
+            "state": str,                  # e.g. "Telangana", "Maharashtra", "Punjab", "Odisha", etc.
+            "district": str,               # e.g. "Warangal", "Yavatmal", "Ludhiana"
             "land_acres": float,           # e.g. 2.5
             "is_tenant": bool,             # e.g. False
             "has_rofr_patta": bool,        # e.g. False
-            "crops": List[str],            # e.g. ["Paddy", "Cotton"]
+            "crops": List[str],            # e.g. ["Paddy", "Cotton", "Wheat"]
             "age": int,                    # e.g. 42
             "is_tax_payer": bool           # e.g. False
         }
@@ -49,6 +50,8 @@ class EligibilityEngine:
           {
             "scheme": str,
             "scheme_id": str,
+            "level": str,
+            "state": str,
             "eligible": bool,
             "reasons": List[str],
             "docs": List[str],
@@ -75,22 +78,23 @@ class EligibilityEngine:
         for scheme in self.schemes:
             scheme_id = scheme["scheme_id"]
             name = scheme["scheme_name"]
+            level = scheme.get("level", "Central")
+            scheme_state = scheme.get("state", "All")
             rules = scheme.get("rules", {})
             eligible = True
             reasons = []
 
-            # 1. State restriction check
+            # 1. State restriction check (Pan-India Central vs State Specific)
             state_req = rules.get("state_restriction")
-            scheme_state = scheme.get("state", "All")
             target_state = state_req if state_req else scheme_state
             if target_state != "All" and target_state.lower() != state.lower():
                 eligible = False
                 reasons.append(f"Applicable only for residents of {target_state}, not {state}.")
 
-            # 2. Income Tax Payer check (PM-KISAN exclusion)
+            # 2. Income Tax Payer check (Exclusion rule)
             if is_tax_payer and "income_tax_payer" in rules.get("excluded_categories", []):
                 eligible = False
-                reasons.append("Income-tax payers and institutional holders are excluded by official central guidelines.")
+                reasons.append("Income-tax payers and institutional landholders are excluded by scheme guidelines.")
 
             # 3. Land ownership & Tenant check
             requires_land = rules.get("requires_land_ownership", False)
@@ -100,28 +104,32 @@ class EligibilityEngine:
             if is_tenant:
                 if not tenant_allowed:
                     eligible = False
-                    reasons.append("Requires registered land ownership (Pattadar passbook); oral tenant farmers not eligible.")
+                    reasons.append("Requires registered land ownership passbook; oral tenant farmers are not covered.")
                 elif land_acres <= 0.0:
                     eligible = False
                     reasons.append("Tenant cultivation requires positive leased land acreage.")
             else:
                 if requires_land and land_acres <= 0.0 and not (rofr_allowed and has_rofr_patta):
                     eligible = False
-                    reasons.append("Requires positive cultivable landholding or valid RoFR title deed.")
+                    reasons.append("Requires positive cultivable landholding or valid RoFR tribal title deed.")
 
-            # Specific check for crop insurance (PMFBY): requires active crop and positive cultivated acreage
-            if scheme_id == "pmfby":
+            # Specific check for crop insurance & loss schemes: requires active crop and positive cultivated acreage
+            crop_loss_schemes = [
+                "pmfby", "ap_free_crop_insurance", "mh_one_rupee_crop_insurance", 
+                "wb_bangla_shasya_bima", "br_fasal_sahayata", "kl_state_crop_insurance"
+            ]
+            if scheme_id in crop_loss_schemes:
                 if land_acres <= 0.0 or not crops:
                     eligible = False
                     reasons.append("Crop insurance requires positive cultivated land and at least one sown notified crop.")
 
-            # 4. Maximum land ceiling check (e.g. Rythu Bharosa 10 acres)
+            # 4. Maximum land ceiling check (e.g. Small/Marginal caps, PM-KMY 5 acres, Rythu Bharosa 10 acres)
             max_land = rules.get("max_land_acres")
             if max_land is not None and land_acres > max_land:
                 eligible = False
                 reasons.append(f"Landholding ({land_acres} acres) exceeds scheme maximum cap of {max_land} acres.")
 
-            # 5. Age restrictions check (e.g., Rythu Bima: 18 to 59 years)
+            # 5. Age restrictions check
             min_age = rules.get("min_age")
             max_age = rules.get("max_age")
             if min_age is not None and age < min_age:
@@ -131,14 +139,14 @@ class EligibilityEngine:
                 eligible = False
                 reasons.append(f"Farmer age ({age}) exceeds maximum ceiling of {max_age} years.")
 
-            # 6. Supported Crops check (e.g., PMFBY)
+            # 6. Supported Crops check
             supported_crops = rules.get("supported_crops")
             if supported_crops and crops:
                 supported_lower = [sc.lower() for sc in supported_crops]
                 crop_matched = any(c in supported_lower or any(sc in c for sc in supported_lower) for c in crops)
                 if not crop_matched:
                     eligible = False
-                    reasons.append(f"Crops cultivated {profile.get('crops')} are not notified under current season coverage.")
+                    reasons.append(f"Crops cultivated {profile.get('crops')} are not notified under current scheme coverage.")
 
             if eligible:
                 reasons.append("All eligibility criteria met based on profile parameters.")
@@ -146,6 +154,8 @@ class EligibilityEngine:
             results.append({
                 "scheme": name,
                 "scheme_id": scheme_id,
+                "level": level,
+                "state": scheme_state,
                 "eligible": eligible,
                 "reasons": reasons,
                 "docs": scheme.get("documents_required", []),

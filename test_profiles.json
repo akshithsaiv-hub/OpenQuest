@@ -1,7 +1,7 @@
 [
   {
-    "profile_id": "P01",
-    "description": "Standard small landholder, 2.5 acres, age 40, Paddy, Telangana, non-taxpayer",
+    "profile_id": "P01_TS",
+    "description": "Telangana smallholder (2.5 ac, Age 40, Paddy, Non-taxpayer)",
     "profile": {
       "state": "Telangana",
       "district": "Warangal",
@@ -12,12 +12,12 @@
       "age": 40,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "pm_kmy", "smam_farm_machinery", "pmksy_pdmc", "ts_rythu_bharosa", "ts_rythu_bima"],
+    "expected_ineligible_states": ["Andhra Pradesh", "Maharashtra", "Karnataka", "Uttar Pradesh", "Punjab", "Haryana", "Odisha", "West Bengal", "Bihar"]
   },
   {
-    "profile_id": "P02",
-    "description": "Marginal tenant farmer (oral lease), 1.5 acres, age 32, Paddy, Telangana",
+    "profile_id": "P02_TS_TENANT",
+    "description": "Telangana tenant farmer with oral lease (1.5 ac, Age 32, Paddy)",
     "profile": {
       "state": "Telangana",
       "district": "Khammam",
@@ -29,294 +29,294 @@
       "is_tax_payer": false
     },
     "expected_eligible": ["pmfby", "kcc"],
-    "expected_ineligible": ["pm_kisan", "rythu_bharosa", "rythu_bima"]
+    "expected_ineligible_schemes": ["pm_kisan", "ts_rythu_bharosa", "ts_rythu_bima", "smam_farm_machinery", "pmksy_pdmc"]
   },
   {
-    "profile_id": "P03",
-    "description": "Large landholder, 15 acres (>10 cap for Rythu Bharosa), age 45, Cotton, Telangana",
+    "profile_id": "P03_AP",
+    "description": "Andhra Pradesh tenant farmer with valid CCRC Card (2.0 ac, Age 36, Groundnut)",
     "profile": {
-      "state": "Telangana",
-      "district": "Adilabad",
-      "land_acres": 15.0,
-      "is_tenant": false,
+      "state": "Andhra Pradesh",
+      "district": "Anantapur",
+      "land_acres": 2.0,
+      "is_tenant": true,
       "has_rofr_patta": false,
-      "crops": ["Cotton"],
-      "age": 45,
+      "crops": ["Groundnut"],
+      "age": 36,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bima", "kcc"],
-    "expected_ineligible": ["rythu_bharosa"]
+    "expected_eligible": ["pmfby", "kcc", "ap_annadata_sukhibhava", "ap_free_crop_insurance"],
+    "expected_ineligible_schemes": ["pm_kisan", "smam_farm_machinery", "ts_rythu_bharosa"]
   },
   {
-    "profile_id": "P04",
-    "description": "Senior farmer age 63 (>59 cap for Rythu Bima), 3.0 acres, Paddy, Telangana",
+    "profile_id": "P04_MH",
+    "description": "Maharashtra smallholder farmer (3.0 ac, Age 42, Cotton & Soybean, Non-taxpayer)",
     "profile": {
-      "state": "Telangana",
-      "district": "Suryapet",
+      "state": "Maharashtra",
+      "district": "Yavatmal",
       "land_acres": 3.0,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 63,
+      "crops": ["Cotton", "Soybean"],
+      "age": 42,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "kcc"],
-    "expected_ineligible": ["rythu_bima"]
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "mh_namo_shetkari", "mh_one_rupee_crop_insurance", "mh_krishi_yantrikikaran"],
+    "expected_ineligible_states": ["Telangana", "Karnataka", "Madhya Pradesh", "Gujarat"]
   },
   {
-    "profile_id": "P05",
-    "description": "Minor age 17 (<18 min age for all schemes), 2.0 acres, Cotton, Telangana",
+    "profile_id": "P05_KA",
+    "description": "Karnataka dryland minor millet grower (4.0 ac, Age 38, Navane / Millet)",
     "profile": {
-      "state": "Telangana",
-      "district": "Nizamabad",
-      "land_acres": 2.0,
-      "is_tenant": false,
-      "has_rofr_patta": false,
-      "crops": ["Cotton"],
-      "age": 17,
-      "is_tax_payer": false
-    },
-    "expected_eligible": [],
-    "expected_ineligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"]
-  },
-  {
-    "profile_id": "P06",
-    "description": "Income-tax payer farmer (excluded from PM-KISAN), 4.0 acres, age 42, Paddy, Telangana",
-    "profile": {
-      "state": "Telangana",
-      "district": "Karimnagar",
+      "state": "Karnataka",
+      "district": "Tumakuru",
       "land_acres": 4.0,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 42,
-      "is_tax_payer": true
-    },
-    "expected_eligible": ["pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": ["pm_kisan"]
-  },
-  {
-    "profile_id": "P07",
-    "description": "Tribal farmer with RoFR patta, 2.0 acres, age 35, Soybean, Adilabad",
-    "profile": {
-      "state": "Telangana",
-      "district": "Adilabad",
-      "land_acres": 2.0,
-      "is_tenant": false,
-      "has_rofr_patta": true,
-      "crops": ["Soybean"],
-      "age": 35,
-      "is_tax_payer": false
-    },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
-  },
-  {
-    "profile_id": "P08",
-    "description": "Out-of-state farmer (Andhra Pradesh), 3.0 acres, age 38, Paddy (ineligible for Telangana schemes)",
-    "profile": {
-      "state": "Andhra Pradesh",
-      "district": "Guntur",
-      "land_acres": 3.0,
-      "is_tenant": false,
-      "has_rofr_patta": false,
-      "crops": ["Paddy"],
+      "crops": ["Millet"],
       "age": 38,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "kcc"],
-    "expected_ineligible": ["rythu_bharosa", "rythu_bima", "pmfby"]
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "pm_kmy", "smam_farm_machinery", "pmksy_pdmc", "ka_raitha_siri", "ka_krishi_bhagya"],
+    "expected_ineligible_states": ["Maharashtra", "Tamil Nadu", "Kerala"]
   },
   {
-    "profile_id": "P09",
-    "description": "Farmer growing unnotified crop (Rubber), 2.0 acres, age 40, Telangana",
+    "profile_id": "P06_UP",
+    "description": "Uttar Pradesh smallholder seeking irrigation & machinery (3.5 ac, Age 45, Wheat & Paddy)",
     "profile": {
-      "state": "Telangana",
-      "district": "Warangal",
-      "land_acres": 2.0,
+      "state": "Uttar Pradesh",
+      "district": "Varanasi",
+      "land_acres": 3.5,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Rubber"],
+      "crops": ["Wheat", "Paddy"],
+      "age": 45,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "up_krishi_yantra", "up_free_boring"],
+    "expected_ineligible_states": ["Bihar", "Madhya Pradesh", "Haryana"]
+  },
+  {
+    "profile_id": "P07_MP",
+    "description": "Madhya Pradesh farmer receiving state top-up (4.0 ac, Age 39, Soybean & Gram)",
+    "profile": {
+      "state": "Madhya Pradesh",
+      "district": "Ujjain",
+      "land_acres": 4.0,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Soybean", "Gram"],
+      "age": 39,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "pm_kmy", "smam_farm_machinery", "pmksy_pdmc", "mp_kisan_kalyan", "mp_solar_pump"],
+    "expected_ineligible_states": ["Uttar Pradesh", "Rajasthan", "Maharashtra"]
+  },
+  {
+    "profile_id": "P08_PB",
+    "description": "Punjab farmer seeking anti-stubble machinery (8.0 ac, Age 48, Paddy & Wheat)",
+    "profile": {
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "land_acres": 8.0,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Paddy", "Wheat"],
+      "age": 48,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "pb_crop_residue_mgmt", "pb_free_power"],
+    "expected_ineligible_states": ["Haryana", "Himachal Pradesh", "Rajasthan"]
+  },
+  {
+    "profile_id": "P09_HR",
+    "description": "Haryana farmer diversifying from paddy to cotton (5.0 ac, Age 44, Cotton & Bajra)",
+    "profile": {
+      "state": "Haryana",
+      "district": "Hisar",
+      "land_acres": 5.0,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Cotton", "Bajra"],
+      "age": 44,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "hr_bhavantar_bharpai", "hr_mera_pani_meri_virasat"],
+    "expected_ineligible_states": ["Punjab", "Uttar Pradesh", "Rajasthan"]
+  },
+  {
+    "profile_id": "P10_OD",
+    "description": "Odisha marginal farmer (1.5 ac, Age 35, Paddy)",
+    "profile": {
+      "state": "Odisha",
+      "district": "Cuttack",
+      "land_acres": 1.5,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Paddy"],
+      "age": 35,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "pm_kmy", "smam_farm_machinery", "pmksy_pdmc", "od_kalia"],
+    "expected_ineligible_states": ["West Bengal", "Andhra Pradesh", "Chhattisgarh"]
+  },
+  {
+    "profile_id": "P11_WB",
+    "description": "West Bengal sharecropper / Bargadar (2.0 ac, Age 40, Paddy & Jute)",
+    "profile": {
+      "state": "West Bengal",
+      "district": "Nadia",
+      "land_acres": 2.0,
+      "is_tenant": true,
+      "has_rofr_patta": false,
+      "crops": ["Paddy", "Jute"],
       "age": 40,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": ["pmfby"]
+    "expected_eligible": ["pmfby", "kcc", "wb_krishak_bandhu", "wb_bangla_shasya_bima"],
+    "expected_ineligible_schemes": ["pm_kisan", "smam_farm_machinery"]
   },
   {
-    "profile_id": "P10",
-    "description": "Tenant farmer growing Cotton, 3.0 acres, age 50, Khammam",
+    "profile_id": "P12_TN",
+    "description": "Tamil Nadu farmer applying for solar pump (4.5 ac, Age 47, Paddy & Sugarcane)",
     "profile": {
-      "state": "Telangana",
-      "district": "Khammam",
-      "land_acres": 3.0,
+      "state": "Tamil Nadu",
+      "district": "Thanjavur",
+      "land_acres": 4.5,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Paddy", "Sugarcane"],
+      "age": 47,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "tn_solar_pump"],
+    "expected_ineligible_states": ["Kerala", "Karnataka", "Andhra Pradesh"]
+  },
+  {
+    "profile_id": "P13_BR",
+    "description": "Bihar tenant farmer applying for free crop loss aid (2.0 ac, Age 38, Paddy & Maize)",
+    "profile": {
+      "state": "Bihar",
+      "district": "Muzaffarpur",
+      "land_acres": 2.0,
       "is_tenant": true,
       "has_rofr_patta": false,
-      "crops": ["Cotton"],
+      "crops": ["Paddy", "Maize"],
+      "age": 38,
+      "is_tax_payer": false
+    },
+    "expected_eligible": ["pmfby", "kcc", "br_fasal_sahayata", "br_diesel_anudan"],
+    "expected_ineligible_schemes": ["pm_kisan", "smam_farm_machinery"]
+  },
+  {
+    "profile_id": "P14_RJ",
+    "description": "Rajasthan farmer protecting crops from wild animals (5.0 ac, Age 50, Mustard & Bajra)",
+    "profile": {
+      "state": "Rajasthan",
+      "district": "Alwar",
+      "land_acres": 5.0,
+      "is_tenant": false,
+      "has_rofr_patta": false,
+      "crops": ["Mustard", "Bajra"],
       "age": 50,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pmfby", "kcc"],
-    "expected_ineligible": ["pm_kisan", "rythu_bharosa", "rythu_bima"]
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "rj_tarbandi"],
+    "expected_ineligible_states": ["Haryana", "Gujarat", "Madhya Pradesh"]
   },
   {
-    "profile_id": "P11",
-    "description": "Landless agricultural worker (0 acres), age 30, Telangana",
+    "profile_id": "P15_GJ",
+    "description": "Gujarat farmer practicing natural farming (3.5 ac, Age 41, Groundnut & Cotton)",
     "profile": {
-      "state": "Telangana",
-      "district": "Mahabubnagar",
-      "land_acres": 0.0,
+      "state": "Gujarat",
+      "district": "Rajkot",
+      "land_acres": 3.5,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": [],
-      "age": 30,
+      "crops": ["Groundnut", "Cotton"],
+      "age": 41,
       "is_tax_payer": false
     },
-    "expected_eligible": ["kcc"],
-    "expected_ineligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima"]
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "gj_saat_pagla_khedut"],
+    "expected_ineligible_states": ["Maharashtra", "Rajasthan", "Madhya Pradesh"]
   },
   {
-    "profile_id": "P12",
-    "description": "Boundary test: exactly 10.0 acres ceiling for Rythu Bharosa, age 52, Telangana",
+    "profile_id": "P16_KL",
+    "description": "Kerala wetland paddy grower (2.0 ac, Age 43, Paddy)",
     "profile": {
-      "state": "Telangana",
-      "district": "Nalgonda",
-      "land_acres": 10.0,
-      "is_tenant": false,
-      "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 52,
-      "is_tax_payer": false
-    },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
-  },
-  {
-    "profile_id": "P13",
-    "description": "Boundary test: 10.1 acres (just above 10.0 cap for Rythu Bharosa), age 52, Telangana",
-    "profile": {
-      "state": "Telangana",
-      "district": "Nalgonda",
-      "land_acres": 10.1,
-      "is_tenant": false,
-      "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 52,
-      "is_tax_payer": false
-    },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bima", "kcc"],
-    "expected_ineligible": ["rythu_bharosa"]
-  },
-  {
-    "profile_id": "P14",
-    "description": "Boundary test: exactly age 18 minimum age limit, 2.0 acres, Telangana",
-    "profile": {
-      "state": "Telangana",
-      "district": "Medak",
+      "state": "Kerala",
+      "district": "Palakkad",
       "land_acres": 2.0,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Maize"],
-      "age": 18,
+      "crops": ["Paddy"],
+      "age": 43,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "kl_paddy_royalty"],
+    "expected_ineligible_states": ["Tamil Nadu", "Karnataka"]
   },
   {
-    "profile_id": "P15",
-    "description": "Boundary test: exactly age 59 maximum age limit for Rythu Bima, 3.0 acres, Telangana",
+    "profile_id": "P17_TAX_PAYER",
+    "description": "Maharashtra income tax paying farmer (5.0 ac, Age 45, Soybean, Taxpayer: Yes)",
     "profile": {
-      "state": "Telangana",
-      "district": "Warangal",
-      "land_acres": 3.0,
+      "state": "Maharashtra",
+      "district": "Nagpur",
+      "land_acres": 5.0,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 59,
-      "is_tax_payer": false
+      "crops": ["Soybean"],
+      "age": 45,
+      "is_tax_payer": true
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
+    "expected_eligible": ["pmfby", "kcc", "smam_farm_machinery", "pmksy_pdmc", "mh_one_rupee_crop_insurance", "mh_krishi_yantrikikaran"],
+    "expected_ineligible_schemes": ["pm_kisan", "mh_namo_shetkari"]
   },
   {
-    "profile_id": "P16",
-    "description": "Boundary test: age 60 (just above 59 cutoff for Rythu Bima), 3.0 acres, Telangana",
+    "profile_id": "P18_PENSION_AGE",
+    "description": "Uttar Pradesh young small farmer eligible for PM-KMY pension (2.5 ac, Age 28, Wheat)",
     "profile": {
-      "state": "Telangana",
-      "district": "Warangal",
-      "land_acres": 3.0,
+      "state": "Uttar Pradesh",
+      "district": "Gorakhpur",
+      "land_acres": 2.5,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 60,
+      "crops": ["Wheat"],
+      "age": 28,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "kcc"],
-    "expected_ineligible": ["rythu_bima"]
+    "expected_eligible": ["pm_kisan", "pmfby", "kcc", "pm_kmy", "smam_farm_machinery", "pmksy_pdmc", "up_krishi_yantra", "up_free_boring"],
+    "expected_ineligible_states": ["Bihar", "Madhya Pradesh"]
   },
   {
-    "profile_id": "P17",
-    "description": "Age 76 senior tenant (>75 max age for KCC), 2.0 acres, Paddy",
+    "profile_id": "P19_SENIOR_EXCLUSION",
+    "description": "Senior farmer age 76 in Telangana (exceeds KCC age 75 & Rythu Bima age 59)",
     "profile": {
       "state": "Telangana",
-      "district": "Khammam",
-      "land_acres": 2.0,
-      "is_tenant": true,
+      "district": "Nalgonda",
+      "land_acres": 3.0,
+      "is_tenant": false,
       "has_rofr_patta": false,
       "crops": ["Paddy"],
       "age": 76,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pmfby"],
-    "expected_ineligible": ["pm_kisan", "rythu_bharosa", "rythu_bima", "kcc"]
+    "expected_eligible": ["pm_kisan", "pmfby", "smam_farm_machinery", "pmksy_pdmc", "ts_rythu_bharosa"],
+    "expected_ineligible_schemes": ["kcc", "ts_rythu_bima", "pm_kmy"]
   },
   {
-    "profile_id": "P18",
-    "description": "Multi-crop diversified farmer (Paddy, Cotton, Maize), 5.0 acres, age 44, Telangana",
+    "profile_id": "P20_MINOR_EXCLUSION",
+    "description": "Minor youth age 16 cultivating inherited land in Punjab (<18 age threshold)",
     "profile": {
-      "state": "Telangana",
-      "district": "Siddipet",
-      "land_acres": 5.0,
+      "state": "Punjab",
+      "district": "Amritsar",
+      "land_acres": 4.0,
       "is_tenant": false,
       "has_rofr_patta": false,
-      "crops": ["Paddy", "Cotton", "Maize"],
-      "age": 44,
+      "crops": ["Wheat"],
+      "age": 16,
       "is_tax_payer": false
     },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
-  },
-  {
-    "profile_id": "P19",
-    "description": "Commercial horticultural crop grower (Chilli), 2.5 acres, age 39, Warangal",
-    "profile": {
-      "state": "Telangana",
-      "district": "Warangal",
-      "land_acres": 2.5,
-      "is_tenant": false,
-      "has_rofr_patta": false,
-      "crops": ["Chilli"],
-      "age": 39,
-      "is_tax_payer": false
-    },
-    "expected_eligible": ["pm_kisan", "pmfby", "rythu_bharosa", "rythu_bima", "kcc"],
-    "expected_ineligible": []
-  },
-  {
-    "profile_id": "P20",
-    "description": "Tax-paying tenant farmer, 3.0 acres, age 41, Paddy, Telangana",
-    "profile": {
-      "state": "Telangana",
-      "district": "Karimnagar",
-      "land_acres": 3.0,
-      "is_tenant": true,
-      "has_rofr_patta": false,
-      "crops": ["Paddy"],
-      "age": 41,
-      "is_tax_payer": true
-    },
-    "expected_eligible": ["pmfby", "kcc"],
-    "expected_ineligible": ["pm_kisan", "rythu_bharosa", "rythu_bima"]
+    "expected_eligible": [],
+    "expected_ineligible_schemes": ["pm_kisan", "pmfby", "kcc", "pb_crop_residue_mgmt", "pb_free_power"]
   }
 ]
