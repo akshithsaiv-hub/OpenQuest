@@ -210,6 +210,61 @@
       </p>
     </div>
 
+    
+    <!-- Interactive Farmer Chatbot Widget -->
+    <div class="chat-widget-card" id="chatWidgetSection">
+      <div class="chat-header-bar">
+        <div class="chat-bot-info">
+          <div class="chat-bot-avatar">🤖</div>
+          <div>
+            <h3 class="chat-bot-title">Kisan Sahayak / రైతు సహాయత AI Chatbot</h3>
+            <p class="chat-bot-subtitle">Grounded agricultural assistance in English, తెలుగు (Telugu) & हिंदी (Hindi)</p>
+          </div>
+        </div>
+        <div class="chat-status-pill">
+          <span class="status-dot"></span>
+          <span>Online & Grounded</span>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="quick-chips-wrapper">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick Ask:</span>
+        <button type="button" class="quick-chip-btn" data-query="Documents">📄 Required Documents</button>
+        <button type="button" class="quick-chip-btn" data-query="72-Hour Claim Rule">⏱️ 72-Hr Loss Claim</button>
+        <button type="button" class="quick-chip-btn" data-query="KCC Loan 4% Interest">💳 KCC 4% Loan Rate</button>
+        <button type="button" class="quick-chip-btn" data-query="Tenant CCRC Card Rights">🤝 Tenant CCRC Card</button>
+        <button type="button" class="quick-chip-btn" data-query="Water and Drip Subsidies">💧 Water Subsidies</button>
+        <button type="button" class="quick-chip-btn" data-query="PM-KISAN Status">🌾 PM-KISAN</button>
+      </div>
+
+      <!-- Chat Message Stream -->
+      <div class="chat-messages-container" id="chatMessagesList">
+        <!-- Initial Bot Greeting -->
+        <div class="chat-bubble-row bot">
+          <div class="chat-bubble-avatar">🤖</div>
+          <div class="chat-bubble"><strong>Namaste! / నమస్కారం!</strong> I am your <strong>Kisan Sahayak AI Assistant</strong>.
+<br><br>
+Ask me anything about:
+<br>• <strong>Required Documents</strong> (Aadhaar, Pahani, Bank Passbook, CCRC)
+<br>• <strong>PMFBY 72-Hour Emergency Claims</strong> and disaster relief norms
+<br>• <strong>Kisan Credit Card (KCC)</strong> scale of finance and 4% interest subvention
+<br>• <strong>Tenant farmer rights</strong> and CCRC cards
+<br>• <strong>Micro-irrigation & solar pump subsidies</strong> (PMKSY, PM-KUSUM)
+<br><br>
+<em>Type your question below or click any quick chip above!</em></div>
+        </div>
+      </div>
+
+      <!-- Chat Input Bar -->
+      <form id="chatForm" class="chat-input-bar">
+        <input type="text" id="chatMessageInput" class="chat-text-input" placeholder="Type your question (e.g. Documents, How to get CCRC, KCC loan limit)..." required>
+        <button type="submit" class="chat-send-btn" id="btnSendChat">
+          <span>Send</span> <span>↗</span>
+        </button>
+      </form>
+    </div>
+
     <div class="content-grid-2">
       <!-- Profile Form -->
       <div class="card">

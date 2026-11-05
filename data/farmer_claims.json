@@ -187,5 +187,89 @@
         "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
       }
     ]
+  },
+  {
+    "claim_id": "CLM-20261105223237",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105230112",
+    "farmer_id": "F-3445",
+    "farmer_name": "B. Venkanna",
+    "phone": "9701133445",
+    "scheme_name": "PM-KUSUM Solar Pump Component B",
+    "reference_number": "KUSUM/TG/2026/8821",
+    "filing_date": "2026-11-05",
+    "status": "Application Submitted",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "REDCO District Office",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for PM-KUSUM Solar Pump Component B (Ref: KUSUM/TG/2026/8821)"
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105232249",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105232625",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
   }
 ]

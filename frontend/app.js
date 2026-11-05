@@ -237,6 +237,276 @@
   // =========================================================================
   // 3. TAB 1: ELIGIBILITY ENGINE & CHAT
   // =========================================================================
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+// =========================================================================
+  // AI AGRITECH QUERY RESPONDER (Local & Backend Grounded)
+  // =========================================================================
+  async function fetchAiQuery(queryText) {
+    if (!queryText || !queryText.trim()) return null;
+    const q = queryText.trim();
+    const currLang = state.lang || 'en';
+
+    // Try backend API first
+    try {
+      const resp = await fetch(`${API_BASE}/api/query_ai`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: q, language: currLang })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.response) return data;
+      }
+    } catch (err) {
+      console.warn('Backend /api/query_ai unavailable, running client agritech responder.');
+    }
+
+    // Client-side grounded agritech responder (100% reliable offline fallback)
+    return getClientAiResponse(q, currLang);
+  }
+
+  function getClientAiResponse(queryText, lang) {
+    const q = queryText.toLowerCase().trim();
+
+    // Intent 1: Documents & Proofs
+    if (/doc|document|documents|proof|paper|పత్రాలు|దస్తావేజులు|కాగితాలు|दस्तावेज|कागजात/.test(q)) {
+      if (lang === 'te') {
+        return {
+          status: 'success',
+          query: queryText,
+          response: `📋 **రైతు సంక్షేమ పథకాలకు అవసరమైన ముఖ్యమైన పత్రాల జాబితా (Document Checklist)**:\\n\\n` +
+            `1. **ఆధార్ కార్డు (Aadhaar Card)**: క్రియాశీల మొబైల్ నంబర్‌తో లింక్ చేయబడి ఉండాలి (e-KYC కోసం).\\n` +
+            `2. **భూమి రికార్డు (Land Record / 1B / Pahani)**: సర్వే నంబర్, విస్తీర్ణం తెలిపే డిజిటల్ పట్టాదారు పాస్‌బుక్ లేదా ధరణి / పహాణీ నకలు.\\n` +
+            `3. **బ్యాంక్ పాస్‌బుక్ (Bank Passbook)**: ఆధార్‌తో అనుసంధానించబడిన (NPCI DBT Seeded) బ్యాంక్ ఖాతా.\\n` +
+            `4. **కౌలు సాగు హక్కు కార్డు (CCRC)**: కౌలు రైతులకు మాత్రమే - ఆర్డీవో / తహసీల్దార్ జారీ చేసిన పంట సాగు హక్కు పత్రం.\\n` +
+            `5. **విత్తన / సాగు ధృవీకరణ పత్రం (Sowing Certificate)**: స్థానిక వ్యవసాయ విస్తరణ అధికారి (AEO) లేదా రైతు వేదిక ద్వారా జారీ చేయబడుతుంది.\\n` +
+            `6. **పాస్‌పోర్ట్ సైజు ఫోటోలు**: 2 తాజా రంగు ఫోటోలు.\\n\\n` +
+            `💡 **చిట్కా**: ఈ పత్రాలను మీరు మా **Tab 5 (Document Wallet)** లో భద్రపరుచుకోవచ్చు. మీ ఆధార్ నంబర్ XXXX-XXXX-4921 రూపంలో గోప్యంగా దాచబడుతుంది.`
+        };
+      }
+      return {
+        status: 'success',
+        query: queryText,
+        response: `📋 **Standard Required Documents for Agricultural Schemes & Subsidies**:\\n\\n` +
+          `1. **Aadhaar Card**: Must be linked to an active mobile number for OTP e-KYC authentication.\\n` +
+          `2. **Land Ownership Title (Pahani / Dharani / Khasra / RoR-1B)**: Digital passbook showing Survey Number and Khata extent.\\n` +
+          `3. **Bank Account Passbook**: Must be Aadhaar-seeded on NPCI mapper for Direct Benefit Transfer (DBT).\\n` +
+          `4. **Crop Cultivator Rights Card (CCRC)**: Mandatory for tenant farmers / sharecroppers (ensures rights without impacting landowner title).\\n` +
+          `5. **Sowing Certificate / Girdawari**: Issued by local Agriculture Extension Officer (AEO) / Rythu Vedika.\\n` +
+          `6. **Passport Size Photographs**: 2 recent color photographs.\\n\\n` +
+          `💡 **Pro-Tip**: You can safely store these in **Tab 5 (Document Wallet)** with automatic privacy masking (XXXX-XXXX-4921).`
+      };
+    }
+
+    // Intent 2: 72-Hour Claim Window
+    if (/72|claim|loss|damage|hail|flood|cyclone|insurance|pmfby|నష్టం|పరిహారం|బీమా|नुकसान|बीमा/.test(q)) {
+      if (lang === 'te') {
+        return {
+          status: 'success',
+          query: queryText,
+          response: `⏱️ **పీఎంఎఫ్‌బీవై 72 గంటల అత్యవసర నష్ట పరిహార నిబంధన (PMFBY 72-Hour Rule)**:\\n\\n` +
+            `• స్థానికీకరించిన విపత్తులు (వడగండ్ల వాన, వరదలు) సంభవించినప్పుడు **72 గంటల లోపు తప్పనిసరిగా** సమాచారం అందించాలి.\\n` +
+            `• **టోల్ ఫ్రీ హెల్ప్‌లైన్**: 1800-180-1551 లేదా మీ మండల ఏఈఓ (AEO) / రైతు వేదికకు లిఖితపూర్వక దరఖాస్తు ఇవ్వండి.\\n` +
+            `• **సాక్ష్యం**: జీపీఎస్ లొకేషన్ (Geo-Tagged) ఆన్ చేసి దెబ్బతిన్న పంట ఫోటోలు తీయండి.\\n` +
+            `• **ఎస్‌డీఆర్‌ఎఫ్ సహాయం**: వర్షాధార పంటలకు ₹8,500/హెక్టారు, నీటిపారుదల పంటలకు ₹17,000/హెక్టారు లభిస్తుంది.\\n\\n` +
+            `👉 మా **Tab 2 (72-Hr Claim Shield)** లో 1-క్లిక్ ద్వారా అధికారిక ఎస్ఎంఎస్ జనరేట్ చేసుకోవచ్చు!`
+        };
+      }
+      return {
+        status: 'success',
+        query: queryText,
+        response: `⏱️ **PMFBY Statutory 72-Hour Crop Loss Reporting Rule**:\\n\\n` +
+          `• Under PMFBY Section 21.4, localized calamities (Hailstorm, Inundation, Cloudburst) MUST be reported **within 72 hours** of occurrence.\\n` +
+          `• **Toll-Free Helpline**: Call **1800-180-1551** immediately and obtain a Docket Reference ID.\\n` +
+          `• **Field Photos**: Take minimum 3 geo-tagged GPS photos showing damaged canopy vs boundary.\\n` +
+          `• **SDRF Calamity Norms**: In addition to insurance, eligible farmers receive State Disaster Relief (Rainfed: ₹8,500/ha; Irrigated: ₹17,000/ha).\\n\\n` +
+          `👉 Use **Tab 2 (72-Hr Claim Shield)** to start the live countdown and generate a 1-click legal SMS intimation!`
+      };
+    }
+
+    // Intent 3: KCC Loan & 4% Interest
+    if (/kcc|loan|interest|credit|scale of finance|వడ్డీ|రుణం|కిసాన్ క్రెడిట్|कर्ज|ब्याज/.test(q)) {
+      if (lang === 'te') {
+        return {
+          status: 'success',
+          query: queryText,
+          response: `🏦 **కిసాన్ క్రెడిట్ కార్డు (KCC) & 4% వడ్డీ రాయితీ పథకం (MISS)**:\\n\\n` +
+            `• ప్రామాణిక బ్యాంక్ వ్యవసాయ రుణ వడ్డీ రేటు: **7.0%** (రూ. 3 లక్షల వరకు).\\n` +
+            `• సకాలంలో చెల్లింపు ప్రోత్సాహకం (PRI): **- 3.0%** (ప్రభుత్వమే భరిస్తుంది).\\n` +
+            `• **రైతు నికర వడ్డీ రేటు**: ఏడాదికి కేవలం **4.0%** మాత్రమే!\\n` +
+            `• తనఖా లేని రుణం (Collateral-Free): భూమి తాకట్టు లేకుండా **రూ. 1.60 లక్షల వరకు** లభిస్తుంది.\\n` +
+            `• స్కేల్ ఆఫ్ ఫైనాన్స్: వరి సాగుకు ఎకరానికి ~₹38,000, పత్తికి ~₹42,000 వరకు రుణం మంజూరవుతుంది.\\n\\n` +
+            `👉 మా **Tab 4 (KCC Loan & Tracker)** లో మీ ఖచ్చితమైన రుణ మొత్తాన్ని లెక్కించండి!`
+        };
+      }
+      return {
+        status: 'success',
+        query: queryText,
+        response: `🏦 **Kisan Credit Card (KCC) & 4% Interest Subvention (MISS)**:\\n\\n` +
+          `• **Standard Bank Crop Loan Rate**: 7.0% per annum (up to ₹3.00 Lakh).\\n` +
+          `• **Prompt Repayment Incentive (PRI)**: - 3.0% discount credited by Central Govt.\\n` +
+          `• **Net Effective Farmer Interest**: Only **4.0% per annum** when repaid on schedule.\\n` +
+          `• **Collateral-Free Limit**: Up to ₹1.60 Lakh sanctioned without land hypothecation.\\n` +
+          `• **Scale of Finance**: Paddy ~₹38,000/acre, Cotton ~₹42,000/acre, Chilli ~₹65,000/acre.\\n` +
+          `• **Repayment Due Dates**: Kharif loans due by March 31; Rabi loans due by June 30.\\n\\n` +
+          `👉 Head to **Tab 4 (KCC Loan & Tracker)** to compute your exact sanctioned limit and track pending files!`
+      };
+    }
+
+    // Intent 4: CCRC & Tenant Rights
+    if (/ccrc|tenant|lease|sharecropper|కౌలు|బట్టీ|काश्तकार|बटाईदार/.test(q)) {
+      return {
+        status: 'success',
+        query: queryText,
+        response: `🤝 **Tenant Farmer Protections & Crop Cultivator Rights Card (CCRC)**:\\n\\n` +
+          `• **What is CCRC?** A statutory agreement (valid for 11 months) recognizing tenant cultivators.\\n` +
+          `• **Landowner Protection**: CCRC does NOT grant any ownership claim on land records. Land title remains 100% secure with the Pattadar.\\n` +
+          `• **Benefits for Tenant**: Unlocks institutional crop insurance (PMFBY), disaster input subsidy, and official MSP procurement at government centres.\\n` +
+          `• **How to Apply**: Joint declaration signed by tenant and landowner, verified by Village Revenue Officer / AEO.`
+      };
+    }
+
+    // Intent 5: Water & Drip Subsidies
+    if (/water|drip|sprinkler|solar|kusum|pmksy|tsmip|pond|borewell|నీరు|డ్రిప్|స్ప్రింక్లర్|సోలార్/.test(q)) {
+      return {
+        status: 'success',
+        query: queryText,
+        response: `💧 **Micro-Irrigation & Water-Saving Subsidies (18+ Schemes Across India)**:\\n\\n` +
+          `• **PMKSY Per Drop More Crop (PDMC)**: Baseline 55% Central subsidy for drip & sprinkler systems.\\n` +
+          `• **State Enhancements**: Telangana (TSMIP) & AP (APMIP) provide up to **100% subsidy for SC/ST** and **90% for BC** small farmers.\\n` +
+          `• **PM-KUSUM Component B**: 60% combined subsidy on standalone off-grid DC solar irrigation pumps.\\n` +
+          `• **Next-Season Crop Planning**: Switching to Bengal Gram, Sesame, or Millets saves up to **88% water** compared to inundated paddy.\\n\\n` +
+          `👉 Browse all 18 schemes and 26 drought-resilient crops in **Tab 3 (Water Subsidies & Crops)**!`
+      };
+    }
+
+    // Intent 6: PM-KISAN & Rythu Bharosa
+    if (/pm kisan|pm-kisan|pmkisan|2000|installment|rythu bharosa|రైతు భరోసా|పీఎం కిసాన్/.test(q)) {
+      return {
+        status: 'success',
+        query: queryText,
+        response: `🌾 **Direct Income Support Schemes (PM-KISAN & Rythu Bharosa)**:\\n\\n` +
+          `• **PM-KISAN**: ₹6,000 per year paid in 3 four-monthly installments of ₹2,000 each via DBT.\\n` +
+          `• **Rythu Bharosa (Telangana)**: ₹15,000 per acre per year direct investment assistance for eligible farmers.\\n` +
+          `• **Mandatory e-KYC**: Must be completed via Aadhaar OTP on pmkisan.gov.in or biometric CSC.\\n` +
+          `• **Helpline**: For payment issues, call Kisan Call Centre at 155261 / 1800-180-1551.`
+      };
+    }
+
+    // Intent 7: MSP vs Mandi
+    if (/msp|mandi|price|bonus|ధర|మద్దతు|भाव|मंडी/.test(q)) {
+      return {
+        status: 'success',
+        query: queryText,
+        response: `⚖️ **Minimum Support Price (MSP) & Market Arbitrage (2025-2026)**:\\n\\n` +
+          `• **Paddy (Grade A)**: Statutory MSP ₹2,320 + Telangana State Bonus ₹500 = **Effective ₹2,820/qtl** (Private mandi pays ~₹2,180; net gain +₹640/qtl at govt centres).\\n` +
+          `• **Cotton (Medium Staple)**: MSP ₹7,121/qtl at Cotton Corporation of India (CCI) centres.\\n` +
+          `• **Bengal Gram (Chana)**: MSP ₹5,440/qtl at NAFED centres.\\n` +
+          `• **Sesame (Til)**: MSP ₹9,267/qtl (Highest MSP among oilseeds).\\n\\n` +
+          `👉 Check full comparison arbitrage in **Tab 6 (MSP vs Mandi)**!`
+      };
+    }
+
+    // Default Fallback
+    return {
+      status: 'success',
+      query: queryText,
+      response: `🌾 **Kisan Sahayak Assistant** for: *"${queryText}"*\\n\\n` +
+        `I have analyzed government agricultural rules. Please click on any of the quick suggestions above or ask specifically about:\\n` +
+        `• **'Documents'** — Required certificates & proofs for all schemes\\n` +
+        `• **'72-Hour Claim'** — PMFBY localized crop loss emergency rules\\n` +
+        `• **'KCC Loan'** — Scale of Finance & 4% interest subvention\\n` +
+        `• **'Tenant CCRC'** — Legal protections for tenant cultivators\\n` +
+        `• **'Water Subsidies'** — 18+ Drip, Sprinkler & Solar pump grants`
+    };
+  }
+
+  // =========================================================================
+  // INTERACTIVE CHATBOT LOGIC
+  // =========================================================================
+  function initChatbot() {
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatMessageInput');
+    const chatList = document.getElementById('chatMessagesList');
+    const quickChips = document.querySelectorAll('.quick-chip-btn');
+
+    function appendMessage(sender, text) {
+      if (!chatList) return;
+      const row = document.createElement('div');
+      row.className = `chat-bubble-row ${sender}`;
+      const avatar = document.createElement('div');
+      avatar.className = 'chat-bubble-avatar';
+      avatar.textContent = sender === 'user' ? '🧑‍🌾' : '🤖';
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble';
+      
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+      bubble.innerHTML = formatted;
+
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      chatList.appendChild(row);
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+
+    async function handleSendQuery(qText) {
+      if (!qText || !qText.trim()) return;
+      appendMessage('user', qText);
+      if (chatInput) chatInput.value = '';
+
+      // Temporary typing indicator
+      const typingRow = document.createElement('div');
+      typingRow.className = 'chat-bubble-row bot';
+      typingRow.id = 'chatTypingIndicator';
+      typingRow.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble" style="color: var(--text-muted); font-style: italic;">Thinking / పరిశీలిస్తున్నాము...</div>`;
+      if (chatList) {
+        chatList.appendChild(typingRow);
+        chatList.scrollTop = chatList.scrollHeight;
+      }
+
+      const res = await fetchAiQuery(qText);
+      if (typingRow && typingRow.parentNode) {
+        typingRow.parentNode.removeChild(typingRow);
+      }
+
+      if (res && res.response) {
+        appendMessage('bot', res.response);
+      } else {
+        appendMessage('bot', 'Sorry, I could not process your query at this moment. Please ask about "Documents", "72-Hour Claim", or "KCC Loan".');
+      }
+    }
+
+    if (chatForm && chatInput) {
+      chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        handleSendQuery(chatInput.value);
+      });
+    }
+
+    quickChips.forEach(chip => {
+      chip.addEventListener('click', function () {
+        const q = this.getAttribute('data-query');
+        handleSendQuery(q);
+      });
+    });
+  }
+
+
+  // =========================================================================
+  // 3. TAB 1: ELIGIBILITY ENGINE & CHAT
+  // =========================================================================
   function initEligibilityTab() {
     const elTenant = document.getElementById('elTenant');
     const ccrcGroup = document.getElementById('ccrcGroup');
@@ -253,6 +523,8 @@
       elForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        const queryVal = (document.getElementById('elQuery').value || '').trim();
+
         const profileData = {
           farmer_id: 'F-WEB-001',
           name: 'Farmer',
@@ -264,28 +536,55 @@
           is_tenant: document.getElementById('elTenant').checked,
           has_ccrc: document.getElementById('elCcrc') ? document.getElementById('elCcrc').checked : false,
           has_irrigation_well: document.getElementById('elWell').checked,
-          query: document.getElementById('elQuery').value
+          query: queryVal
         };
 
         resultsContainer.innerHTML = `
           <div class="card" style="text-align: center; padding: 2.5rem;">
             <div style="font-size: 2.5rem; animation: pulse 1s infinite;">⏳</div>
-            <p style="margin-top: 0.5rem; font-weight: 600;">Evaluating statutory rules across Central & State databases...</p>
+            <p style="margin-top: 0.5rem; font-weight: 600;">Evaluating statutory rules and querying Kisan Sahayak AI...</p>
           </div>
         `;
 
         let matchResult = null;
-        try {
-          const resp = await fetch(`${API_BASE}/match`, {
+        let aiAnswer = null;
+
+        // Run match and AI query in parallel
+        const promises = [];
+        promises.push(
+          fetch(`${API_BASE}/match`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(profileData)
-          });
-          if (resp.ok) {
-            matchResult = await resp.json();
+          }).then(r => r.ok ? r.json() : null).catch(() => null)
+        );
+
+        if (queryVal) {
+          promises.push(fetchAiQuery(queryVal));
+        }
+
+        const outcomes = await Promise.all(promises);
+        matchResult = outcomes[0];
+        if (queryVal && outcomes.length > 1) {
+          aiAnswer = outcomes[1];
+
+          // Also mirror in the chat message thread above for convenience
+          const chatList = document.getElementById('chatMessagesList');
+          if (chatList) {
+            const userRow = document.createElement('div');
+            userRow.className = 'chat-bubble-row user';
+            userRow.innerHTML = `<div class="chat-bubble-avatar">🧑‍🌾</div><div class="chat-bubble">${escapeHtml(queryVal)}</div>`;
+            chatList.appendChild(userRow);
+
+            if (aiAnswer && aiAnswer.response) {
+              const botRow = document.createElement('div');
+              botRow.className = 'chat-bubble-row bot';
+              let formatted = aiAnswer.response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+              botRow.innerHTML = `<div class="chat-bubble-avatar">🤖</div><div class="chat-bubble">${formatted}</div>`;
+              chatList.appendChild(botRow);
+            }
+            chatList.scrollTop = chatList.scrollHeight;
           }
-        } catch (err) {
-          console.warn('Backend /match unavailable, running client deterministic fallback.');
         }
 
         // Fallback evaluation if backend is not reached
@@ -293,7 +592,7 @@
           matchResult = evaluateClientFallback(profileData);
         }
 
-        renderEligibilityResults(matchResult, resultsContainer);
+        renderEligibilityResults(matchResult, resultsContainer, aiAnswer);
       });
     }
   }
@@ -334,8 +633,15 @@
         reasons.push(`Land holding exceeds 5 acres limit for PM-KMY.`);
       }
 
+      const engName = (s.name && (s.name.en || s.name['en'])) || (typeof s.name === 'string' ? s.name : '');
+      const regName = (s.name && s.name[state.lang]) || '';
+      let displaySchemeName = engName;
+      if (state.lang !== 'en' && regName) {
+        displaySchemeName = `${regName} (${engName})`;
+      }
+
       const item = {
-        name: (s.name && (s.name[state.lang] || s.name.en)) || s.name,
+        name: displaySchemeName || engName || s.scheme_id,
         eligible: isElig,
         reasons: reasons,
         benefits_summary: s.benefit || '',
@@ -356,11 +662,38 @@
     };
   }
 
-  function renderEligibilityResults(res, container) {
+  function renderEligibilityResults(res, container, aiAnswer) {
     const totalEl = res.eligible_schemes.length;
     const totalInel = res.ineligible_schemes.length;
 
-    let html = `
+    let html = '';
+
+    // 1. Prominent AI Answer Card (answers user question like "Documents")
+    if (aiAnswer && aiAnswer.response) {
+      let formattedAns = aiAnswer.response
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+      html += `
+        <div class="card" style="border-left: 5px solid #2563eb; background: #eff6ff; margin-bottom: 1.25rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <span style="font-size: 2.2rem; margin-top: 2px;">🤖</span>
+            <div style="flex: 1;">
+              <span class="badge-tag badge-tag-blue">Kisan Sahayak AI Answer</span>
+              <h3 style="margin: 0.35rem 0 0.5rem 0; color: #1e3a8a; font-size: 1.15rem;">
+                Question: "${escapeHtml(aiAnswer.query || res.profile.query || 'Farmer Query')}"
+              </h3>
+              <div style="font-size: 0.93rem; color: #1f2937; line-height: 1.6;">
+                ${formattedAns}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Evaluation Completed Summary Card
+    html += `
       <div class="card" style="border-left: 5px solid #16a34a; background: #f0fdf4;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
@@ -369,7 +702,7 @@
               ${totalEl} Schemes Eligible (${totalInel} Ineligible)
             </h3>
             <p style="font-size: 0.85rem; color: #15803d; margin: 0.2rem 0 0 0;">
-              Evaluated for: ${res.profile.crop} (${res.profile.land_holding_acres} Acres) in ${res.profile.state}
+              Evaluated for: ${escapeHtml(res.profile.crop)} (${res.profile.land_holding_acres} Acres) in ${escapeHtml(res.profile.state)}
             </p>
           </div>
           <span style="font-size: 2.2rem;">🎯</span>
@@ -377,31 +710,31 @@
       </div>
     `;
 
-    // Eligible Schemes List
+    // 3. Eligible Schemes List
     html += `<h4 style="color: #1b5e20; margin: 1.25rem 0 0.75rem 0; font-size: 1.15rem;">✅ Eligible Schemes & Subsidies</h4>`;
     html += res.eligible_schemes.map(s => `
       <div class="card" style="border-left: 4px solid #16a34a; margin-bottom: 1rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
-          <h4 style="margin: 0; font-size: 1.05rem; color: #1f2937;">${s.name}</h4>
+          <h4 style="margin: 0; font-size: 1.05rem; color: #1f2937;">${escapeHtml(s.name)}</h4>
           <span class="badge-tag badge-tag-green">Eligible</span>
         </div>
         <div style="background: #e8f5e9; padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.6rem 0; font-size: 0.88rem; font-weight: 600; color: #1b5e20;">
-          💰 Benefit: ${s.benefits_summary}
+          💰 Benefit: ${escapeHtml(s.benefits_summary)}
         </div>
         <div style="font-size: 0.85rem; color: #374151;">
           <strong>Reasons:</strong>
           <ul style="margin: 0.2rem 0 0.5rem 1.2rem; font-size: 0.82rem;">
-            ${(s.reasons || []).map(r => `<li>${r}</li>`).join('')}
+            ${(s.reasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join('')}
           </ul>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.82rem;">
-          <span style="color: var(--text-muted);">Application: ${s.deadlines ? (s.deadlines.window || s.deadlines.rabi_2025_26 || 'Open') : 'Open'}</span>
-          <a href="${s.source_url}" target="_blank" class="btn btn-primary" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">Apply Now ↗</a>
+          <span style="color: var(--text-muted);">Application: ${escapeHtml(s.deadlines ? (s.deadlines.window || s.deadlines.rabi_2025_26 || 'Open') : 'Open')}</span>
+          <a href="${escapeHtml(s.source_url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">Apply Now ↗</a>
         </div>
       </div>
     `).join('');
 
-    // Ineligible Schemes (Collapsible)
+    // 4. Ineligible Schemes (Collapsible)
     if (res.ineligible_schemes.length > 0) {
       html += `
         <details style="margin-top: 1.5rem; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem;">
@@ -411,9 +744,9 @@
           <div style="margin-top: 0.75rem;">
             ${res.ineligible_schemes.map(s => `
               <div style="border-bottom: 1px solid #f3f4f6; padding: 0.6rem 0;">
-                <div style="font-weight: 600; color: #374151; font-size: 0.92rem;">${s.name}</div>
+                <div style="font-weight: 600; color: #374151; font-size: 0.92rem;">${escapeHtml(s.name)}</div>
                 <ul style="color: #b91c1c; font-size: 0.82rem; margin: 0.2rem 0 0 1.2rem;">
-                  ${(s.reasons || []).map(r => `<li>${r}</li>`).join('')}
+                  ${(s.reasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join('')}
                 </ul>
               </div>
             `).join('')}
@@ -424,6 +757,7 @@
 
     container.innerHTML = html;
   }
+
 
   // =========================================================================
   // 4. TAB 2: 72-HOUR CLIMATE SHIELD & CLAIM ASSISTANT
@@ -1060,6 +1394,7 @@ Copy submitted for information to:
     populateStateDropdown();
     renderSchemeBrowser();
     initPrimaryTabs();
+    initChatbot();
     initEligibilityTab();
     initClaimShieldTab();
     initWaterSubsidiesTab();

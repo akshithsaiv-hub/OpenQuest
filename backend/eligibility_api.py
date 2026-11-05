@@ -755,74 +755,275 @@ def get_resilient_crops():
             return json.load(f)
     return []
 
-@app.post("/api/query_ai")
-def query_ai_assistant(req: QueryAIRequest):
-    """Natural language AI query handler with deterministic fallback grounding."""
-    q = req.query.strip().lower()
-    schemes = load_schemes()
-    
-    # Try the verified process_farmer_query handler
-    try:
-        res = process_farmer_query(req.query, schemes, language=req.language)
-        if res.get("type") in ["redirect_kisan_emitra", "scheme_matches"]:
-            return {
-                "status": "success",
-                "query": req.query,
-                "response": res.get("message", ""),
-                "action": res.get("action", "info"),
-                "url": res.get("url", "")
-            }
-    except Exception:
-        pass
+import json
+import os
+import sys
 
-    # Domain Knowledge responses for common queries
-    if "kcc" in q or "loan" in q or "interest" in q:
-        resp = (
-            "🏦 **KCC Modified Interest Subvention Scheme (MISS)**:\n"
-            "• Baseline Bank Crop Loan Rate: **7.0%** (up to ₹3.00 Lakh)\n"
-            "• Prompt Repayment Incentive: **-3.0%** (paid by Govt when repaid on time)\n"
-            "• **Net Effective Farmer Interest: 4.0% per annum**\n"
-            "• Collateral-Free Limit: **Up to ₹1.60 Lakh** without land hypothecation\n"
-            "• Repayment Due Date: Kharif due by March 31, Rabi due by June 30."
-        )
-    elif "72" in q or "loss" in q or "damage" in q or "claim" in q or "insurance" in q:
-        resp = (
-            "⏱️ **PMFBY Statutory 72-Hour Loss Reporting Window**:\n"
-            "• You must report localized calamitous damage (Hailstorm, Inundation, Cloudburst) within **72 hours**.\n"
-            "• Call Toll-Free Helpline: **14447** or **1800-180-1551**\n"
-            "• Take minimum 3 geo-tagged GPS photos showing damaged canopy vs healthy crop\n"
-            "• Dispatch SMS to 51969: `CLAIM <VILLAGE> <SURVEY_NO> <LOSS_%>`"
-        )
-    elif "drip" in q or "sprinkler" in q or "water" in q or "irrigation" in q:
-        resp = (
-            "💧 **Micro-Irrigation (PMKSY & State Subsidies)**:\n"
-            "• Small / Marginal SC/ST Farmers: **Up to 100% Subsidy** (Telangana TSMIP / AP APMIP)\n"
-            "• Small / Marginal BC Farmers: **90% Subsidy**\n"
-            "• Other Farmers: **80% Subsidy**\n"
-            "• Standalone Solar Pump (PM-KUSUM): 60% combined Central & State grant."
-        )
-    elif "tenant" in q or "ccrc" in q or "lease" in q:
-        resp = (
-            "👥 **Tenant Farmer Rights & Subsidies**:\n"
-            "• CCRC (Crop Cultivator Rights Card) enables tenant eligibility for PMFBY insurance and Rythu Bharosa\n"
-            "• In Andhra Pradesh, CCRC holders receive Annadata Sukhibhava (₹20,000/yr) and Free Crop Insurance\n"
-            "• KCC crop loans up to ₹1.60 Lakh are available to tenant Joint Liability Groups (JLGs) without land patta."
+def get_farmer_ai_response(query_text: str, language: str = "en") -> dict:
+    q = query_text.strip().lower()
+    lang = language.lower() if language in ["en", "te", "hi"] else "en"
+
+    # Intent 1: Documents & Proofs required
+    if any(k in q for k in ["doc", "document", "documents", "proof", "paper", "పత్రాలు", "దస్తావేజులు", "కాగితాలు", "दस्तावेज", "कागजात"]):
+        if lang == "te":
+            msg = (
+                "📋 **రైతు సంక్షేమ పథకాలకు అవసరమైన ముఖ్యమైన పత్రాల జాబితా (Document Checklist)**:\n\n"
+                "1. **ఆధార్ కార్డు (Aadhaar Card)**: క్రియాశీల మొబైల్ నంబర్‌తో లింక్ చేయబడి ఉండాలి (e-KYC కోసం).\n"
+                "2. **భూమి రికార్డు (Land Record / 1B / Pahani)**: సర్వే నంబర్, విస్తీర్ణం తెలిపే డిజిటల్ పట్టాదారు పాస్‌బుక్ లేదా ధరణి / పహాణీ నకలు.\n"
+                "3. **బ్యాంక్ పాస్‌బుక్ (Bank Passbook)**: ఆధార్‌తో అనుసంధానించబడిన (NPCI DBT Seeded) బ్యాంక్ ఖాతా.\n"
+                "4. **కౌలు సాగు హక్కు కార్డు (CCRC)**: కౌలు రైతులకు మాత్రమే - ఆర్డీవో / తహసీల్దార్ జారీ చేసిన పంట సాగు హక్కు పత్రం.\n"
+                "5. **విత్తన / సాగు ధృవీకరణ పత్రం (Sowing Certificate)**: స్థానిక వ్యవసాయ విస్తరణ అధికారి (AEO) లేదా రైతు వేదిక ద్వారా జారీ చేయబడుతుంది.\n"
+                "6. **పాస్‌పోర్ట్ సైజు ఫోటోలు**: 2 తాజా రంగు ఫోటోలు.\n\n"
+                "💡 **చిట్కా**: ఈ పత్రాలను మీరు మా **Tab 5 (Document Wallet)** లో భద్రపరుచుకోవచ్చు. మీ ఆధార్ నంబర్ `XXXX-XXXX-4921` రూపంలో గోప్యంగా దాచబడుతుంది."
+            )
+        elif lang == "hi":
+            msg = (
+                "📋 **कृषि योजनाओं एवं सब्सिडी हेतु आवश्यक दस्तावेजों की सूची (Document Checklist)**:\n\n"
+                "1. **आधार कार्ड (Aadhaar Card)**: सक्रिय मोबाइल नंबर से लिंक (e-KYC प्रमाणीकरण हेतु)।\n"
+                "2. **भू-अभिलेख (खतौनी / खसरा / Pahani / RoR-1B)**: सर्वे नंबर एवं रकबा स्पष्ट करने वाली नकल।\n"
+                "3. **बैंक पासबुक (Bank Passbook)**: आधार से जुड़ा (NPCI DBT सक्षम) चालू बैंक खाता।\n"
+                "4. **बटाईदार प्रमाण पत्र (CCRC / Lease)**: काश्तकार या बटाईदार किसानों के लिए वैध अनुबंध।\n"
+                "5. **बुवाई प्रमाण पत्र (Sowing Certificate)**: क्षेत्रीय कृषि अधिकारी (AEO / पटवारी) द्वारा जारी।\n"
+                "6. **पासपोर्ट साइज फोटो**: 2 हालिया पासपोर्ट तस्वीरें।\n\n"
+                "💡 **सुझाव**: आप इन दस्तावेजों को सुरक्षित रूप से **Tab 5 (Document Wallet)** में सेव कर सकते हैं, जहां आधार नंबर `XXXX-XXXX-4921` के रूप में सुरक्षित रहेगा।"
+            )
+        else:
+            msg = (
+                "📋 **Standard Required Documents for Agricultural Schemes & Subsidies**:\n\n"
+                "1. **Aadhaar Card**: Must be linked to an active mobile number for OTP e-KYC authentication.\n"
+                "2. **Land Ownership Title (Pahani / Dharani / Khasra / RoR-1B)**: Digital passbook showing Survey Number and Khata extent.\n"
+                "3. **Bank Account Passbook**: Must be Aadhaar-seeded on NPCI mapper for Direct Benefit Transfer (DBT).\n"
+                "4. **Crop Cultivator Rights Card (CCRC)**: Mandatory for tenant farmers / sharecroppers (ensures rights without impacting landowner title).\n"
+                "5. **Sowing Certificate / Girdawari**: Issued by local Agriculture Extension Officer (AEO) / Rythu Vedika.\n"
+                "6. **Passport Size Photographs**: 2 recent color photographs.\n\n"
+                "💡 **Pro-Tip**: You can safely store these in **Tab 5 (Document Wallet)** with automatic privacy masking (`XXXX-XXXX-4921`)."
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "view_wallet",
+            "url": "#doc-wallet"
+        }
+
+    # Intent 2: 72-Hour Claim Window & Crop Insurance
+    if any(k in q for k in ["72", "claim", "loss", "damage", "hail", "flood", "cyclone", "insurance", "pmfby", "నష్టం", "పరిహారం", "బీమా", "नुकसान", "बीमा", "मुआवजा"]):
+        if lang == "te":
+            msg = (
+                "⏱️ **పీఎంఎఫ్‌బీవై 72 గంటల అత్యవసర నష్ట పరిహార నిబంధన (PMFBY 72-Hour Rule)**:\n\n"
+                "• స్థానికీకరించిన విపత్తులు (వడగండ్ల వాన, వరదలు, కొండచరియలు) సంభవించినప్పుడు **72 గంటల లోపు తప్పనిసరిగా** సమాచారం అందించాలి.\n"
+                "• **టోల్ ఫ్రీ హెల్ప్‌లైన్**: `1800-180-1551` లేదా మీ మండల ఏఈఓ (AEO) / రైతు వేదికకు లిఖితపూర్వక దరఖాస్తు ఇవ్వండి.\n"
+                "• **సాక్ష్యం**: జీపీఎస్ లొకేషన్ (Geo-Tagged) ఆన్ చేసి దెబ్బతిన్న పంట ఫోటోలు తీయండి.\n"
+                "• **ఎస్‌డీఆర్‌ఎఫ్ సహాయం**: వర్షాధార పంటలకు ₹8,500/హెక్టారు, నీటిపారుదల పంటలకు ₹17,000/హెక్టారు రాష్ట్ర విపత్తు నిధి ద్వారా అదనంగా లభిస్తుంది.\n\n"
+                "👉 మా **Tab 2 (72-Hr Claim Shield)** లో 1-క్లిక్ ద్వారా అధికారిక ఎస్ఎంఎస్ (SMS) జనరేట్ చేసుకోవచ్చు!"
+            )
+        else:
+            msg = (
+                "⏱️ **PMFBY Statutory 72-Hour Crop Loss Reporting Rule**:\n\n"
+                "• Under PMFBY Section 21.4, localized calamities (Hailstorm, Inundation, Cloudburst, Landslide) MUST be reported **within 72 hours** of occurrence.\n"
+                "• **Toll-Free Helpline**: Call **1800-180-1551** immediately and obtain a Docket Reference ID.\n"
+                "• **Field Photos**: Take minimum 3 geo-tagged GPS photos showing damaged field and survey boundaries.\n"
+                "• **SDRF Calamity Norms**: In addition to insurance, eligible farmers receive State Disaster Relief (Rainfed: ₹8,500/ha; Irrigated: ₹17,000/ha; Perennial: ₹22,500/ha).\n\n"
+                "👉 Use **Tab 2 (72-Hr Claim Shield)** to start the live countdown and generate a 1-click legal SMS intimation!"
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "view_claim_shield",
+            "url": "#claim-shield"
+        }
+
+    # Intent 3: KCC Loan & 4% Interest Subvention
+    if any(k in q for k in ["kcc", "loan", "interest", "credit", "scale of finance", "వడ్డీ", "రుణం", "కిసాన్ క్రెడిట్", "कर्ज", "ब्याज"]):
+        if lang == "te":
+            msg = (
+                "🏦 **కిసాన్ క్రెడిట్ కార్డు (KCC) & 4% వడ్డీ రాయితీ పథకం (MISS)**:\n\n"
+                "• ప్రామాణిక బ్యాంక్ వ్యవసాయ రుణ వడ్డీ రేటు: **7.0%** (రూ. 3 లక్షల వరకు).\n"
+                "• సకాలంలో చెల్లింపు ప్రోత్సాహకం (PRI): **- 3.0%** (ప్రభుత్వమే భరిస్తుంది).\n"
+                "• **రైతు నికర వడ్డీ రేటు**: ఏడాదికి కేవలం **4.0%** మాత్రమే!\n"
+                "• తనఖా లేని రుణం (Collateral-Free): భూమి తాకట్టు లేకుండా **రూ. 1.60 లక్షల వరకు** లభిస్తుంది.\n"
+                "• స్కేల్ ఆఫ్ ఫైనాన్స్: వరి సాగుకు ఎకరానికి ~₹38,000, పత్తికి ~₹42,000, మిర్చికి ~₹65,000 వరకు రుణం మంజూరవుతుంది.\n\n"
+                "👉 మా **Tab 4 (KCC Loan & Tracker)** లో మీ పంట మరియు భూమికి అర్హమైన ఖచ్చితమైన రుణ మొత్తాన్ని లెక్కించండి!"
+            )
+        else:
+            msg = (
+                "🏦 **Kisan Credit Card (KCC) & 4% Interest Subvention (MISS)**:\n\n"
+                "• **Standard Bank Crop Loan Rate**: 7.0% per annum (up to ₹3.00 Lakh).\n"
+                "• **Prompt Repayment Incentive (PRI)**: - 3.0% discount credited by Central Govt.\n"
+                "• **Net Effective Farmer Interest**: Only **4.0% per annum** when repaid on schedule.\n"
+                "• **Collateral-Free Limit**: Up to ₹1.60 Lakh sanctioned without land hypothecation.\n"
+                "• **Scale of Finance**: Paddy ~₹38,000/acre, Cotton ~₹42,000/acre, Chilli ~₹65,000/acre.\n"
+                "• **Repayment Due Dates**: Kharif loans due by March 31; Rabi loans due by June 30.\n\n"
+                "👉 Head to **Tab 4 (KCC Loan & Tracker)** to compute your exact sanctioned limit and track pending files!"
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "view_kcc",
+            "url": "#kcc-tracker"
+        }
+
+    # Intent 4: Tenant Farmers & CCRC
+    if any(k in q for k in ["ccrc", "tenant", "lease", "sharecropper", "oral", "కౌలు", "బట్టీ", "काश्तकार", "बटाईदार"]):
+        if lang == "te":
+            msg = (
+                "🤝 **కౌలు రైతుల హక్కులు మరియు CCRC కార్డు మార్గదర్శకాలు**:\n\n"
+                "• **CCRC (పంట సాగుదారుల హక్కుల కార్డు)**: కౌలు రైతులకు పంట కాలానికి (11 నెలలు) చట్టపరమైన గుర్తింపునిస్తుంది.\n"
+                "• **భూ యజమాని భద్రత**: CCRC వలన భూమి యాజమాన్య హక్కులపై ఎలాంటి ప్రభావం పడదు. పట్టాదారు హక్కులు 100% సురక్షితం.\n"
+                "• **కౌలు రైతు పొందే ప్రయోజనాలు**: పంట నష్ట పరిహారం (PMFBY), రాయితీ విత్తనాలు, మరియు ప్రభుత్వ పంట కొనుగోలు (MSP).\n"
+                "• **ఎలా పొందాలి**: గ్రామ వ్యవసాయ విస్తరణ అధికారి (AEO) లేదా తహసీల్దార్ వద్ద ఉమ్మడి దరఖాస్తు సమర్పించాలి."
+            )
+        else:
+            msg = (
+                "🤝 **Tenant Farmer Protections & Crop Cultivator Rights Card (CCRC)**:\n\n"
+                "• **What is CCRC?** A statutory agreement (valid for 11 months) recognizing tenant cultivators.\n"
+                "• **Landowner Protection**: CCRC does NOT grant any ownership claim or tenancy encumbrance on land records. Land title remains 100% secure with the Pattadar.\n"
+                "• **Benefits for Tenant**: Unlocks institutional crop insurance (PMFBY), disaster input subsidy, and official MSP procurement at government centres.\n"
+                "• **How to Apply**: Joint declaration signed by tenant and landowner, verified by Village Revenue Officer / AEO."
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "info",
+            "url": "#tenant-ccrc"
+        }
+
+    # Intent 5: Water Saving & Drip Subsidies
+    if any(k in q for k in ["water", "drip", "sprinkler", "solar", "kusum", "pmksy", "tsmip", "pond", "borewell", "నీరు", "డ్రిప్", "స్ప్రింక్లర్", "సోలార్", "ड्रिप", "सिंचाई"]):
+        if lang == "te":
+            msg = (
+                "💧 **సూక్ష్మ సేద్యం మరియు నీటి సంరక్షణ రాయితీలు (18+ పథకాలు)**:\n\n"
+                "• **తెలంగాణ TSMIP**: ఎస్సీ/ఎస్టీ రైతులకు **100% ఉచిత సబ్సిడీ**, బీసీ రైతులకు **90% సబ్సిడీ**, ఇతర రైతులకు **80% సబ్సిడీ**.\n"
+                "• **పీఎం-కుసుమ్ (PM-KUSUM Component B)**: వ్యవసాయ సోలార్ పంపు సెట్లకు **60% వరకు సబ్సిడీ**.\n"
+                "• **తక్కువ నీటి పంటలు**: వరి స్థానంలో శనగలు (-83% నీరు), నువ్వులు (-87% నీరు), లేదా జొన్నలు/సజ్జలు (-88% నీరు) సాగు చేస్తే గరిష్ట ఆదాయం లభిస్తుంది.\n\n"
+                "👉 పూర్తి వివరాల కోసం మా **Tab 3 (Water Subsidies & Crops)** పరిశీలించండి!"
+            )
+        else:
+            msg = (
+                "💧 **Micro-Irrigation & Water-Saving Subsidies (18+ Schemes Across India)**:\n\n"
+                "• **PMKSY Per Drop More Crop (PDMC)**: Baseline 55% Central subsidy for drip & sprinkler systems.\n"
+                "• **State Enhancements**: Telangana (TSMIP) & AP (APMIP) provide up to **100% subsidy for SC/ST** and **90% for BC** small farmers.\n"
+                "• **PM-KUSUM Component B**: 60% combined subsidy on standalone off-grid DC solar irrigation pumps.\n"
+                "• **Next-Season Crop Planning**: Switching to Bengal Gram, Sesame, or Millets saves up to **88% water** compared to inundated paddy with assured MSP floor prices.\n\n"
+                "👉 Browse all 18 schemes and 26 drought-resilient crops in **Tab 3 (Water Subsidies & Crops)**!"
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "view_water",
+            "url": "#water-subsidies"
+        }
+
+    # Intent 6: PM-KISAN & Rythu Bharosa
+    if any(k in q for k in ["pm kisan", "pm-kisan", "pmkisan", "2000", "installment", "rythu bharosa", "రైతు భరోసా", "పీఎం కిసాన్", "किस्त"]):
+        if lang == "te":
+            msg = (
+                "🌾 **పీఎం-కిసాన్ & రైతు భరోసా పెట్టుబడి సాయం**:\n\n"
+                "• **పీఎం-కిసాన్ (PM-KISAN)**: ఏడాదికి ₹6,000 (మూడు విడతల్లో ₹2,000 చొప్పున నేరుగా బ్యాంక్ ఖాతాలో జమ).\n"
+                "• **రైతు భరోసా (తెలంగాణ)**: అర్హులైన రైతులకు ఎకరానికి ఏడాదికి ₹15,000 పెట్టుబడి సహాయం.\n"
+                "• **e-KYC అవసరం**: pmkisan.gov.in పోర్టల్‌లో బయోమెట్రిక్ లేదా ఓటీపీ ద్వారా ఆధార్ e-KYC తప్పనిసరి.\n"
+                "• చెల్లింపు సమస్యల పరిష్కారానికి అధికారిక కిసాన్ ఈ-మిత్ర (Kisan e-Mitra AI) లేదా 155261 హెల్ప్‌లైన్‌ను సంప్రదించండి."
+            )
+        else:
+            msg = (
+                "🌾 **Direct Income Support Schemes (PM-KISAN & Rythu Bharosa)**:\n\n"
+                "• **PM-KISAN**: ₹6,000 per year paid in 3 four-monthly installments of ₹2,000 each via DBT.\n"
+                "• **Rythu Bharosa (Telangana)**: ₹15,000 per acre per year direct investment assistance for eligible farmers.\n"
+                "• **Mandatory e-KYC**: Must be completed via Aadhaar OTP on pmkisan.gov.in or biometric CSC.\n"
+                "• **Inquiries**: For pending installments, use the official Kisan e-Mitra AI chatbot at pmkisan.gov.in or call Helpline 155261."
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "redirect",
+            "url": "https://pmkisan.gov.in"
+        }
+
+    # Intent 7: MSP vs Mandi prices
+    if any(k in q for k in ["msp", "mandi", "price", "bonus", "ధర", "మద్దతు", "भाव", "मंडी"]):
+        if lang == "te":
+            msg = (
+                "⚖️ **కనీస మద్దతు ధర (MSP) & మార్కెట్ ధరలు (2025-2026)**:\n\n"
+                "• **వరి (గ్రేడ్-ఏ)**: కేంద్ర MSP ₹2,320 + తెలంగాణ ప్రత్యేక బోనస్ ₹500 = **మొత్తం ₹2,820/క్వింటాల్**.\n"
+                "• **పత్తి**: MSP ₹7,121/క్వింటాల్ (సీసీఐ కొనుగోలు కేంద్రాల్లో అమ్మడం లాభదాయకం).\n"
+                "• **మొక్కజొన్న**: MSP ₹2,225/క్వింటాల్.\n"
+                "• దళారులకు తక్కువ ధరకు విక్రయించవద్దు. నేరుగా పీఏసీఎస్ (PACS) లేదా ఐకేపీ (IKP) కొనుగోలు కేంద్రాల్లో విక్రయించండి."
+            )
+        else:
+            msg = (
+                "⚖️ **Minimum Support Price (MSP) & Market Arbitrage (2025-2026)**:\n\n"
+                "• **Paddy (Grade A)**: Statutory MSP ₹2,320 + Telangana State Bonus ₹500 = **Effective ₹2,820/qtl** (Private mandi pays ~₹2,180; net gain +₹640/qtl at govt centres).\n"
+                "• **Cotton (Medium Staple)**: MSP ₹7,121/qtl at Cotton Corporation of India (CCI) centres.\n"
+                "• **Bengal Gram (Chana)**: MSP ₹5,440/qtl at NAFED centres.\n"
+                "• **Sesame (Til)**: MSP ₹9,267/qtl (Highest MSP among oilseeds).\n\n"
+                "👉 Check full comparison arbitrage in **Tab 6 (MSP vs Mandi)**!"
+            )
+        return {
+            "status": "success",
+            "query": query_text,
+            "response": msg,
+            "action": "view_msp",
+            "url": "#msp-tracker"
+        }
+
+    # Fallback: General Guidance
+    if lang == "te":
+        fallback_msg = (
+            f"🌾 మీ ప్రశ్న: *\"{query_text}\"*\n\n"
+            "ఈ ప్రశ్నకు సంబంధించిన ప్రభుత్వ నిబంధనలను పరిశీలిస్తున్నాము. దయచేసి ఎడమవైపు గల మీ భూమి మరియు పంట వివరాలను నమోదు చేసి 'Check Eligible Schemes' బటన్ నొక్కండి, లేదా కింది ముఖ్య అంశాలను అడగండి:\n\n"
+            "• **'పత్రాలు'** - కావలసిన ధ్రువపత్రాల వివరాలు\n"
+            "• **'72 గంటల నష్టం'** - పంట బీమా నిబంధనలు\n"
+            "• **'KCC రుణం'** - 4% వడ్డీ రాయితీ పంట రుణాలు\n"
+            "• **'కౌలు హక్కులు'** - CCRC కార్డు నిబంధనలు"
         )
     else:
-        resp = (
-            f"🌾 **OpenQuest Agritech Intelligence**:\n"
-            f"Evaluated criteria for '{req.query}'.\n"
-            "• 32+ Pan-India schemes verified for all 29 states.\n"
-            "• Check the Interactive Eligibility Matcher above to evaluate your exact landholding, state, and standing crop.\n"
-            "• For official claim filing, use the 72-Hour Emergency Hotline 14447 or Kisan Call Centre 1800-180-1551."
+        fallback_msg = (
+            f"🌾 Your query: *\"{query_text}\"*\n\n"
+            "I am ready to help you with official agricultural rules. You can evaluate your farm by entering your land holding and crop on the left, or ask me directly about:\n\n"
+            "• **'Documents'** — Required certificates & proofs for all schemes\n"
+            "• **'72-Hour Claim'** — PMFBY localized crop loss emergency rules\n"
+            "• **'KCC Loan'** — Scale of Finance & 4% interest subvention\n"
+            "• **'Tenant CCRC'** — Legal protections for tenant cultivators\n"
+            "• **'Water Subsidies'** — 18+ Drip, Sprinkler & Solar pump grants"
         )
 
     return {
         "status": "success",
-        "query": req.query,
-        "response": resp,
-        "action": "info"
+        "query": query_text,
+        "response": fallback_msg,
+        "action": "info",
+        "url": ""
     }
+
+
+
+
+@app.post("/api/query_ai")
+@app.post("/query_ai")
+@app.get("/api/query_ai")
+def query_ai_assistant(query: Optional[str] = None, language: str = "en", req: Optional[QueryAIRequest] = None):
+    """Natural language AI query handler with deterministic agritech grounding."""
+    effective_query = ""
+    effective_lang = language or "en"
+    if req and req.query:
+        effective_query = req.query
+        effective_lang = req.language or effective_lang
+    elif query:
+        effective_query = query
+    
+    if not effective_query:
+        return {
+            "status": "error",
+            "message": "Query parameter is required",
+            "response": "Please enter a valid farming question or scheme query."
+        }
+    
+    return get_farmer_ai_response(effective_query, language=effective_lang)
 
 @app.get("/climate_water_stress")
 def get_climate_water_stress(district: str = "Warangal", state: Optional[str] = None, crop: str = "Paddy", water_source: str = "Borewell", lang: str = "en"):
