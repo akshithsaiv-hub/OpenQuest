@@ -95,12 +95,152 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Tabs
-tab1, tab2, tab3, tab4 = st.tabs([
+tab0, tab1, tab2, tab3, tab4 = st.tabs([
+    get_label("tab_scheme_explorer", curr_lang),
     get_label("tab_farmer_chat", curr_lang),
     get_label("tab_intermediary", curr_lang),
     get_label("tab_msp", curr_lang),
     get_label("tab_climate_shield", curr_lang)
 ])
+
+# -------------------------------------------------------------
+# TAB 0: State & Central Scheme Browser (Mobile-First Scheme Explorer)
+# -------------------------------------------------------------
+with tab0:
+    st.markdown("""
+    <div style="background:#e8f5e9; border: 1.5px solid #a5d6a7; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+        <h2 style="color: #1b5e20; margin:0 0 0.4rem 0; font-size: 1.5rem;">
+            🌾 Find Government Subsidies & Agricultural Schemes
+        </h2>
+        <p style="color: #4b5563; margin:0; font-size: 0.98rem;">
+            Select your State or Union Territory to discover eligible State Government subsidies alongside Pan-India Central Government schemes.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    ALL_INDIAN_STATES = [
+        "-- Select State / Union Territory --",
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+        "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
+        "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
+        "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+        "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+        "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+        "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+    ]
+
+    selected_st = st.selectbox(
+        "📍 Choose your State or Union Territory / మీ రాష్ట్రాన్ని ఎంచుకోండి / अपना राज्य चुनें:",
+        options=ALL_INDIAN_STATES,
+        index=0,
+        key="global_state_selector"
+    )
+
+    if selected_st == "-- Select State / Union Territory --":
+        st.info("🚜 **Please select your State above to view available schemes and subsidies.** Agricultural schemes will appear immediately upon choosing your state.")
+    else:
+        # Load schemes from master schemes.json
+        schemes_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "schemes.json")
+        with open(schemes_path, "r", encoding="utf-8") as f:
+            all_schemes = json.load(f)
+
+        state_schemes = [s for s in all_schemes if s.get("state", "").lower() == selected_st.lower()]
+        central_schemes = [s for s in all_schemes if s.get("state", "") == "All"]
+
+        st.success(f"Showing **{len(state_schemes)} {selected_st} State Schemes** + **{len(central_schemes)} Central Government Schemes**")
+
+        # Filters Toolbar
+        col_f1, col_f2, col_f3 = st.columns([1.5, 1, 1])
+        with col_f1:
+            search_query = st.text_input("🔍 Search schemes by name or crop:", placeholder="e.g. Paddy, Cotton, Tractor, Insurance, Loan...", key="scheme_search_kw")
+        with col_f2:
+            gov_level = st.radio("Government Level:", ["All Schemes", f"{selected_st} State Schemes", "Central Schemes"], horizontal=True, key="gov_level_radio")
+        with col_f3:
+            farmer_type = st.selectbox("Farmer Category:", ["All Farmers", "Small & Marginal Farmers (< 5 Acres)", "Tenant Farmers"], key="farmer_cat_filter")
+
+        # Filter the pool
+        pool = []
+        if gov_level == "All Schemes":
+            pool = state_schemes + central_schemes
+        elif gov_level == f"{selected_st} State Schemes":
+            pool = state_schemes
+        else:
+            pool = central_schemes
+
+        if search_query.strip():
+            sq = search_query.lower().strip()
+            pool = [s for s in pool if sq in s["scheme_name"].lower() or sq in s.get("description", "").lower() or sq in str(s.get("rules", {}).get("supported_crops", [])).lower()]
+
+        if farmer_type == "Tenant Farmers":
+            pool = [s for s in pool if s.get("rules", {}).get("tenant_allowed", True)]
+        elif farmer_type == "Small & Marginal Farmers (< 5 Acres)":
+            pool = [s for s in pool if s.get("rules", {}).get("max_land_acres") is None or s.get("rules", {}).get("max_land_acres") >= 5.0]
+
+        if not pool:
+            st.warning("No schemes match your active search or filter. Try clearing filters.")
+        else:
+            # Display Cards in a responsive 2-column layout
+            for i in range(0, len(pool), 2):
+                col_c1, col_c2 = st.columns(2, gap="medium")
+                cols = [col_c1, col_c2]
+                for j in range(2):
+                    if i + j < len(pool):
+                        sc = pool[i + j]
+                        with cols[j]:
+                            is_central = sc.get("level") == "Central"
+                            badge_html = f"""
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                                <span style="background: {'#e8eaf6' if is_central else '#e8f5e9'}; color: {'#1a237e' if is_central else '#1b5e20'}; border: 1.5px solid {'#9fa8da' if is_central else '#a5d6a7'}; padding: 0.25rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.8rem;">
+                                    {'🇮🇳 Central Govt Scheme' if is_central else f'🏛️ {selected_st} State Scheme'}
+                                </span>
+                                <span style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">Verified: {sc.get('last_verified', '2026')}</span>
+                            </div>
+                            """
+                            st.markdown(badge_html, unsafe_allow_html=True)
+                            st.markdown(f"### {sc['scheme_name']}")
+                            st.markdown(f"*{sc.get('description', '')}*")
+
+                            # Key Benefit Box
+                            st.markdown(f"""
+                            <div style="background: #fffde7; border-left: 4px solid #f57f17; padding: 0.6rem 0.8rem; border-radius: 6px; margin: 0.6rem 0;">
+                                <span style="font-size: 0.8rem; font-weight: 800; color: #b75300; text-transform: uppercase;">💰 Key Benefit</span><br>
+                                <strong style="font-size: 1.05rem; color: #2e7d32;">{sc.get('benefit_summary', 'Financial & Scheme Benefit')}</strong>
+                            </div>
+                            """, unsafe_allow_html=True)
+
+                            # Eligibility summary
+                            rules_desc = []
+                            rules = sc.get("rules", {})
+                            if rules.get("tenant_allowed"):
+                                rules_desc.append("✅ Tenant farmers allowed")
+                            elif rules.get("requires_land_ownership"):
+                                rules_desc.append("⚠️ Registered landownership required (oral tenants not covered)")
+                            if rules.get("max_land_acres"):
+                                rules_desc.append(f"Land ceiling: up to {rules.get('max_land_acres')} acres")
+                            if rules.get("min_age"):
+                                rules_desc.append(f"Age: {rules.get('min_age')} to {rules.get('max_age', 'Any')} years")
+                            
+                            st.markdown(f"**🎯 Eligibility:** {'; '.join(rules_desc) if rules_desc else 'All active farmers'}")
+
+                            # Required Docs Accordion
+                            with st.expander("📑 Required Documents"):
+                                for d in sc.get("documents_required", []):
+                                    st.markdown(f"- {d}")
+
+                            # Deadline & Claim Window
+                            if sc.get("deadlines"):
+                                st.markdown(f"⏰ **Deadline:** {sc['deadlines']}")
+                            if sc.get("claim_window"):
+                                st.markdown(f"""
+                                <div style="background: #fff3e0; border: 1px solid #ffcc80; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.85rem; color: #c43e00; margin: 0.4rem 0;">
+                                    ⚠️ <strong>Emergency Claim Rule:</strong> {sc['claim_window']}
+                                </div>
+                                """, unsafe_allow_html=True)
+
+                            # Official Link Button
+                            st.link_button("🌐 Official Portal / Apply Link ↗", sc.get("source_url", "#"))
+                            st.markdown("---")
+
 
 # -------------------------------------------------------------
 # TAB 1: Farmer Self-Service Chat & Eligibility Check

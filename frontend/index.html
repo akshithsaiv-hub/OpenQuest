@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Kisan Setu - Unified Farmer Scheme & Subsidy Assistant</title>
+  <meta name="description" content="Discover Central and State agricultural subsidies, crop insurance, and farmer schemes across India with multi-language support.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <span class="brand-icon" aria-hidden="true">🌾</span>
+        <div>
+          <h1 class="brand-name" data-i18n="app_title">Kisan Setu</h1>
+          <p class="brand-tagline" data-i18n="app_subtitle">Unified Farmer Scheme & Subsidy Assistant</p>
+        </div>
+      </div>
+
+      <!-- Visible Language Selector in Header -->
+      <div class="lang-selector-wrapper" aria-label="Select Language">
+        <span class="lang-icon" aria-hidden="true">🌐</span>
+        <select id="langSelect" class="lang-select" aria-label="Choose Language">
+          <option value="en">English (Default)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & State Selector Section -->
+  <section class="hero-section" aria-labelledby="heroTitle">
+    <div class="hero-container">
+      <div class="hero-badge">
+        <span>🇮🇳</span>
+        <span>Pan-India Agricultural Welfare & Subsidies</span>
+      </div>
+      <h2 id="heroTitle" class="hero-title" data-i18n="hero_title">
+        Find Government Schemes & Subsidies for Your Farm
+      </h2>
+      <p class="hero-subtitle" data-i18n="hero_desc">
+        Select your State or Union Territory below to discover all eligible State Subsidies alongside Pan-India Central Government Schemes.
+      </p>
+
+      <!-- Prominent State Selector Card -->
+      <div class="state-selector-card">
+        <label for="stateSelect" class="selector-label" data-i18n="select_state_label">
+          📍 Select Your State / Union Territory
+        </label>
+        <div class="state-select-wrapper">
+          <span class="state-input-icon" aria-hidden="true">🗺️</span>
+          <select id="stateSelect" class="state-select-input" aria-required="true">
+            <!-- Populated dynamically by app.js -->
+          </select>
+          <span class="state-input-arrow" aria-hidden="true">▼</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Empty State Prompt (Visible BEFORE State is Selected) -->
+  <section id="emptyStatePrompt" class="empty-state-guide" aria-live="polite">
+    <div class="guide-icon" aria-hidden="true">🚜</div>
+    <h3 class="guide-heading" data-i18n="no_state_prompt">
+      Please select your State above to view available schemes and subsidies.
+    </h3>
+    <p class="guide-text">
+      Agricultural welfare and subsidies vary by State. Once you select your location, the assistant will immediately display both your State Government subsidies and Central Government schemes.
+    </p>
+  </section>
+
+  <!-- Main Schemes Section (Hidden until State is Selected) -->
+  <main id="mainContent" class="main-content" style="display: none;" role="main">
+    
+    <!-- Active State Summary Banner -->
+    <div id="stateBanner" class="state-banner">
+      <div class="banner-left">
+        <span class="banner-flag" aria-hidden="true">🌾</span>
+        <div>
+          <div>
+            <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;" data-i18n="state_selected_banner">Showing Agricultural Schemes for</span>
+          </div>
+          <span id="bannerStateName" class="banner-state-name">Telangana</span>
+          <span id="bannerStats" class="banner-stats">(2 State + 6 Central)</span>
+        </div>
+      </div>
+      <button id="changeStateBtn" class="change-state-btn" type="button">
+        Change State ↻
+      </button>
+    </div>
+
+    <!-- Toolbar: Tabs, Search & Filters -->
+    <section class="toolbar-container" aria-label="Scheme Filters and Search">
+      
+      <!-- Government Level Tabs -->
+      <div class="level-tabs" role="tablist">
+        <button id="tabAllBtn" class="tab-btn active" role="tab" aria-selected="true" type="button">
+          <span data-i18n="tab_all">All Schemes</span>
+          <span id="countAll" class="tab-count">0</span>
+        </button>
+        <button id="tabStateBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
+          <span id="labelTabState" data-i18n="tab_state">State Schemes</span>
+          <span id="countState" class="tab-count">0</span>
+        </button>
+        <button id="tabCentralBtn" class="tab-btn" role="tab" aria-selected="false" type="button">
+          <span data-i18n="tab_central">Central Schemes</span>
+          <span id="countCentral" class="tab-count">0</span>
+        </button>
+      </div>
+
+      <!-- Instant Search Bar -->
+      <div class="search-wrapper">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input 
+          id="searchInput" 
+          type="search" 
+          class="search-input" 
+          placeholder="Search schemes by name, crop, or keyword (e.g. Paddy, Tractor, Insurance, Loan)..." 
+          aria-label="Search schemes"
+        >
+      </div>
+
+      <!-- Secondary Filters -->
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="typeFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_type">
+            Scheme Type
+          </label>
+          <select id="typeFilterSelect" class="filter-select">
+            <option value="all">All Scheme Types</option>
+            <option value="income_support">Direct Income / Investment Support</option>
+            <option value="insurance">Crop Loss Insurance</option>
+            <option value="credit">Subsidized Crop Credit / Loan</option>
+            <option value="machinery">Tractor & Farm Machinery Grants</option>
+            <option value="irrigation">Drip, Sprinkler & Solar Pumps</option>
+            <option value="pension">Farmer Pension (Old Age)</option>
+            <option value="fencing">Farm Fencing (Animal Protection)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="eligibilityFilterSelect" style="display:block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-muted);" data-i18n="filter_eligibility">
+            Farmer Type
+          </label>
+          <select id="eligibilityFilterSelect" class="filter-select">
+            <option value="all">All Farmer Types</option>
+            <option value="small_marginal">Small & Marginal Farmers (&lt; 5 Acres)</option>
+            <option value="tenant">Tenant Farmers & Sharecroppers</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schemes Cards Grid -->
+    <section id="schemesGrid" class="schemes-grid" aria-label="List of Agricultural Schemes">
+      <!-- Cards rendered dynamically by app.js -->
+    </section>
+
+  </main>
+
+  <!-- Accessibility Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-content">
+      <p style="font-weight: 700; color: var(--primary);">
+        🌾 Kisan Setu / Rythu Sahayata — Unified Farmer Assistant
+      </p>
+      <p>
+        Grounded in official Central & State Government agricultural portals. Every scheme displays direct official sources, verified eligibility parameters, and emergency intimation windows.
+      </p>
+      <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+        Empowering Small, Marginal, and Tenant Farmers across Indian States with Zero Hallucination.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
