@@ -1,0 +1,55 @@
+{
+  "statutory_framework": "State Disaster Response Fund (SDRF) & National Disaster Response Fund (NDRF) Norms",
+  "administered_by": "Ministry of Home Affairs (MHA), Ministry of Agriculture & State Revenue / Disaster Management Departments",
+  "calamity_eligibility_threshold": "Crop loss of 33% and above caused by notified natural calamities (Hailstorm, Unseasonal Heavy Rains, Flooding, Cyclone, Drought, Pest Outbreak deemed natural calamity)",
+  "input_subsidy_compensation_rates": [
+    {
+      "category": "Rainfed / Unirrigated Crops (e.g. Dryland Pulses, Millets, Rainfed Cotton)",
+      "rate_per_hectare": "₹8,500 per hectare",
+      "approx_per_acre": "₹3,440 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Irrigated Crops (e.g. Paddy, Irrigated Cotton, Maize, Chilli)",
+      "rate_per_hectare": "₹17,000 per hectare",
+      "approx_per_acre": "₹6,880 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Perennial Horticulture Crops (e.g. Mango, Citrus, Guava, Oil Palm)",
+      "rate_per_hectare": "₹22,500 per hectare",
+      "approx_per_acre": "₹9,100 per acre",
+      "max_limit": "Subject to ceiling of 2 hectares (5 acres) per farmer",
+      "loss_criteria": ">= 33% verified crop damage"
+    },
+    {
+      "category": "Desiltation of Agricultural Land (Silt deposition > 3 inches after flash floods)",
+      "rate_per_hectare": "₹18,000 per hectare",
+      "approx_per_acre": "₹7,285 per acre",
+      "max_limit": "Eligible for small and marginal farmers",
+      "loss_criteria": "Sand/silt deposition > 3 inches rendering field uncultivable"
+    }
+  ],
+  "telangana_special_ex_gratia": {
+    "scheme_name": "Telangana Calamity Relief Assistance (Rythu Runa & Crop Relief)",
+    "rate_per_acre": "₹10,000 per acre for damaged standing crops during declared unseasonal hailstorms/floods",
+    "verification_team": "Joint inspection team of Agriculture Extension Officer (AEO) and Village Revenue Officer (VRO)",
+    "portal": "Government Order (GO) notifications via ccla.telangana.gov.in"
+  },
+  "claim_enumeration_procedure": [
+    "Step 1: Joint Field Enumeration (Azmoish) by Revenue Inspector / VRO and Agriculture Extension Officer (AEO) within 7 days of calamity event",
+    "Step 2: Geo-tagged photo documentation with survey numbers and GPS coordinates",
+    "Step 3: Preparation of draft beneficiary list displayed at Gram Panchayat / Rythu Vedika for 48 hours for public verification & objection filing",
+    "Step 4: Approval by District Collector / District Disaster Management Authority (DDMA)",
+    "Step 5: Direct Benefit Transfer (DBT) directly into farmer's Aadhaar-seeded bank account"
+  ],
+  "critical_difference_pmfby_vs_sdrf": "SDRF/NDRF is non-insurance sovereign disaster relief ex-gratia provided by the Government regardless of whether the crop was insured under PMFBY. A farmer can receive SDRF input subsidy in addition to statutory PMFBY insurance payouts.",
+  "official_sources": [
+    "Ministry of Home Affairs SDRF/NDRF Revised Norms 2023-2026",
+    "Disaster Management Division, Ministry of Agriculture & Farmers Welfare",
+    "Telangana State Disaster Management Authority (TSDMA)"
+  ],
+  "last_verified": "2026-11-05"
+}

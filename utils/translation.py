@@ -1,6 +1,7 @@
 """
 Translation and localization utility for Farmer Assistant UI.
 Provides localized UI labels, common agricultural phrases, and fallback translation.
+Supports English, Telugu (తెలుగు), and Hindi (हिंदी).
 """
 
 UI_LABELS = {
@@ -10,34 +11,49 @@ UI_LABELS = {
         "hi": "🌾 किसान सहायता: एकीकृत योजना एवं समय-सीमा सहायक"
     },
     "tagline": {
-        "en": "Proactive, profile-driven scheme eligibility, insurance timelines, document checks & MSP awareness for Telangana farmers.",
-        "te": "తెలంగాణ రైతులకు వ్యక్తిగత పథక అర్హత, పంట బీమా గడువులు, పత్రాల తనిఖీ మరియు మద్దతు ధర (MSP) మార్గదర్శి.",
-        "hi": "तेलंगाना के किसानों हेतु व्यक्तिगत योजना पात्रता, फसल बीमा समय-सीमा, दस्तावेज सत्यापन और न्यूनतम समर्थन मूल्य (MSP) सहायक।"
+        "en": "Pan-India proactive scheme eligibility, 72-hr claim assistant, water-saving subsidies, KCC credit help & document wallet.",
+        "te": "భారతీయ రైతులకు సమగ్ర పథక అర్హత, 72 గంటల నష్ట పరిహార క్లెయిమ్ సహాయకుడు, నీటి పొదుపు సబ్సిడీలు మరియు కేసీసీ రుణ మార్గదర్శి.",
+        "hi": "अखिल भारतीय किसान योजना पात्रता, 72-घंटे दावा सहायक, जल-बचत सब्सिडी, केसीसी ऋण मार्गदर्शन एवं दस्तावेज़ वॉलेट।"
     },
     "tab_scheme_explorer": {
-        "en": "🏛️ State & Central Scheme Browser",
-        "te": "🏛️ రాష్ట్ర & కేంద్ర పథకాల దర్శిని",
-        "hi": "🏛️ राज्य एवं केंद्रीय योजना एक्सप्लोरर"
+        "en": "🌾 State & Central Scheme Browser",
+        "te": "🌾 రాష్ట్ర & కేంద్ర ప్రభుత్వ పథకాల బ్రౌజర్",
+        "hi": "🌾 राज्य एवं केंद्र सरकार योजनाएं"
     },
     "tab_farmer_chat": {
-        "en": "🧑‍🌾 Farmer Self-Service Chat",
-        "te": "🧑‍🌾 రైతు సహాయక చాట్",
-        "hi": "🧑‍🌾 किसान चैट सहायक"
-    },
-    "tab_intermediary": {
-        "en": "🏢 Intermediary Mode (CSC / Extension / FPO)",
-        "te": "🏢 సీఎస్‌సీ & వ్యవసాయ అధికారుల విభాగం",
-        "hi": "🏢 सीएससी एवं कृषि अधिकारी डैशबोर्ड"
-    },
-    "tab_msp": {
-        "en": "⚖️ MSP vs Mandi Price Tracker",
-        "te": "⚖️ మద్దతు ధర (MSP) vs మార్కెట్ ధర",
-        "hi": "⚖️ एमएसपी बनाम मंडी भाव ट्रैकर"
+        "en": "🧑‍🌾 Scheme Eligibility & Chat",
+        "te": "🧑‍🌾 రైతు సహాయక చాట్ & అర్హత",
+        "hi": "🧑‍🌾 किसान चैट एवं पात्रता"
     },
     "tab_climate_shield": {
-        "en": "🛡️ Multi-Crop Climate Risk & Protective Shield",
-        "te": "🛡️ బహుళ పంటల వాతావరణ రక్షణ కవచం",
-        "hi": "🛡️ बहु-फसल मौसम एवं आपदा सुरक्षा कवच"
+        "en": "🛡️ Climate Risk & 72-Hr Claim Shield",
+        "te": "🛡️ వాతావరణ రక్షణ & 72 గంటల క్లెయిమ్",
+        "hi": "🛡️ मौसम जोखिम व 72-घंटे दावा कवच"
+    },
+    "tab_water_saving": {
+        "en": "💧 Water Subsidies & Next-Crop Planning",
+        "te": "💧 నీటి పొదుపు సబ్సిడీలు & ప్రత్యామ్నాయ పంటలు",
+        "hi": "💧 जल-बचत सब्सिडी व फसल नियोजन"
+    },
+    "tab_credit_kcc": {
+        "en": "💳 KCC Credit Help & Status Tracker",
+        "te": "💳 కేసీసీ రుణాలు & దరఖాస్తు ట్రాకర్",
+        "hi": "💳 केसीसी ऋण व आवेदन ट्रैकर"
+    },
+    "tab_doc_wallet": {
+        "en": "📁 Document Wallet & DigiLocker",
+        "te": "📁 పత్రాల వాలెట్ & డిజిలాకర్",
+        "hi": "📁 दस्तावेज़ वॉलेट व डिजिलॉकर"
+    },
+    "tab_msp": {
+        "en": "⚖️ MSP vs Mandi Tracker",
+        "te": "⚖️ మద్దతు ధర (MSP) vs మార్కెట్ ధర",
+        "hi": "⚖️ एमएसपी बनाम मंडी भाव"
+    },
+    "tab_intermediary": {
+        "en": "🏢 Intermediary Desk & Escalation",
+        "te": "🏢 సీఎస్‌సీ డెస్క్ & ఫిర్యాదుల పరిష్కారం",
+        "hi": "🏢 सीएससी डेस्क व उच्चाधिकारी शिकायत"
     },
     "profile_header": {
         "en": "📋 Enter Your Farming Profile",

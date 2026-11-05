@@ -7,98 +7,89 @@
 
 ---
 
-## 🏛️ System Architecture & Team Roles
+## 🏛️ System Architecture & Capabilities
 
-This repository unites the core intelligence and interactive interfaces across roles:
+This repository unites deterministic scheme eligibility, real-time climate risk mitigation, statutory insurance countdowns, and institutional credit guidance:
 
 ```text
 OpenQuest/
 │
-├── 🧠 PERSON 1 (The "Brain" & Knowledge Base)
+├── 🧠 KNOWLEDGE BASE & DETERMINISTIC ENGINES
 │   ├── schemes.json             # 32+ Pan-India Central & State-Specific Farmer Agriculture Subsidies
+│   ├── data/water_saving_schemes.json # PMKSY-PDMC (Drip/Sprinkler 55-100%), PM-KUSUM B/C, TSMIP
+│   ├── data/disaster_relief.json      # SDRF/NDRF statutory norms (₹8.5k-₹22.5k/ha) & calamity ex-gratia
+│   ├── data/low_water_crops.json      # ID crops post-drought (Bengal Gram, Moong, Sesame, Groundnut) + MSP
 │   ├── msp_mandi.json           # MSP vs Mandi benchmark market data across Indian APMCs
 │   ├── farm_inputs.json         # PJTSAU/ICAR input budgets & direct PACS/FPO dealer contacts
 │   ├── engine.py                # Deterministic rule engine (check_eligibility, evaluate_farmer_profile)
 │   ├── engine_addons.py         # MSP comparison & input budgeting modules
-│   ├── test_profiles.json       # 20 diverse farmer benchmark profiles across Indian states
-│   ├── test_runner.js           # Automated benchmark runner (100% decision accuracy across 640 decisions)
-│   ├── evaluate_engine.py       # Python benchmark evaluation script
-│   ├── evaluation_results.json  # Full benchmark metrics report
-│   ├── research_gap_analysis.md # Detailed gap research vs Kisan e-Mitra & Farmer.CHAT
-│   └── technical_report.md      # Comprehensive technical evaluation report
+│   └── test_profiles.json       # 20 diverse farmer benchmark profiles across Indian states
 │
-├── 🗣️ PERSON 2 (The "Face" & Multilingual Interface)
-│   ├── ui/
-│   │   ├── streamlit_app/app.py # Interactive web app (Farmer Chat + Intermediary Desk + MSP Tracker + Climate Shield)
-│   │   └── telegram_bot/bot.py  # Telegram bot with multilingual commands (/water_alert) & CLI test mode
-│   ├── utils/
-│   │   ├── llm.py               # Multilingual LLM explainer, strict rules & fallback routing
-│   │   ├── translation.py       # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
-│   │   └── weather_api.py       # Live Open-Meteo Climate API, 7-day forecast & rice water stress calculator
-│   ├── backend/
-│   │   └── eligibility_api.py   # FastAPI backend with fuzzy document verification, climate & alert dispatch
-│   ├── data/
-│   │   └── schemes_telangana.json # Person 2 complementary scheme catalog
-│   ├── tests/
-│   │   └── test_assistant.py    # Automated unit tests validating engine, fallbacks, climate API & fuzzy checks
-│   └── DEMO_SCRIPT.md           # 3-minute hackathon presentation script with scene-by-scene narration
+├── ⚡ 72-HOUR CLAIM ASSISTANT & CLIMATE SHIELD
+│   ├── utils/claim_assistant.py # 72-hr countdown timer, geo-tagged photo checklist, legal intimation SMS
+│   ├── utils/weather_api.py     # Open-Meteo multi-hazard engine (Drought, Flood, Heat Wave, Pests)
+│   ├── utils/credit_kcc.py      # KCC Scale of finance, 4% interest subvention (MISS), repayment scheduler
+│   ├── utils/document_wallet.py # Consent-based vault for Aadhaar, Pahani, CCRC; DigiLocker & AgriStack ID
+│   ├── utils/status_tracker.py  # Manual application status logger with SLA breach warnings
+│   ├── utils/escalation_feedback.py # Scheme feedback flags & formal higher authority grievance petitions
+│   ├── utils/llm.py             # Multilingual explainer, strict rules & fallback routing
+│   └── utils/translation.py     # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
 │
-└── ⚙️ RUNNERS & SCRIPTS
-    ├── demo.py                  # End-to-end multi-scenario CLI test runner
-    ├── requirements.txt         # All Python dependencies
-    └── README.md                # Project architecture & user guide
+├── 🖥️ USER INTERFACES & RUNNERS
+│   ├── ui/streamlit_app/app.py  # 8-Tab Unified Web App:
+│   │                            # 0. State & Central Scheme Browser (Mobile-First Explorer)
+│   │                            # 1. Scheme Eligibility & Chat
+│   │                            # 2. Climate Risk & 72-Hr Claim Shield (with SDRF/NDRF)
+│   │                            # 3. Water Subsidies & Next-Crop Planning
+│   │                            # 4. KCC Credit Help & Application Status Tracker
+│   │                            # 5. Document Wallet & DigiLocker
+│   │                            # 6. MSP vs Mandi Tracker
+│   │                            # 7. Intermediary Desk, Feedback Loop & Grievance Escalation
+│   ├── ui/telegram_bot/bot.py   # Telegram bot with CLI demo & commands (/claim_alert, /kcc_help, etc.)
+│   ├── frontend/                # Lightweight mobile-responsive static web interface (HTML/CSS/JS)
+│   └── backend/eligibility_api.py # FastAPI backend with fuzzy document verification & mock DB
+│
+└── 🧪 BENCHMARKS & TESTS
+    ├── tests/test_assistant.py  # 17 automated unit tests (100% passing)
+    ├── test_runner.js           # 640-decision Pan-India verification suite
+    ├── evaluate_engine.py       # Python benchmark evaluation script
+    └── demo.py                  # End-to-end multi-scenario CLI test runner
 ```
 
 ---
 
-## 🎯 Pan-India Agricultural Subsidies Supported by Person 1
+## 🌟 Key Functional Highlights
 
-Every scheme is **strictly an agricultural / farmer subsidy** with verified criteria, documents, deadlines, emergency claim windows, and official links:
+### 1. ⏱️ 72-Hour Claim Assistant with Live Countdown
+- Under PMFBY and State Calamity regulations, individual crop losses (hail, flooding, cloudburst) **must be intimated within 72 hours**.
+- Provides a real-time countdown timer (`00h 00m 00s`), color-coded urgency banner, geo-tagged photo guidance, and one-click SMS/WhatsApp intimation generator.
 
-| Level / State | Flagship Agricultural Subsidies in Knowledge Base |
-| :--- | :--- |
-| **All States (Central)** | **PM-KISAN** (₹6,000/yr), **PMFBY** (Crop Insurance with 72-hr rule), **Kisan Credit Card** (4% loan), **PM-KMY** (Pension), **SMAM** (40-60% Farm Machinery Grant), **PMKSY-PDMC** (45-55% Drip/Sprinkler Subsidy) |
-| **Telangana** | **Rythu Bharosa** (₹12,000/ac/yr), **Rythu Bima** (₹5 Lakh Life Insurance, 10-day nominee claim) |
-| **Andhra Pradesh** | **Annadata Sukhibhava** (₹14,000/yr state assistance covering CCRC Tenants), **Dr. YSR Free Crop Insurance** (100% Free via e-Crop) |
-| **Maharashtra** | **Namo Shetkari Yojana** (₹6,000/yr state top-up), **₹1 Crop Insurance** (Ek Rupaya Pik Vima), **MahaDBT Krishi Yantrikikaran** (50% Tractor/Machinery Subsidy) |
-| **Karnataka** | **Raitha Siri** (₹10,000/ha Minor Millet Incentive), **Krishi Bhagya** (50-90% Farm Pond & Drip Subsidy) |
-| **Uttar Pradesh** | **UP Krishi Yantra Subsidy** (40-50% Machinery Grant via upagriculture.com), **Nishulk Boring Yojana** (Free Tube Well Boring) |
-| **Madhya Pradesh** | **Mukhyamantri Kisan Kalyan** (₹6,000/yr top-up), **Krishak Surya Mitra** (Up to 90% Solar Pump Subsidy) |
-| **Punjab** | **Crop Residue Management Subsidy** (50-80% Happy Seeder / Super Seeder), **Free Agricultural Power Supply** (Zero tariff tube wells) |
-| **Haryana** | **Bhavantar Bharpayee Yojana** (Mandi price deficit compensation), **Mera Pani Meri Virasat** (₹7,000/ac for shifting from paddy) |
-| **Odisha** | **KALIA Scheme** (₹10,000/yr for smallholders + ₹12,500 for landless agricultural workers) |
-| **West Bengal** | **Krishak Bandhu** (Assured ₹10,000/yr + ₹2 Lakh death relief), **Bangla Shasya Bima** (100% Free State Crop Insurance) |
-| **Tamil Nadu** | **CM Solar Powered Pump Sets Scheme** (70% Capital Subsidy on 10 HP Solar Pumps) |
-| **Bihar** | **Bihar Rajya Fasal Sahayata Yojana** (100% Free Crop Loss Aid up to ₹10,000/ha for owners & tenant non-ryots), **Diesel Anudan** (₹75/L fuel subsidy) |
-| **Rajasthan** | **Khet Tarbandi Yojana** (50-60% Barbed Wire Fencing Subsidy up to ₹48,000 against stray cattle) |
-| **Gujarat** | **Saat Pagla Khedut Kalyan Na** (Mini-tractor subsidy ₹45,000, Cow maintenance ₹10,800/yr, Farm godowns) |
-| **Kerala** | **Royalty to Wetland Paddy Cultivators** (₹3,000/ha annual direct deposit for wetland rice ecology conservation) |
+### 2. 🚿 Water-Saving Subsidy Matcher (PMKSY, PM-KUSUM, TSMIP)
+- Automatically suggests drip/sprinkler and solar pump schemes when water risk is detected.
+- Incorporates state-specific rules: 100% subsidy for SC/ST farmers and 90% for BC smallholders in Telangana (TSMIP).
+- Standalone off-grid solar pumps covered up to 60% under PM-KUSUM Component B.
 
----
+### 3. 🌱 Next-Season Crop & Water Planning
+- Proactively suggests low-water alternative crops (Bengal Gram, Green Gram, Sesame, Groundnut, Millets) after a water-stressed season.
+- Displays water savings % (up to 85%), expected duration, and statutory MSP support (e.g., Sesame MSP ₹9,267/qtl).
 
-## 🤝 Core API Handshake (For Person 2 UI & Person 3 Reminders)
+### 4. 💳 Kisan Credit Card (KCC) & 4% Interest Subvention
+- Calculates District Level Technical Committee (DLTC) Scale of Finance per acre.
+- Illustrates Modified Interest Subvention Scheme (MISS): 9% commercial rate - 2% Govt subvention - 3% prompt repayment incentive = **4% net effective annual interest**.
+- Warns farmers regarding seasonal due dates (Kharif: March 31; Rabi: June 30).
 
-```python
-from engine import check_eligibility, evaluate_farmer_profile, get_scheme_documents, get_msp_vs_mandi
+### 5. 📁 Consent-Driven Document Wallet & DigiLocker
+- Stores encrypted records of Aadhaar, Pahani/Dharani passbooks, CCRC tenancy agreements, and bank passbooks.
+- Privacy-first automatic masking (e.g. `XXXX-XXXX-4921`).
+- Evaluates document readiness percentage for each scheme before application.
 
-# 1. Main Eligibility Call (Deterministic - LLM never decides)
-results = check_eligibility({
-    "state": "Maharashtra",        # Any Indian State
-    "district": "Yavatmal",
-    "land_acres": 3.0,
-    "is_tenant": False,
-    "has_rofr_patta": False,
-    "crops": ["Cotton", "Soybean"],
-    "age": 42,
-    "is_tax_payer": False
-})
+### 6. 🏛️ Report to Higher Official (Grievance Escalation)
+- When a claim or subsidy is stalled or rejected unlawfully, generates a formal, legally grounded grievance petition.
+- Configured for 4 escalation tiers: AEO (Rythu Vedika) ➔ Mandal Agriculture Officer ➔ District Agriculture Officer / Prajavani ➔ Central CPGRAMS (`pgportal.gov.in`).
 
-# 2. Document Checklist (For Person 3's check_documents)
-docs = get_scheme_documents("pmfby")
-
-# 3. Mandi vs MSP Arbitrage
-mandi_intel = get_msp_vs_mandi("Cotton (Medium Staple)", "Warangal")
-```
+### 7. 📶 Offline & Low-Tech Mode
+- Gracefully operates with cached meteorology and deterministic local rules without cloud dependencies.
+- Features standardized SMS keyword syntax for feature phone users without internet access.
 
 ---
 
@@ -108,12 +99,12 @@ mandi_intel = get_msp_vs_mandi("Cotton (Medium Staple)", "Warangal")
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run Person 1's Multi-State Benchmark Test (640 decisions, 100% accuracy)
-node test_runner.js
+# 2. Run All 17 Unit Tests
+python -m unittest discover -s tests
 
-# 3. Launch Streamlit Web App (Person 2)
-streamlit run ui/streamlit_app/app.py
+# 3. Launch Streamlit Web App
+python -m streamlit run ui/streamlit_app/app.py
 
-# 4. Launch Telegram Bot (Person 2)
-python -m ui.telegram_bot.bot --test
+# 4. Launch Telegram Bot (Interactive Test Mode)
+python ui/telegram_bot/bot.py --test
 ```

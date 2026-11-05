@@ -1,0 +1,126 @@
+[
+  {
+    "scheme_id": "PMKSY_PDMC",
+    "name": "Pradhan Mantri Krishi Sinchayee Yojana - Per Drop More Crop (PMKSY-PDMC)",
+    "category": "Micro Irrigation Subsidy (Drip & Sprinkler)",
+    "implementing_agency": "Ministry of Agriculture & Farmers Welfare & State Horticulture/Agriculture Depts",
+    "target_beneficiaries": "Small, Marginal and Other Farmers across all Indian States",
+    "subsidy_rules": {
+      "small_and_marginal_farmers": "55% Central/State baseline (up to 90% in Telangana TSMIP and AP; 100% for SC/ST in Telangana)",
+      "other_farmers": "45% baseline (up to 80% in progressive states)",
+      "sc_st_farmers": "90% to 100% subsidy (Telangana TSMIP provides 100% for SC/ST up to 5 acres)"
+    },
+    "eligible_systems": [
+      "Drip Irrigation System (Inline & Online)",
+      "Micro Sprinkler & Mini Sprinkler Systems",
+      "Portable Sprinkler Sets"
+    ],
+    "water_savings_potential": "40% to 60% water savings compared to traditional flood irrigation; 20-30% yield boost",
+    "eligibility_criteria": [
+      "Cultivable land holding with functional water source (borewell, open well, or farm pond)",
+      "Electricity connection or solar pump setup",
+      "Valid RoR (Pahani / Dharani / Patta Passbook)",
+      "One-time benefit per survey land holding for 7 years"
+    ],
+    "documents_required": [
+      "Aadhaar Card copy",
+      "Land Record (Pahani / 1B / RoR / 7/12)",
+      "Bank Passbook showing active IFSC",
+      "Soil & Water Test Report (where mandated)",
+      "Caste Certificate (for SC/ST 100% subsidy tier)"
+    ],
+    "current_status": "Active across all States under revised PMKSY 2.0 framework",
+    "portal_url": "https://pmksy.gov.in / https://horticulturedept.telangana.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_B",
+    "name": "PM-KUSUM Component B (Standalone Off-Grid Solar Agriculture Pumps)",
+    "category": "Solar Energy & Renewable Irrigation",
+    "implementing_agency": "Ministry of New and Renewable Energy (MNRE) & State Nodal Agencies (TSREDCO, MEDA, etc.)",
+    "target_beneficiaries": "Individual farmers with agricultural land and water source without grid electricity connection",
+    "subsidy_rules": {
+      "central_subsidy": "30% Benchmark Cost from MNRE",
+      "state_subsidy": "30% State Govt Share (increases to 50% in NE/Hill States/Tribal Regions)",
+      "farmer_share": "10% to 40% (remaining can be financed through bank loans under Agri Infrastructure Fund)"
+    },
+    "eligible_systems": [
+      "3 HP, 5 HP, 7.5 HP Standalone DC/AC Surface and Submersible Solar Pumps"
+    ],
+    "water_savings_potential": "Guaranteed daytime uninterrupted irrigation; eliminates diesel pump recurring expenses (₹40,000-60,000/year savings)",
+    "eligibility_criteria": [
+      "Farmer must own agricultural land with an existing open well or borewell",
+      "No existing grid power connection for the applied borewell",
+      "Land title clearance and groundwater availability certificate"
+    ],
+    "documents_required": [
+      "Aadhaar Card",
+      "Land Ownership Passbook / Pahani",
+      "Affidavit of No Existing Grid Connection",
+      "Bank Account details",
+      "Borewell / Source Depth Certificate"
+    ],
+    "current_status": "Active pan-India; target 14 lakh standalone solar pumps extended through 2026",
+    "portal_url": "https://pmkusum.mnre.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_C",
+    "name": "PM-KUSUM Component C (Solarisation of Grid-Connected Agricultural Pumps)",
+    "category": "Solarised Feeder & Net Metering",
+    "implementing_agency": "MNRE & State DISCOMs",
+    "target_beneficiaries": "Farmers with existing grid-connected electric pump sets",
+    "subsidy_rules": {
+      "central_state_subsidy": "Up to 60% combined subsidy",
+      "farmer_share": "Remaining 40% self or financed; farmer earns income selling surplus solar power back to grid"
+    },
+    "eligible_systems": [
+      "Individual Pump Solarisation & Solar Feeder segregation"
+    ],
+    "water_savings_potential": "Solar power day-time usage prevents wasteful night flood irrigation; solar earnings incentivize water conservation",
+    "eligibility_criteria": [
+      "Existing agricultural electricity meter connection",
+      "Valid land ownership and operational water pump"
+    ],
+    "documents_required": [
+      "Electricity Bill / Consumer No.",
+      "Aadhaar Card",
+      "Bank Details",
+      "Land Passbook"
+    ],
+    "current_status": "Active under DISCOM feeder solarisation drives",
+    "portal_url": "https://pmkusum.mnre.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "TSMIP_TELANGANA",
+    "name": "Telangana State Micro Irrigation Project (TSMIP)",
+    "category": "State Micro Irrigation Top-Up Scheme",
+    "implementing_agency": "Horticulture Department, Government of Telangana",
+    "target_beneficiaries": "All farmers in Telangana cultivating agriculture or horticulture crops",
+    "subsidy_rules": {
+      "sc_st_farmers": "100% subsidy (Free drip/sprinkler up to 5 acres)",
+      "bc_small_marginal": "90% subsidy (farmer pays only 10% GST/share)",
+      "general_small_marginal": "80% subsidy",
+      "other_farmers": "50% subsidy up to 12.5 acres max ceiling"
+    },
+    "eligible_systems": [
+      "Drip for Paddy (AWD), Chilli, Cotton, Vegetable & Fruit Orchards",
+      "Micro & Raingun Sprinklers for Maize, Groundnut, Pulses"
+    ],
+    "water_savings_potential": "Reduces groundwater overdraft by 50%; cuts power consumption by 35%",
+    "eligibility_criteria": [
+      "Farmer in Telangana with Dharani Passbook / Digital RoR",
+      "Borewell or canal lift source available"
+    ],
+    "documents_required": [
+      "Dharani Land Passbook",
+      "Aadhaar Card linked to Mobile",
+      "Bank Account IFSC Passbook",
+      "Caste Certificate (MeeSeva issued for SC/ST/BC)"
+    ],
+    "current_status": "Active with ongoing allocations across all 33 Telangana districts",
+    "portal_url": "https://horticulturedept.telangana.gov.in / Rythu Vedika registration",
+    "last_verified": "2026-11-05"
+  }
+]

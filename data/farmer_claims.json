@@ -1,0 +1,65 @@
+[
+  {
+    "claim_id": "CLM-2026-TS-001",
+    "farmer_id": "F-DEMO-01",
+    "farmer_name": "Komirelli Ramulu",
+    "phone": "9848022338",
+    "scheme_name": "PMFBY Hailstorm Crop Loss Claim",
+    "reference_number": "PMFBY/TS/2026/092144",
+    "filing_date": "2026-10-18",
+    "status": "Joint Field Survey Completed",
+    "status_code": "UNDER_VERIFICATION",
+    "handling_officer": "AEO K. Srinivas (Rythu Vedika Geesugonda)",
+    "expected_sla_days": 15,
+    "notes": "Joint survey photos uploaded. Compensation calculation pending approval at DAO office.",
+    "reminders": [
+      {
+        "date": "2026-11-02",
+        "type": "SLA_BREACH",
+        "msg": "15-day PMFBY joint survey assessment window crossed. Follow up with Insurance Assessor."
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-2026-TS-002",
+    "farmer_id": "F-DEMO-02",
+    "farmer_name": "B. Lakshmi",
+    "phone": "9440188219",
+    "scheme_name": "TSMIP Micro-Irrigation Drip Subsidy",
+    "reference_number": "TSMIP/NAL/2026/5521",
+    "filing_date": "2026-10-28",
+    "status": "Administrative Sanction Approved",
+    "status_code": "SANCTIONED",
+    "handling_officer": "Horticulture Officer Nalgonda",
+    "expected_sla_days": 21,
+    "notes": "Farmer 10% DD paid. Company allotment for drip pipeline installation pending.",
+    "reminders": [
+      {
+        "date": "2026-11-18",
+        "type": "UPCOMING",
+        "msg": "Installation scheduled within next 13 days."
+      }
+    ]
+  },
+  {
+    "claim_id": "CLM-20261105161214",
+    "farmer_id": "F-8888",
+    "farmer_name": "Test Farmer",
+    "phone": "9999988888",
+    "scheme_name": "TSMIP Subsidy",
+    "reference_number": "TEST/REF/01",
+    "filing_date": "2026-11-05",
+    "status": "Under Review",
+    "status_code": "ACTIVE",
+    "handling_officer": "Local Agriculture Office / CSC",
+    "expected_sla_days": 15,
+    "notes": "Testing status tracker",
+    "reminders": [
+      {
+        "date": "2026-11-20",
+        "type": "FOLLOWUP_SCHEDULED",
+        "msg": "Follow-up reminder for TSMIP Subsidy (Ref: TEST/REF/01)"
+      }
+    ]
+  }
+]

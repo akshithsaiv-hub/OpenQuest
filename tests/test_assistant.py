@@ -1,9 +1,9 @@
 import os
 import sys
 import unittest
+from datetime import datetime, timedelta
 from rapidfuzz import fuzz
 
-# Ensure project root is in path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.eligibility_api import evaluate_farmer, load_schemes, FarmerProfile, verify_name_match
@@ -15,6 +15,11 @@ from utils.llm import (
     FALLBACK_PMKISAN,
     FALLBACK_UNCERTAIN
 )
+from utils.claim_assistant import calculate_72hr_window, generate_intimation_sms, PMFBY_HELPLINE
+from utils.document_wallet import get_farmer_documents, add_farmer_document, check_scheme_document_readiness
+from utils.credit_kcc import calculate_kcc_eligibility
+from utils.status_tracker import get_all_claims, add_claim_entry, compute_claim_urgency
+from utils.escalation_feedback import record_feedback, get_all_feedbacks, generate_formal_escalation_petition
 
 class TestPerson2FrontEndAndEngine(unittest.TestCase):
 
@@ -24,7 +29,6 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
 
     def test_01_deterministic_eligibility(self):
         """Test that eligibility engine is strictly deterministic and rule-based."""
-        # 1. Marginal farmer in Telangana growing Paddy
         profile1 = FarmerProfile(
             state="Telangana",
             land_holding_acres=1.5,
@@ -40,7 +44,6 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         self.assertIn("Pradhan Mantri Fasal Bima Yojana (PMFBY) - Rabi Insurance", scheme_names)
         self.assertIn("MSP Procurement Operations (Paddy & Cotton 2026)", scheme_names)
 
-        # 2. Out of state farmer (e.g. Punjab)
         profile_out_of_state = FarmerProfile(
             state="Punjab",
             land_holding_acres=3.0,
@@ -48,7 +51,6 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
             category="small"
         )
         matches_state = [evaluate_farmer(profile_out_of_state, s) for s in self.schemes if evaluate_farmer(profile_out_of_state, s).eligible]
-        # State schemes should NOT match
         for m in matches_state:
             self.assertNotEqual(m.scheme_id, "TS-RB-01")
 
@@ -64,7 +66,6 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         )
         rb_scheme = next(s for s in self.schemes if s["scheme_id"] == "TS-RB-01")
         res_no_ccrc = evaluate_farmer(tenant_no_ccrc, rb_scheme)
-        # Should explain that CCRC is required
         self.assertTrue(any("CCRC" in r for r in res_no_ccrc.reasons))
 
     def test_03_llm_source_link_and_date_traceability(self):
@@ -102,16 +103,13 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
 
     def test_06_aadhaar_bank_fuzzy_name_matching(self):
         """Document readiness check: Fuzzy match between Aadhaar name and Bank passbook name."""
-        # 1. Close match (Initial vs Full Name)
         res1 = verify_name_match("Komirelli Ramulu", "K. Ramulu")
         self.assertGreaterEqual(res1["similarity_score"], 80)
 
-        # 2. Exact match
         res2 = verify_name_match("Boda Venkanna", "Boda Venkanna")
         self.assertEqual(res2["similarity_score"], 100)
         self.assertEqual(res2["status"], "Exact Match")
 
-        # 3. Severe Mismatch
         res3 = verify_name_match("Banoth Padma", "Guguloth Saroja")
         self.assertLess(res3["similarity_score"], 50)
         self.assertEqual(res3["status"], "Severe Mismatch")
@@ -135,7 +133,6 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         self.assertTrue(len(assessment["preventive_measures"]) >= 3)
         self.assertIn("PMFBY", assessment["insurance_shield"]["scheme"])
 
-        # Check Telugu and English output
         adv_te = generate_multilingual_water_advisory(assessment, lang="te")
         adv_en = generate_multilingual_water_advisory(assessment, lang="en")
         self.assertIn("AWD", adv_en)
@@ -146,19 +143,165 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
     def test_09_pan_india_geocoding_and_weather(self):
         """Test Pan-India meteorological lookups across different states."""
         from utils.weather_api import get_live_weather, resolve_pan_india_coordinates
-        # Punjab
         punjab_coords = resolve_pan_india_coordinates("Ludhiana", state="Punjab")
         self.assertEqual(punjab_coords["name"], "Ludhiana")
         punjab_weather = get_live_weather("Ludhiana", state="Punjab")
         self.assertIn("Ludhiana", punjab_weather["location"])
 
-        # Tamil Nadu
         tn_weather = get_live_weather("Thanjavur", state="Tamil Nadu")
         self.assertIn("Thanjavur", tn_weather["location"])
 
-        # West Bengal
         wb_weather = get_live_weather("Bardhaman", state="West Bengal")
         self.assertIn("Bardhaman", wb_weather["location"])
+
+    def test_10_72hr_claim_assistant(self):
+        """Test 72-hour countdown computation and multi-lingual intimation draft generation."""
+        now = datetime.now()
+        recent_incident = now - timedelta(hours=10)
+        window = calculate_72hr_window(recent_incident)
+        self.assertEqual(window["status"], "ACTIVE")
+        self.assertGreaterEqual(window["hours_remaining"], 60)
+        self.assertEqual(window["urgency"], "LOW")
+
+        older_incident = now - timedelta(hours=60)
+        window_crit = calculate_72hr_window(older_incident)
+        self.assertEqual(window_crit["status"], "ACTIVE")
+        self.assertLessEqual(window_crit["hours_remaining"], 12)
+        self.assertEqual(window_crit["urgency"], "CRITICAL")
+
+        lapsed_incident = now - timedelta(hours=75)
+        window_exp = calculate_72hr_window(lapsed_incident)
+        self.assertEqual(window_exp["status"], "EXPIRED")
+
+        sms = generate_intimation_sms(
+            farmer_name="Komirelli Ramulu",
+            phone="9848022338",
+            crop="Paddy",
+            district="Warangal",
+            village="Geesugonda",
+            survey_no="142/A",
+            loss_percent=70,
+            hazard_type="Hailstorm",
+            acreage=2.2,
+            language="te"
+        )
+        self.assertIn("Komirelli Ramulu", sms["text"])
+        self.assertIn("142/A", sms["text"])
+        self.assertIn("72 గంటల", sms["text"])
+        self.assertEqual(sms["target_helpline"], "1800-180-1551")
+
+    def test_11_water_saving_subsidy_matcher(self):
+        """Test loading and content of water saving subsidy schemes (PMKSY, PM-KUSUM, TSMIP)."""
+        import json
+        water_schemes_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "water_saving_schemes.json")
+        self.assertTrue(os.path.exists(water_schemes_path))
+        with open(water_schemes_path, "r", encoding="utf-8") as f:
+            schemes = json.load(f)
+        
+        ids = [s["scheme_id"] for s in schemes]
+        self.assertIn("PMKSY_PDMC", ids)
+        self.assertIn("PM_KUSUM_B", ids)
+        self.assertIn("TSMIP_TELANGANA", ids)
+
+        tsmip = next(s for s in schemes if s["scheme_id"] == "TSMIP_TELANGANA")
+        self.assertIn("100% subsidy", tsmip["subsidy_rules"]["sc_st_farmers"])
+
+    def test_12_low_water_crops_and_msp(self):
+        """Test low-water crop alternatives and statutory MSP data."""
+        import json
+        crops_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "low_water_crops.json")
+        self.assertTrue(os.path.exists(crops_path))
+        with open(crops_path, "r", encoding="utf-8") as f:
+            crops = json.load(f)
+
+        crop_ids = [c["crop_id"] for c in crops]
+        self.assertIn("bengal_gram", crop_ids)
+        self.assertIn("sesame", crop_ids)
+        self.assertIn("groundnut", crop_ids)
+
+        sesame = next(c for c in crops if c["crop_id"] == "sesame")
+        self.assertGreaterEqual(sesame["msp_rate_per_quintal"], 9000)
+        self.assertIn("85%", sesame["water_savings_percentage"])
+
+    def test_13_kcc_credit_and_subvention(self):
+        """Test KCC limit calculation and 4% effective interest subvention."""
+        kcc = calculate_kcc_eligibility(crop="Paddy", land_acres=2.5)
+        self.assertGreaterEqual(kcc["first_year_limit"], 100000)
+        self.assertTrue(kcc["is_collateral_free"])
+        
+        kcc_large = calculate_kcc_eligibility(crop="Paddy", land_acres=4.0)
+        self.assertFalse(kcc_large["is_collateral_free"])
+
+        sub = kcc["interest_subvention"]
+        self.assertEqual(sub["commercial_bank_rate"], "9.0% p.a.")
+        self.assertEqual(sub["govt_interest_subvention"], "2.0% p.a.")
+        self.assertEqual(sub["prompt_repayment_incentive"], "3.0% p.a.")
+        self.assertIn("4.0%", sub["effective_net_rate"])
+
+    def test_14_document_wallet_and_readiness(self):
+        """Test document wallet consent, masking, and scheme readiness evaluator."""
+        vault = get_farmer_documents("DEMO_FARMER_1")
+        self.assertTrue(vault["consent_granted"])
+        self.assertGreaterEqual(len(vault["documents"]), 2)
+
+        aadhaar_doc = next((d for d in vault["documents"] if d["doc_type"] == "aadhaar"), None)
+        self.assertIsNotNone(aadhaar_doc)
+        self.assertTrue(aadhaar_doc["identifier_masked"].startswith("XXXX"))
+
+        reqs = ["Aadhaar Card", "Pahani / Dharani Passbook", "Bank Account Passbook"]
+        readiness = check_scheme_document_readiness(reqs, farmer_id="DEMO_FARMER_1")
+        self.assertTrue(readiness["is_ready"])
+        self.assertEqual(readiness["readiness_percent"], 100.0)
+
+    def test_15_claim_and_application_status_tracker(self):
+        """Test application status tracker, claim logging, and SLA monitoring."""
+        new_entry = add_claim_entry(
+            farmer_name="Test Farmer",
+            phone="9999988888",
+            scheme_name="TSMIP Subsidy",
+            reference_number="TEST/REF/01",
+            status="Under Review",
+            notes="Testing status tracker"
+        )
+        self.assertEqual(new_entry["status"], "Under Review")
+
+        urgency = compute_claim_urgency(new_entry)
+        self.assertIn(urgency["urgency"], ["NORMAL", "MEDIUM", "HIGH"])
+
+    def test_16_feedback_loop(self):
+        """Test logging and retrieving community feedback on scheme data."""
+        fb = record_feedback(
+            scheme_id="PMKSY_PDMC",
+            scheme_name="PMKSY Per Drop More Crop",
+            feedback_type="OUTDATED_DEADLINE",
+            reporter_role="CSC Operator",
+            description="Portal registration extended till Dec 31."
+        )
+        self.assertEqual(fb["scheme_id"], "PMKSY_PDMC")
+        all_fbs = get_all_feedbacks()
+        self.assertTrue(any(f["feedback_id"] == fb["feedback_id"] for f in all_fbs))
+
+    def test_17_higher_official_grievance_escalation(self):
+        """Test generation of formal, legally grounded grievance petition."""
+        petition = generate_formal_escalation_petition(
+            farmer_name="Komirelli Ramulu",
+            father_husband_name="K. Venkaiah",
+            aadhaar_masked="XXXX-XXXX-4921",
+            phone="9848022338",
+            village="Geesugonda",
+            mandal="Geesugonda",
+            district="Warangal",
+            survey_no="142/A",
+            problem_category="72-Hour PMFBY Loss Survey Not Conducted",
+            scheme_name="PMFBY Crop Insurance",
+            description="Severe hailstorm damaged standing paddy. Intimated on day 1, no survey conducted after 5 days.",
+            escalation_level="Level 3: District Agriculture Officer (DAO) & District Collector (Prajavani)"
+        )
+        self.assertIn("GRV/WAR", petition["petition_ref"])
+        self.assertIn("District Agriculture Officer", petition["petition_text"])
+        self.assertIn("Komirelli Ramulu", petition["petition_text"])
+        self.assertIn("142/A", petition["petition_text"])
+        self.assertIn("72-Hour PMFBY Loss Survey Not Conducted", petition["petition_text"])
 
 if __name__ == "__main__":
     unittest.main()
