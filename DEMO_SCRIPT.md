@@ -76,18 +76,33 @@
 
 ---
 
+### **Scene 5: Live Climate API & Rice Water Stress Shield (Bonus / Climate Resilience)**
+1. Switch to **Tab 4: 💧 Climate & Rice Water Shield**.
+2. **Select District (e.g. Warangal)** and Primary Water Source (**Borewell > 200 ft**):
+   - Notice live temperature, humidity, and 7-day rainfall forecast pulled directly from the **Open-Meteo IMD Grid API**.
+   - Observe the **Critical Water Stress Alert** triggered by consecutive dry days.
+3. **Show Preventive Agronomy (PJTSAU Approved)**:
+   - **Alternate Wetting & Drying (AWD)**: Saves 25-30% water.
+   - **Anti-transpirant Foliar Spray**: 1% Potassium Nitrate (13-0-45) to prevent flower dropping.
+   - **Early Salvage Harvesting Timeline**: Guidance to harvest at 80-85% golden grains to avoid terminal desiccation losses.
+4. **PMFBY Insurance Shield**:
+   - Highlight statutory **Mid-Season Adversity clause** (25% immediate on-account payout).
+   - Click **"Generate Loss Intimation Draft / SMS"** to prepare the 72-hour reporting intimation.
+
+---
+
 ## 💻 How to Run the Demo Locally
 
 ```powershell
 # In terminal:
 cd C:\Users\akshi\.gemini\antigravity\scratch\farmer-assistant
 
-# Run Streamlit (Farmer Chat + Intermediary Dashboard + MSP Tracker)
-streamlit run ui/streamlit_app/app.py
+# Run Streamlit (Farmer Chat + Intermediary Dashboard + MSP Tracker + Climate Shield)
+python -m streamlit run ui/streamlit_app/app.py
 
 # Optional: Run Telegram Bot CLI validation
 python ui/telegram_bot/bot.py --test
 
-# Run unit tests
+# Run unit tests (8 tests passing)
 python tests/test_assistant.py
 ```

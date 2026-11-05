@@ -18,6 +18,7 @@ from typing import Dict, Any
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from utils.llm import process_farmer_query, generate_plain_explanation, FALLBACK_PMKISAN, FALLBACK_UNCERTAIN
+from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
 from backend.eligibility_api import evaluate_farmer, load_schemes, FarmerProfile
 
 logging.basicConfig(
@@ -73,6 +74,7 @@ async def start_handler(update, context):
         "/schemes - నా అర్హత పథకాలు చూడండి (View Eligible Schemes)\n"
         "/deadlines - బీమా మరియు దరఖాస్తు గడువులు (Upcoming Deadlines)\n"
         "/msp - ధాన్యం & పత్తి మద్దతు ధరలు (MSP Price Tracker)\n"
+        "/water_alert - వరి పంట నీటి ఎద్దడి & వాతావరణ రక్షణ (Climate & Water Shield)\n"
         "/lang - భాష మార్చండి (Change Language: te / hi / en)\n"
         "/help - సహాయం పొందండి (Help & Fallback Guide)\n\n"
         "లేదా మీ ప్రశ్నను నేరుగా టైప్ చేయండి (ఉదా: 'పంట బీమా చివరి తేదీ ఎప్పుడు?')."
@@ -152,6 +154,17 @@ async def lang_handler(update, context):
             "/lang en  -> English"
         )
 
+async def water_alert_handler(update, context):
+    chat_id = update.effective_chat.id
+    profile = USER_PROFILES.get(chat_id, {})
+    dist = profile.get("district", "Warangal")
+    lang = profile.get("language", "te")
+
+    weather = get_live_weather(dist)
+    assessment = evaluate_water_stress(weather, crop="Paddy", water_source="Borewell")
+    advisory = generate_multilingual_water_advisory(assessment, lang=lang)
+    await update.message.reply_text(advisory, parse_mode="Markdown", disable_web_page_preview=True)
+
 async def text_message_handler(update, context):
     chat_id = update.effective_chat.id
     query = update.message.text
@@ -213,6 +226,15 @@ def run_cli_demo():
     print("\n[4] Testing Fallback 2: Out of scope uncertain topic:")
     unc_res = process_farmer_query("How to get bitcoin subsidy loan?", schemes, language="en")
     print(unc_res["message"])
+
+    print("\n[5] Testing Live Climate API & Rice Water Stress Advisory:")
+    weather = get_live_weather("Warangal")
+    assessment = evaluate_water_stress(weather, crop="Paddy", water_source="Borewell")
+    print(f"  Live Climate Status: {weather['status']} (District: {weather['district']})")
+    print(f"  Current Temp: {weather['current_temperature']}°C | 7-Day Forecast Rain: {weather['forecast_7day_total_rain_mm']} mm")
+    print(f"  Water Stress Assessment: {assessment['stress_level']} ({assessment['stress_title']})")
+    advisory_te = generate_multilingual_water_advisory(assessment, lang="te")
+    print(f"  Generated Telugu Advisory (First 250 chars):\n  {advisory_te[:250]}...")
     print("=" * 70)
     print("✅ All Person 2 validation test scenarios passed successfully!")
 
@@ -234,6 +256,7 @@ def main():
         app.add_handler(CommandHandler("schemes", schemes_handler))
         app.add_handler(CommandHandler("deadlines", deadlines_handler))
         app.add_handler(CommandHandler("msp", msp_handler))
+        app.add_handler(CommandHandler("water_alert", water_alert_handler))
         app.add_handler(CommandHandler("lang", lang_handler))
         app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_message_handler))
         

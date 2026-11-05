@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from utils.llm import process_farmer_query, generate_plain_explanation, FALLBACK_PMKISAN, FALLBACK_UNCERTAIN
 from utils.translation import get_label, UI_LABELS
+from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
 
 # Backend URL (can also run in embedded mode if backend is not running standalone)
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
@@ -94,10 +95,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Tabs
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     get_label("tab_farmer_chat", curr_lang),
     get_label("tab_intermediary", curr_lang),
-    get_label("tab_msp", curr_lang)
+    get_label("tab_msp", curr_lang),
+    get_label("tab_climate_shield", curr_lang)
 ])
 
 # -------------------------------------------------------------
@@ -388,3 +390,104 @@ with tab3:
 
     st.info("💡 **Telangana Farmer Tip**: For Paddy, the state government bonus of ₹500/quintal is applicable on 33 superfine varieties. Register on OPMS through your local Rythu Vedika.")
     st.caption("Official Sources: Commission for Agricultural Costs and Prices (cacp.dacnet.nic.in) & Telangana Civil Supplies (epds.telangana.gov.in) | Last Verified: 2026-11-02")
+
+# -------------------------------------------------------------
+# TAB 4: Climate & Rice Water Stress Shield
+# -------------------------------------------------------------
+with tab4:
+    st.subheader("💧 Live Climate & Rice Water Stress Shield")
+    st.markdown("""
+    *Protects Paddy/Rice cultivators from severe losses caused by declining water tables, canal dry spells, and terminal moisture heat.*
+    """)
+
+    c_col1, c_col2, c_col3 = st.columns([1.2, 1.2, 1.2])
+    with c_col1:
+        w_dist = st.selectbox("Select District for Climate Scan", ["Warangal", "Nalgonda", "Khammam", "Karimnagar", "Nizamabad", "Mahabubnagar", "Suryapet"], key="w_dist_select")
+    with c_col2:
+        w_source = st.selectbox("Primary Irrigation Source", ["Borewell (Deep > 200 ft)", "Canal Tail-end", "Tank / Open Well", "Borewell (Normal)"])
+    with c_col3:
+        w_crop_stage = st.selectbox("Paddy Growth Stage", ["Panicle Initiation / Milking (Most Vulnerable)", "Grain Hardening (80-85% Golden)", "Tillering / Vegetative", "Transplanting"])
+
+    # Fetch live meteorological data
+    weather_data = get_live_weather(w_dist)
+    stress_eval = evaluate_water_stress(weather_data, crop="Paddy", water_source=w_source)
+
+    # Meteorological summary cards
+    st.markdown("#### 🛰️ Live Meteorological Readings (Open-Meteo IMD Grid)")
+    wc1, wc2, wc3, wc4 = st.columns(4)
+    with wc1:
+        st.metric("Current Temperature", f"{weather_data['current_temperature']} °C", f"Avg Max: {weather_data['avg_max_temp']} °C")
+    with wc2:
+        st.metric("Relative Humidity", f"{weather_data['current_humidity']} %", "Soil drying rate: High" if weather_data['current_humidity'] < 60 else "Moderate")
+    with wc3:
+        st.metric("7-Day Forecast Rain", f"{weather_data['forecast_7day_total_rain_mm']} mm", "Rainfall Deficit" if weather_data['forecast_7day_total_rain_mm'] < 5.0 else "Adequate", delta_color="inverse")
+    with wc4:
+        st.metric("Consecutive Dry Days", f"{weather_data['consecutive_dry_days']} Days", "Water Stress Critical" if weather_data['consecutive_dry_days'] >= 5 else "Normal", delta_color="inverse")
+
+    # Dynamic Alert Card
+    alert_box_class = "danger-card" if stress_eval["stress_level"] == "CRITICAL" else ("warning-card" if stress_eval["stress_level"] == "MODERATE" else "metric-card")
+    st.markdown(f"""
+    <div class="{alert_box_class}">
+        <h3 style="margin:0; color:#b71c1c;">⚠️ {stress_eval['stress_title']}</h3>
+        <p style="margin:0.3rem 0; font-size:1.05rem;">
+            District <b>{w_dist}</b> is experiencing <b>{weather_data['consecutive_dry_days']} consecutive dry days</b> with only <b>{weather_data['forecast_7day_total_rain_mm']} mm</b> rain forecasted. 
+            Farmers with <i>{w_source}</i> cultivating Paddy at <i>{w_crop_stage}</i> face high risk of mid-season moisture failure.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 7-Day Rainfall Trend
+    rain_trend_df = pd.DataFrame({
+        "Date": weather_data["daily_dates"],
+        "Expected Rain (mm)": weather_data["daily_rain_mm"],
+        "Max Temp (°C)": weather_data["daily_max_temp"]
+    })
+    with st.expander("📊 View 7-Day Day-by-Day Forecast Table", expanded=False):
+        st.dataframe(rain_trend_df, hide_index=True, use_container_width=True)
+
+    st.markdown("---")
+
+    # Agronomic Preventative Guidance + Insurance Shield (2 Columns)
+    col_agri, col_ins = st.columns(2, gap="large")
+
+    with col_agri:
+        st.markdown("### 🛡️ Immediate Preventive Agronomy (PJTSAU)")
+        st.markdown("""
+        1. **Alternate Wetting & Drying (AWD)**:
+           - *Action*: Stop continuous standing water. Irrigate only to 5cm depth when water level drops below soil surface.
+           - *Benefit*: Saves **25–30% irrigation water** and aerates root zones to prevent root rot.
+        
+        2. **Anti-Transpirant Foliar Shield**:
+           - *Action*: Spray **1% Potassium Nitrate (13-0-45)** or **2% DAP solution** in late evening hours.
+           - *Benefit*: Regulates stomatal closure, reducing moisture loss and protecting panicles from desiccation.
+        
+        3. **Early Salvage Harvesting Timeline**:
+           - *Action*: If your crop has reached **80–85% golden grains** (milking is done), harvest immediately with combine harvesters.
+           - *Benefit*: Do **not** wait for the plant straw to dry completely. Harvesting early prevents grain shattering and lodging loss from terminal heat.
+        """)
+
+    with col_ins:
+        st.markdown("### 📜 PMFBY Crop Insurance Payout Shield")
+        st.markdown("""
+        *Know your statutory policy rights before losing your crop investment:*
+
+        - **⚡ Mid-Season Adversity (25% Immediate Advance)**:
+          If prolonged water shortage or dry spell causes >50% anticipated crop damage, state regulations mandate an **on-account payment of 25% of Sum Insured** directly into the farmer's bank account.
+        
+        - **🚫 Prevented Sowing / Transplantation Claim**:
+          If borewell/canal dry-up prevented planting seedlings on insured land, receive up to **25% of Sum Insured** compensation.
+
+        - **⏱️ Critical 72-Hour Claim Reporting Rule**:
+          Intimate localized crop loss within **72 hours** to be legally eligible.
+        """)
+
+        st.info("📞 **PMFBY National Toll-Free Helpline**: **1800-180-1551** | Portal: [pmfby.gov.in](https://pmfby.gov.in)")
+        if st.button("📲 Generate Loss Intimation Draft / SMS", use_container_width=True):
+            st.success(f"✅ Loss Intimation template generated for {w_dist} District. SMS drafted with Crop Insurance App deep link!")
+            st.code(f"INTIMATION: Farmer Paddy Crop Loss | Dist: {w_dist} | Cause: Severe Water Deficit & Terminal Dry Spell | Intimated within 72 hrs to AEO & PMFBY.", language="text")
+
+    # Full Multilingual Output Preview
+    st.markdown("---")
+    st.markdown("#### 🌐 Localized Audio / Dialect Preview (for WhatsApp & Telegram Bot)")
+    st.markdown(generate_multilingual_water_advisory(stress_eval, lang=curr_lang))
+

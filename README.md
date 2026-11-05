@@ -26,17 +26,18 @@ OpenQuest/
 │
 ├── 🗣️ PERSON 2 (The "Face" & Multilingual Interface)
 │   ├── ui/
-│   │   ├── streamlit_app/app.py # Interactive web app (Farmer Self-Service + Intermediary Desk + MSP Tracker)
-│   │   └── telegram_bot/bot.py  # Telegram bot with multilingual commands & CLI test mode
+│   │   ├── streamlit_app/app.py # Interactive web app (Farmer Chat + Intermediary Desk + MSP Tracker + Climate Shield)
+│   │   └── telegram_bot/bot.py  # Telegram bot with multilingual commands (/water_alert) & CLI test mode
 │   ├── utils/
 │   │   ├── llm.py               # Multilingual LLM explainer, strict rules & fallback routing
-│   │   └── translation.py       # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
+│   │   ├── translation.py       # Localized Telugu (తెలుగు), Hindi (हिंदी), and English strings
+│   │   └── weather_api.py       # Live Open-Meteo Climate API, 7-day forecast & rice water stress calculator
 │   ├── backend/
-│   │   └── eligibility_api.py   # FastAPI backend with fuzzy document verification & alert dispatch
+│   │   └── eligibility_api.py   # FastAPI backend with fuzzy document verification, climate & alert dispatch
 │   ├── data/
 │   │   └── schemes_telangana.json # Person 2 complementary scheme catalog
 │   ├── tests/
-│   │   └── test_assistant.py    # 6 automated unit tests validating engine, fallbacks & fuzzy checks
+│   │   └── test_assistant.py    # 8 automated unit tests validating engine, fallbacks, climate API & fuzzy checks
 │   └── DEMO_SCRIPT.md           # 3-minute hackathon presentation script with scene-by-scene narration
 │
 ├── ⚙️ RUNNERS & SCRIPTS

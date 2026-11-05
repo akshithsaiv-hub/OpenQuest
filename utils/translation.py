@@ -29,6 +29,11 @@ UI_LABELS = {
         "te": "⚖️ మద్దతు ధర (MSP) vs మార్కెట్ ధర",
         "hi": "⚖️ एमएसपी बनाम मंडी भाव ट्रैकर"
     },
+    "tab_climate_shield": {
+        "en": "💧 Climate & Rice Water Shield",
+        "te": "💧 క్లైమేట్ & వరి పంట నీటి రక్షణ",
+        "hi": "💧 मौसम एवं धान जल संकट कवच"
+    },
     "profile_header": {
         "en": "📋 Enter Your Farming Profile",
         "te": "📋 మీ వ్యవసాయ వివరాలను నమోదు చేయండి",

@@ -116,5 +116,32 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         self.assertLess(res3["similarity_score"], 50)
         self.assertEqual(res3["status"], "Severe Mismatch")
 
+    def test_07_live_weather_api(self):
+        """Test live climate/weather API integration (Open-Meteo)."""
+        from utils.weather_api import get_live_weather
+        weather = get_live_weather("Warangal")
+        self.assertIn(weather["status"], ["online", "cached_offline"])
+        self.assertIn("current_temperature", weather)
+        self.assertIn("forecast_7day_total_rain_mm", weather)
+        self.assertIn("consecutive_dry_days", weather)
+
+    def test_08_water_stress_and_advisory(self):
+        """Test water stress calculation and PMFBY agronomic advisory generation."""
+        from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
+        weather = get_live_weather("Warangal")
+        assessment = evaluate_water_stress(weather, crop="Paddy", water_source="Borewell")
+        
+        self.assertIn(assessment["stress_level"], ["CRITICAL", "MODERATE", "NORMAL"])
+        self.assertTrue(len(assessment["preventive_measures"]) >= 3)
+        self.assertIn("PMFBY", assessment["insurance_shield"]["scheme"])
+
+        # Check Telugu and English output
+        adv_te = generate_multilingual_water_advisory(assessment, lang="te")
+        adv_en = generate_multilingual_water_advisory(assessment, lang="en")
+        self.assertIn("AWD", adv_en)
+        self.assertIn("PMFBY", adv_en)
+        self.assertIn("వరి పంట", adv_te)
+        self.assertIn("1800-180-1551", adv_te)
+
 if __name__ == "__main__":
     unittest.main()

@@ -359,3 +359,16 @@ def get_msp_comparison():
             "source": "Commission for Agricultural Costs and Prices (CACP)"
         }
     ]
+
+# Live Climate & Water Stress Assessment endpoint
+@app.get("/climate_water_stress")
+def get_climate_water_stress(district: str = "Warangal", crop: str = "Paddy", water_source: str = "Borewell", lang: str = "en"):
+    from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
+    weather = get_live_weather(district)
+    assessment = evaluate_water_stress(weather, crop=crop, water_source=water_source)
+    advisory_text = generate_multilingual_water_advisory(assessment, lang=lang)
+    return {
+        "weather": weather,
+        "assessment": assessment,
+        "advisory_text": advisory_text
+    }
