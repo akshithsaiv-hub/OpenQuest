@@ -1,61 +1,157 @@
 [
   {
     "scheme_id": "PMKSY_PDMC",
-    "name": "Pradhan Mantri Krishi Sinchayee Yojana - Per Drop More Crop (PMKSY-PDMC)",
+    "name": "PMKSY - Per Drop More Crop (Micro Irrigation Drip & Sprinkler)",
+    "level": "Central & Pan-India State Top-Up",
     "category": "Micro Irrigation Subsidy (Drip & Sprinkler)",
     "implementing_agency": "Ministry of Agriculture & Farmers Welfare & State Horticulture/Agriculture Depts",
-    "target_beneficiaries": "Small, Marginal and Other Farmers across all Indian States",
+    "target_beneficiaries": "Small, Marginal and Other Farmers across all 28 Indian States & 8 UTs",
+    "applicable_states": ["All States", "Telangana", "Andhra Pradesh", "Maharashtra", "Karnataka", "Gujarat", "Tamil Nadu", "Haryana", "Punjab", "Rajasthan", "Madhya Pradesh", "Uttar Pradesh"],
     "subsidy_rules": {
-      "small_and_marginal_farmers": "55% Central/State baseline (up to 90% in Telangana TSMIP and AP; 100% for SC/ST in Telangana)",
+      "small_and_marginal_farmers": "55% Central/State baseline (up to 90% in Telangana TSMIP, AP, and TN; 100% for SC/ST)",
       "other_farmers": "45% baseline (up to 80% in progressive states)",
-      "sc_st_farmers": "90% to 100% subsidy (Telangana TSMIP provides 100% for SC/ST up to 5 acres)"
+      "sc_st_farmers": "90% to 100% subsidy depending on state top-up guidelines"
     },
     "eligible_systems": [
       "Drip Irrigation System (Inline & Online)",
       "Micro Sprinkler & Mini Sprinkler Systems",
-      "Portable Sprinkler Sets"
+      "Portable & Semi-Permanent Sprinkler Sets",
+      "Rain-gun Sprinkler Units"
     ],
     "water_savings_potential": "40% to 60% water savings compared to traditional flood irrigation; 20-30% yield boost",
     "eligibility_criteria": [
       "Cultivable land holding with functional water source (borewell, open well, or farm pond)",
       "Electricity connection or solar pump setup",
-      "Valid RoR (Pahani / Dharani / Patta Passbook)",
+      "Valid RoR (Pahani / Dharani / Patta Passbook / 7/12 / Khasra)",
       "One-time benefit per survey land holding for 7 years"
     ],
     "documents_required": [
       "Aadhaar Card copy",
-      "Land Record (Pahani / 1B / RoR / 7/12)",
+      "Land Record (Pahani / 1B / RoR / 7/12 / Khasra-Khatauni)",
       "Bank Passbook showing active IFSC",
       "Soil & Water Test Report (where mandated)",
-      "Caste Certificate (for SC/ST 100% subsidy tier)"
+      "Caste Certificate (for SC/ST subsidy tier)"
     ],
-    "current_status": "Active across all States under revised PMKSY 2.0 framework",
-    "portal_url": "https://pmksy.gov.in / https://horticulturedept.telangana.gov.in",
+    "current_status": "Active pan-India under revised PMKSY 2.0 framework",
+    "portal_url": "https://pmksy.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PMKSY_HKKP",
+    "name": "PMKSY - Har Khet Ko Pani (Groundwater & Surface Minor Irrigation)",
+    "level": "Central Scheme",
+    "category": "Assured Irrigation & Water Body Renovation",
+    "implementing_agency": "Ministry of Jal Shakti & State Water Resources Departments",
+    "target_beneficiaries": "Cultivators in command areas, rainfed gaps, and water-stressed assessment units",
+    "applicable_states": ["All States"],
+    "subsidy_rules": {
+      "community_irrigation": "Up to 60% Central grant for surface minor irrigation lift projects and community tank command development",
+      "individual_groundwater": "Targeted groundwater extraction units for small & marginal farmers in safe assessment units"
+    },
+    "eligible_systems": [
+      "Repair, Renovation and Restoration (RRR) of traditional water bodies / village tanks",
+      "Surface Minor Irrigation (SMI) lift channels",
+      "Community tube-wells in non-overexploited blocks"
+    ],
+    "water_savings_potential": "Revives localized aquifer recharge; eliminates tail-end canal water starvation",
+    "eligibility_criteria": [
+      "Land located within notified minor irrigation command zone or safe groundwater block",
+      "Water Users Association (WUA) or Panchayat participatory membership"
+    ],
+    "documents_required": [
+      "Panchayat NOC",
+      "Land ownership extract (Khatauni / RoR)",
+      "Aadhaar of beneficiary group"
+    ],
+    "current_status": "Active across identified command clusters",
+    "portal_url": "https://pmksy.gov.in/hkkp/",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PMKSY_WDC",
+    "name": "PMKSY - Watershed Development Component (WDC 2.0 / Ridge-to-Valley)",
+    "level": "Central Scheme",
+    "category": "Soil Moisture & Rainwater Harvesting Infrastructure",
+    "implementing_agency": "Department of Land Resources (DoLR), Ministry of Rural Development",
+    "target_beneficiaries": "Rainfed, dryland, and degraded land agricultural communities",
+    "applicable_states": ["All States", "Telangana", "Andhra Pradesh", "Karnataka", "Maharashtra", "Madhya Pradesh", "Rajasthan"],
+    "subsidy_rules": {
+      "community_and_individual_structures": "100% grant funded for community check-dams, percolation tanks, and continuous contour trenches; 70-80% for individual on-farm ponds"
+    },
+    "eligible_systems": [
+      "Earthen Check Dams & Masonry Weirs",
+      "Percolation Tanks & Farm Ponds (Khet Talab)",
+      "Loose Boulder Structures & Gabions",
+      "Sub-surface dykes in stream beds"
+    ],
+    "water_savings_potential": "Increases localized groundwater table by 1.5 to 3.0 meters; traps 100% of monsoon runoff",
+    "eligibility_criteria": [
+      "Land situated within notified micro-watershed project area",
+      "Willingness to contribute community maintenance labor/share"
+    ],
+    "documents_required": [
+      "Gram Sabha resolution extract",
+      "Survey parcel coordinates",
+      "Aadhaar Card"
+    ],
+    "current_status": "Active under WDC-PMKSY 2.0 (2021-2026)",
+    "portal_url": "https://dolr.gov.in/programmes-schemes/wdc-pmksy",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PM_KUSUM_A",
+    "name": "PM-KUSUM Component A (Decentralized Ground/Stilt Mounted Solar Plants 500kW to 2MW)",
+    "level": "Central Scheme",
+    "category": "Renewable Energy Farmer Power Producer",
+    "implementing_agency": "MNRE & State Electricity Distribution Companies (DISCOMs)",
+    "target_beneficiaries": "Individual farmers, FPOs, Cooperatives, and Panchayats with barren, fallow, or pasture land within 5 km of 33/11 kV substations",
+    "applicable_states": ["All States", "Rajasthan", "Maharashtra", "Gujarat", "Madhya Pradesh", "Haryana", "Telangana"],
+    "subsidy_rules": {
+      "tariff_support": "DISCOM buys power for 25 years at pre-fixed feed-in tariff (approx ₹3.10 - ₹3.30/unit); farmer earns steady ₹1.5 - ₹2.5 Lakh/acre/year on barren land"
+    },
+    "eligible_systems": [
+      "500 kW to 2 MW Solar PV Plants on barren/cultivable land (stilt mounting allows dual farming)"
+    ],
+    "water_savings_potential": "Monetizes water-parched unproductive land with solar farming; zero water required for power generation",
+    "eligibility_criteria": [
+      "Barren / cultivable land within 5 km radius of rural 33/11 kV substation",
+      "Title deed ownership or 25-year registered lease"
+    ],
+    "documents_required": [
+      "Land Registry / RoR",
+      "Substation connectivity clearance from DISCOM",
+      "Aadhaar & PAN Card",
+      "Bank Account details"
+    ],
+    "current_status": "Active across participating state DISCOM tenders",
+    "portal_url": "https://pmkusum.mnre.gov.in",
     "last_verified": "2026-11-05"
   },
   {
     "scheme_id": "PM_KUSUM_B",
     "name": "PM-KUSUM Component B (Standalone Off-Grid Solar Agriculture Pumps)",
+    "level": "Central Scheme",
     "category": "Solar Energy & Renewable Irrigation",
-    "implementing_agency": "Ministry of New and Renewable Energy (MNRE) & State Nodal Agencies (TSREDCO, MEDA, etc.)",
-    "target_beneficiaries": "Individual farmers with agricultural land and water source without grid electricity connection",
+    "implementing_agency": "Ministry of New and Renewable Energy (MNRE) & State Nodal Agencies (TSREDCO, MEDA, HAREDA, KREDL)",
+    "target_beneficiaries": "Individual farmers with agricultural land and functional water source without grid electricity connection",
+    "applicable_states": ["All States"],
     "subsidy_rules": {
       "central_subsidy": "30% Benchmark Cost from MNRE",
       "state_subsidy": "30% State Govt Share (increases to 50% in NE/Hill States/Tribal Regions)",
       "farmer_share": "10% to 40% (remaining can be financed through bank loans under Agri Infrastructure Fund)"
     },
     "eligible_systems": [
-      "3 HP, 5 HP, 7.5 HP Standalone DC/AC Surface and Submersible Solar Pumps"
+      "3 HP, 5 HP, 7.5 HP, 10 HP Standalone DC/AC Surface and Submersible Solar Pumps"
     ],
     "water_savings_potential": "Guaranteed daytime uninterrupted irrigation; eliminates diesel pump recurring expenses (₹40,000-60,000/year savings)",
     "eligibility_criteria": [
-      "Farmer must own agricultural land with an existing open well or borewell",
+      "Farmer must own agricultural land with an existing open well, borewell, or farm pond",
       "No existing grid power connection for the applied borewell",
       "Land title clearance and groundwater availability certificate"
     ],
     "documents_required": [
       "Aadhaar Card",
-      "Land Ownership Passbook / Pahani",
+      "Land Ownership Passbook / Pahani / 7/12 / Khasra",
       "Affidavit of No Existing Grid Connection",
       "Bank Account details",
       "Borewell / Source Depth Certificate"
@@ -66,16 +162,19 @@
   },
   {
     "scheme_id": "PM_KUSUM_C",
-    "name": "PM-KUSUM Component C (Solarisation of Grid-Connected Agricultural Pumps)",
+    "name": "PM-KUSUM Component C (Solarisation of Grid-Connected Agricultural Pumps & Feeders)",
+    "level": "Central Scheme",
     "category": "Solarised Feeder & Net Metering",
     "implementing_agency": "MNRE & State DISCOMs",
-    "target_beneficiaries": "Farmers with existing grid-connected electric pump sets",
+    "target_beneficiaries": "Farmers with existing grid-connected electric pump sets and rural agricultural feeders",
+    "applicable_states": ["All States"],
     "subsidy_rules": {
-      "central_state_subsidy": "Up to 60% combined subsidy",
-      "farmer_share": "Remaining 40% self or financed; farmer earns income selling surplus solar power back to grid"
+      "feeder_level_solarisation": "CFA of ₹1.05 Cr/MW for feeder solarisation; DISCOM installs solar plant; farmer gets free daytime solar power",
+      "individual_pump_solarisation": "Up to 60% combined subsidy (30% Central + 30% State); farmer sells surplus power back to grid"
     },
     "eligible_systems": [
-      "Individual Pump Solarisation & Solar Feeder segregation"
+      "Feeder Level Solarisation (FLS)",
+      "Individual Pump Solarisation with Net Metering"
     ],
     "water_savings_potential": "Solar power day-time usage prevents wasteful night flood irrigation; solar earnings incentivize water conservation",
     "eligibility_criteria": [
@@ -95,9 +194,11 @@
   {
     "scheme_id": "TSMIP_TELANGANA",
     "name": "Telangana State Micro Irrigation Project (TSMIP)",
+    "level": "Telangana State Scheme",
     "category": "State Micro Irrigation Top-Up Scheme",
     "implementing_agency": "Horticulture Department, Government of Telangana",
     "target_beneficiaries": "All farmers in Telangana cultivating agriculture or horticulture crops",
+    "applicable_states": ["Telangana"],
     "subsidy_rules": {
       "sc_st_farmers": "100% subsidy (Free drip/sprinkler up to 5 acres)",
       "bc_small_marginal": "90% subsidy (farmer pays only 10% GST/share)",
@@ -120,7 +221,360 @@
       "Caste Certificate (MeeSeva issued for SC/ST/BC)"
     ],
     "current_status": "Active with ongoing allocations across all 33 Telangana districts",
-    "portal_url": "https://horticulturedept.telangana.gov.in / Rythu Vedika registration",
+    "portal_url": "https://horticulturedept.telangana.gov.in / Rythu Vedika",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "APMIP_ANDHRA_PRADESH",
+    "name": "Andhra Pradesh Micro Irrigation Project (APMIP)",
+    "level": "Andhra Pradesh State Scheme",
+    "category": "Comprehensive Micro Irrigation & Rayalaseema Drought Shield",
+    "implementing_agency": "Department of Horticulture, Government of Andhra Pradesh",
+    "target_beneficiaries": "Small, marginal, and tenant farmers across all 26 AP districts with special focus on Rayalaseema & Prakasam dry tracts",
+    "applicable_states": ["Andhra Pradesh"],
+    "subsidy_rules": {
+      "sc_st_farmers": "100% subsidy for SC/ST farmers up to 5.0 acres",
+      "bc_farmers_rayalaseema": "90% subsidy for BC farmers in Rayalaseema & Prakasam districts",
+      "other_small_marginal": "90% subsidy for all other small/marginal farmers up to 5 acres; 70% for 5 to 10 acres"
+    },
+    "eligible_systems": [
+      "Inline & Online Drip Irrigation for Horticulture & Sugarcane",
+      "Micro-jets & Portable Sprinklers for Groundnut, Bengal Gram, and Millets"
+    ],
+    "water_savings_potential": "Saves up to 65% groundwater; prevents borewell drying in summer",
+    "eligibility_criteria": [
+      "Land ownership recorded on Meebhoomi / e-Crop or registered CCRC card for tenant cultivators",
+      "Functional borewell or open water point"
+    ],
+    "documents_required": [
+      "Meebhoomi 1B / Pattadar Passbook or CCRC Card",
+      "Aadhaar Card copy",
+      "Bank Passbook copy",
+      "Integrated Caste Certificate"
+    ],
+    "current_status": "Active across all AP districts with digital registration via Rythu Bharosa Kendras (RBKs)",
+    "portal_url": "https://apmip.ap.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MAHA_SHET_TALE",
+    "name": "Maharashtra Magel Tyala Shet Tale (Farm Pond On Demand)",
+    "level": "Maharashtra State Scheme",
+    "category": "Farm Pond Construction & Water Storage",
+    "implementing_agency": "Agriculture Department, Government of Maharashtra (MahaDBT)",
+    "target_beneficiaries": "Farmers in Maharashtra experiencing dry spells in Vidarbha, Marathwada, and drought-prone talukas",
+    "applicable_states": ["Maharashtra"],
+    "subsidy_rules": {
+      "farm_pond_grant": "₹50,000 to ₹75,000 direct DBT grant for farm pond excavation (size 30m x 30m x 3m)",
+      "plastic_lining_add_on": "Additional ₹1,00,000 grant under State Plastic Lining Scheme to prevent seepage"
+    },
+    "eligible_systems": [
+      "Individual Farm Pond (Shet Tale) with inlet/outlet channels",
+      "Plastic geomembrane film lining (500 micron)"
+    ],
+    "water_savings_potential": "Stores 15 to 25 lakh liters of rainwater; provides 2-3 life-saving irrigations for cotton & soybean",
+    "eligibility_criteria": [
+      "Minimum 0.50 hectare (1.25 acre) cultivable land",
+      "Technical feasibility certificate from Agriculture Assistant (Krishi Sahayak)"
+    ],
+    "documents_required": [
+      "7/12 Extract and 8-A Extract",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Self-declaration of not owning an existing subsidised pond"
+    ],
+    "current_status": "Active on MahaDBT portal under Farmer Schemes",
+    "portal_url": "https://mahadbt.maharashtra.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MAHA_MSKVY_SOLAR",
+    "name": "Maharashtra Mukhyamantri Saur Krushi Vahini Yojana (MSKVY 2.0 / Solar Feeders)",
+    "level": "Maharashtra State Scheme",
+    "category": "Daytime Solar Power for Agriculture",
+    "implementing_agency": "MSEDCL (Mahavitaran) & Energy Department, Maharashtra",
+    "target_beneficiaries": "Agricultural electricity consumers and farmers leasing barren land for solar projects",
+    "applicable_states": ["Maharashtra"],
+    "subsidy_rules": {
+      "solar_feeder_power": "Provides 100% uninterrupted daytime electricity (8 hours daily) for farm pumps",
+      "land_lease_rent": "Farmers leasing land within 5 km of substation receive ₹1,25,000/acre/year guaranteed rent with 3% annual escalation"
+    },
+    "eligible_systems": [
+      "Solar Agriculture Feeders connected directly to rural substations"
+    ],
+    "water_savings_potential": "Eliminates dangerous nighttime flood watering; enables daytime precision water management",
+    "eligibility_criteria": [
+      "Agricultural pump consumers connected to MSEDCL rural feeders",
+      "Barren land parcel near 33/11kV substations for land lease"
+    ],
+    "documents_required": [
+      "Consumer electricity billing number",
+      "7/12 extract",
+      "Aadhaar Card"
+    ],
+    "current_status": "Active mission aiming for 7,000 MW solar capacity by 2026",
+    "portal_url": "https://www.mahadiscom.in/solar-mskvy/",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "KARNATAKA_KRISHI_BHAGYA",
+    "name": "Karnataka Krishi Bhagya Scheme (Farm Ponds, Polythene Lining & Micro Irrigation)",
+    "level": "Karnataka State Scheme",
+    "category": "Comprehensive Dryland Rainwater Harvesting Package",
+    "implementing_agency": "Department of Agriculture, Government of Karnataka",
+    "target_beneficiaries": "Dryland farmers in 130+ rain-dependent talukas of Karnataka (North & Central Karnataka dry belts)",
+    "applicable_states": ["Karnataka"],
+    "subsidy_rules": {
+      "sc_st_farmers": "90% subsidy for farm pond excavation, polythene lining, pump set, and micro-irrigation package",
+      "general_small_marginal": "80% package subsidy (total benefit up to ₹1,75,000 per farm unit)"
+    },
+    "eligible_systems": [
+      "Farm Pond excavation with silt trap",
+      "UV-stabilised polythene lining (500 micron)",
+      "Solar or Diesel pump sets for lifting stored water",
+      "Drip / Sprinkler distribution package"
+    ],
+    "water_savings_potential": "Stores surface runoff to guarantee kharif crop rescue irrigation during 3-4 week monsoon breaks",
+    "eligibility_criteria": [
+      "Resident cultivator in notified dryland talukas of Karnataka",
+      "Pahani / RTC land record"
+    ],
+    "documents_required": [
+      "RTC / Pahani document",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Caste Certificate (for 90% SC/ST tier)"
+    ],
+    "current_status": "Active with annual allocations across Karnataka dryland districts",
+    "portal_url": "https://raitamitra.karnataka.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "GUJARAT_GGRC_SKY",
+    "name": "Gujarat Micro Irrigation Scheme (GGRC) & Suryashakti Kisan Yojana (SKY)",
+    "level": "Gujarat State Scheme",
+    "category": "State Micro Irrigation & Grid-Connected Solar Pumps",
+    "implementing_agency": "Gujarat Green Revolution Company (GGRC) & GUVNL",
+    "target_beneficiaries": "All farmers in Gujarat cultivating groundnut, cotton, vegetables, and cumin",
+    "applicable_states": ["Gujarat"],
+    "subsidy_rules": {
+      "tribal_and_sc_farmers": "Up to 85% subsidy on Drip and Sprinkler systems",
+      "general_small_marginal": "70% subsidy; other farmers 50%",
+      "sky_solar_pumps": "Farmer contributes only 5%; 60% Govt subsidy + 35% low-interest loan; farmer earns ₹7/unit for surplus solar power fed to grid"
+    },
+    "eligible_systems": [
+      "Inline Drip System for Cotton and Groundnut",
+      "Micro-sprinkler systems for summer pulses",
+      "Grid-interactive solar pump sets"
+    ],
+    "water_savings_potential": "Cuts water usage by 55%; earns farmers ₹12,000-24,000 annually selling green solar electricity",
+    "eligibility_criteria": [
+      "7/12 & 8-A land record in Gujarat",
+      "Existing water source (borewell or well) with water test report"
+    ],
+    "documents_required": [
+      "7/12 & 8-A Extracts",
+      "Aadhaar Card",
+      "Bank Passbook copy",
+      "Electricity consumer number (if grid connected)"
+    ],
+    "current_status": "Active on GGRC online portal (ggrc.co.in) and i-Khedut portal",
+    "portal_url": "https://ggrc.co.in / https://ikhedut.gujarat.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "HARYANA_MERA_PANI",
+    "name": "Haryana Mera Pani Meri Virasat & Water Recharge Borewell Scheme",
+    "level": "Haryana State Scheme",
+    "category": "Crop Diversification Direct Incentive & Water Table Shield",
+    "implementing_agency": "Department of Agriculture & Farmers Welfare, Government of Haryana",
+    "target_beneficiaries": "Farmers in dark/overexploited groundwater zones replacing water-guzzling Paddy with maize, pulses, cotton, or agroforestry",
+    "applicable_states": ["Haryana"],
+    "subsidy_rules": {
+      "crop_diversification_cash": "₹7,000 per acre direct cash incentive transferred to farmer bank account for switching from paddy",
+      "micro_irrigation_top_up": "85% subsidy on Drip and Sprinkler systems on diversified acreage",
+      "underground_recharge_wells": "Subsidy for constructing rooftop/farm water injection recharge borewells"
+    },
+    "eligible_systems": [
+      "Direct DBT Cash incentive for crop substitution",
+      "Drip & Mini Sprinkler setups",
+      "Borewell Groundwater Recharge Chambers"
+    ],
+    "water_savings_potential": "Saves 30 to 40 lakh liters of groundwater per acre per season; prevents water table drop",
+    "eligibility_criteria": [
+      "Farmer in Haryana who cultivated paddy in previous kharif and diversifies into non-paddy crops",
+      "Registration on Meri Fasal Mera Byora (MFMB) portal"
+    ],
+    "documents_required": [
+      "Meri Fasal Mera Byora (MFMB) acknowledgment ID",
+      "Parivar Pehchan Patra (PPP) Family ID",
+      "Aadhaar Card",
+      "Bank Passbook"
+    ],
+    "current_status": "Active with annual kharif enrollment window on fasal.haryana.gov.in",
+    "portal_url": "https://fasal.haryana.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "PUNJAB_UGPL_PIPELINE",
+    "name": "Punjab Underground Pipeline System (UGPL) & Micro Irrigation",
+    "level": "Punjab State Scheme",
+    "category": "Conveyance Loss Elimination & Subsidised PVC Piping",
+    "implementing_agency": "Department of Soil and Water Conservation, Government of Punjab",
+    "target_beneficiaries": "Farmers facing high canal/borewell seepage losses and electricity consumption in Punjab",
+    "applicable_states": ["Punjab"],
+    "subsidy_rules": {
+      "individual_pipeline": "50% capital subsidy (up to ₹60,000 per farmer or ₹84,000/ha) for laying underground PVC pipelines",
+      "community_pipeline_sc": "Up to 90% subsidy for SC/ST and community pipeline projects benefiting smallholders"
+    },
+    "eligible_systems": [
+      "Underground PVC irrigation pipeline networks (110mm to 160mm)",
+      "Automated inlet valves and distribution hydrants",
+      "Drip irrigation for cotton and kinnow orchards"
+    ],
+    "water_savings_potential": "Eliminates 30% to 35% conveyance seepage evaporation losses in open unlined field watercourses",
+    "eligibility_criteria": [
+      "Cultivated land in Punjab with operational tube-well or canal outlet",
+      "Joint consent if pipeline crosses neighboring survey numbers"
+    ],
+    "documents_required": [
+      "Fard / Jamabandi land extract",
+      "Aadhaar Card",
+      "Bank Account details",
+      "Tube-well electricity bill or Canal outlet certificate"
+    ],
+    "current_status": "Active under State Soil & Water Conservation allocation",
+    "portal_url": "https://dswcpunjab.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "TAMILNADU_MICRO_IRRIGATION",
+    "name": "Tamil Nadu Micro Irrigation Scheme (100% Subsidy for Small/Marginal Farmers)",
+    "level": "Tamil Nadu State Scheme",
+    "category": "State Top-Up Precision Micro Irrigation",
+    "implementing_agency": "Department of Horticulture & Plantation Crops, Government of Tamil Nadu",
+    "target_beneficiaries": "Small, marginal, and large farmers cultivating sugarcane, banana, coconut, pulses, and oilseeds",
+    "applicable_states": ["Tamil Nadu"],
+    "subsidy_rules": {
+      "small_and_marginal_farmers": "100% subsidy (55% PMKSY Central share + 45% Tamil Nadu State Government top-up)",
+      "other_large_farmers": "75% subsidy (45% Central + 30% State top-up)"
+    },
+    "eligible_systems": [
+      "Drip Irrigation System with disc filters and venturi injectors",
+      "Portable and Semi-Permanent Sprinklers for Pulses and Groundnut"
+    ],
+    "water_savings_potential": "Saves 50% to 60% Cauvery / Vaigai basin groundwater; boosts crop productivity by 35%",
+    "eligibility_criteria": [
+      "Patta / Chitta ownership in Tamil Nadu",
+      "Functional borewell or open well with water quality fit for irrigation"
+    ],
+    "documents_required": [
+      "Patta / Chitta extract and FMB sketch",
+      "Aadhaar Card",
+      "Small / Marginal Farmer Certificate issued by Revenue Tahsildar",
+      "Bank Passbook copy"
+    ],
+    "current_status": "Active with registrations open on TN Horticulture portal (tnhorticulture.tn.gov.in)",
+    "portal_url": "https://tnhorticulture.tn.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "RAJASTHAN_KHET_TALAI",
+    "name": "Rajasthan Farm Pond (Khet Talai) & Drip Subsidy (Rajkisan Sathi)",
+    "level": "Rajasthan State Scheme",
+    "category": "Arid Zone Rainwater Harvesting & High Subsidy Drip",
+    "implementing_agency": "Department of Agriculture, Government of Rajasthan",
+    "target_beneficiaries": "Farmers in arid and semi-arid districts (Barmer, Jodhpur, Bikaner, Nagaur, Kota, Alwar)",
+    "applicable_states": ["Rajasthan"],
+    "subsidy_rules": {
+      "plastic_lined_farm_pond": "Up to ₹1,20,000 (or 70% of cost) subsidy for small/marginal farmers constructing plastic-lined farm ponds; ₹90,000 for other farmers",
+      "raw_earthen_pond": "₹63,000 (small/marginal) and ₹50,000 (general)",
+      "drip_sprinkler_topup": "70% subsidy for small/marginal; 75% for SC/ST"
+    },
+    "eligible_systems": [
+      "Plastic Film Lined Farm Ponds (Khet Talai - 400/500 micron)",
+      "Solar Water Pumps (under PM-KUSUM Component B)",
+      "Mini & Micro Sprinkler systems"
+    ],
+    "water_savings_potential": "Traps flash desert monsoon showers; provides winter crop irrigation without borewells",
+    "eligibility_criteria": [
+      "Minimum 0.50 hectare agricultural land in Rajasthan",
+      "Registration on Rajkisan Sathi portal with Jan Aadhaar card"
+    ],
+    "documents_required": [
+      "Jan Aadhaar Card",
+      "Jamabandi copy (within 6 months)",
+      "Aadhaar Card",
+      "Bank Account linked to Jan Aadhaar"
+    ],
+    "current_status": "Active via online lottery and queue on Rajkisan Sathi portal",
+    "portal_url": "https://rajkisan.rajasthan.gov.in",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "MP_BALRAM_TALAB",
+    "name": "Madhya Pradesh Balram Talab Yojana & e-Krishi Anudan",
+    "level": "Madhya Pradesh State Scheme",
+    "category": "Groundwater Recharge Farm Pond & Micro Irrigation",
+    "implementing_agency": "Farmers Welfare & Agriculture Development Department, Government of MP",
+    "target_beneficiaries": "Farmers in Malwa, Bundelkhand, and Mahakoshal belts facing declining water tables",
+    "applicable_states": ["Madhya Pradesh"],
+    "subsidy_rules": {
+      "sc_st_farmers": "75% subsidy up to maximum of ₹1,00,000 for Balram Talab construction",
+      "small_marginal_farmers": "50% subsidy up to maximum of ₹80,000",
+      "other_farmers": "40% subsidy up to ₹50,000",
+      "drip_sprinkler_subsidy": "55% subsidy under PMKSY on MP e-Krishi Anudan"
+    },
+    "eligible_systems": [
+      "Balram Talab (Farm Pond for water storage & aquifer recharge)",
+      "Sprinkler sets for wheat, gram, and mustard",
+      "Drip systems for soybean, cotton, and vegetables"
+    ],
+    "water_savings_potential": "Enhances surrounding tube-well discharge by 40%; provides supplementary irrigation during dry spells",
+    "eligibility_criteria": [
+      "Khasra/B-1 land ownership in Madhya Pradesh",
+      "Farmer must construct pond on own cultivable land"
+    ],
+    "documents_required": [
+      "Khasra / B-1 copy",
+      "Aadhaar Card",
+      "Bank Passbook copy",
+      "Caste Certificate (for SC/ST 75% tier)"
+    ],
+    "current_status": "Active on MP DBT e-Krishi Anudan portal (dbt.mpdage.org)",
+    "portal_url": "https://dbt.mpdage.org",
+    "last_verified": "2026-11-05"
+  },
+  {
+    "scheme_id": "UP_KHET_TALAB",
+    "name": "Uttar Pradesh Khet Talab Yojana & Solar Pump Token Booking",
+    "level": "Uttar Pradesh State Scheme",
+    "category": "Bundelkhand Water Harvest & Subsidised Solar Pumps",
+    "implementing_agency": "Agriculture Department, Government of Uttar Pradesh",
+    "target_beneficiaries": "Farmers across all 75 UP districts with special priority for Bundelkhand (7 districts)",
+    "applicable_states": ["Uttar Pradesh"],
+    "subsidy_rules": {
+      "khet_talab_subsidy": "50% direct subsidy (₹52,500 for small pond of 22m x 20m x 3m; ₹1,14,200 for medium pond) disbursed in 3 direct DBT tranches",
+      "solar_pump_token": "Up to 60% subsidy on 2 HP, 3 HP, 5 HP, and 7.5 HP solar pumps under PM-KUSUM with online token booking"
+    },
+    "eligible_systems": [
+      "Khet Talab (Rainwater storage farm ponds)",
+      "Solar DC/AC submersible and surface pump sets",
+      "Sprinkler irrigation sets for pulse and oilseed clusters"
+    ],
+    "water_savings_potential": "Saves Bundelkhand pulses from drought failure; stores 2,000 to 4,500 cubic meters of monsoon runoff",
+    "eligibility_criteria": [
+      "Registered farmer on upagriculture.com portal (Kisan Panjikaran)",
+      "Clear land title in Uttar Pradesh"
+    ],
+    "documents_required": [
+      "Kisan Panjikaran Number (UP Agriculture registration)",
+      "Khatauni land record",
+      "Aadhaar Card",
+      "Bank Passbook"
+    ],
+    "current_status": "Active with token booking sessions announced on upagriculture.com",
+    "portal_url": "https://upagriculture.com",
     "last_verified": "2026-11-05"
   }
 ]

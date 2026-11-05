@@ -1,118 +1,529 @@
 [
   {
     "crop_id": "bengal_gram",
-    "name": "Bengal Gram / Chickpea (శనగ / चना)",
+    "name": "Bengal Gram / Desi Chickpea (శనగ / चना)",
     "category": "Pulses (Rabi / Winter)",
+    "season_suitability": "Rabi (Post-Kharif Paddy or rainfed fallow)",
     "water_requirement_mm": "250 - 350 mm (vs 1200 - 1400 mm for Paddy)",
-    "water_savings_percentage": "75% less water than Paddy",
+    "water_savings_percentage": "75% less water than flooded Paddy",
     "msp_rate_per_quintal": 5440,
-    "recommended_varieties": ["JG 11", "JAKI 9218", "NBeG 3", "KAK 2 (Kabuli)"],
-    "sowing_window": "October 15 to November 15 (Ideal after Kharif Paddy or early harvest)",
+    "recommended_varieties": ["JG 11", "JAKI 9218", "NBeG 3", "KAK 2", "Vishal"],
+    "sowing_window": "October 15 to November 15 (Ideal with residual soil moisture)",
     "duration_days": "95 - 105 days",
     "expected_yield_qtl_per_acre": "8 - 10 Quintals",
     "net_income_estimate_per_acre": "₹35,000 - ₹45,000",
-    "soil_suitability": "Medium to deep black cotton soils with residual moisture",
+    "soil_suitability": "Medium to deep black cotton soils and loamy soils with good water-holding capacity",
     "attached_schemes": [
-      "NFSM-Pulses: 50% seed subsidy & free biofertilizer (Rhizobium + PSB) packets",
-      "PM-AASHA: Guaranteed MSP procurement through NAFED & Markfed",
+      "NFSM-Pulses: 50% certified seed subsidy & free biofertilizer (Rhizobium + PSB) packets",
+      "PM-AASHA: Guaranteed MSP procurement through NAFED & State Markfed",
       "Pradhan Mantri Krishi Sinchayee Yojana (PMKSY) for sprinkler sets"
     ],
-    "soil_health_benefit": "Fixes 40-50 kg atmospheric Nitrogen per hectare; reduces next-season fertilizer expenditure by 25%"
+    "soil_health_benefit": "Fixes 40-50 kg atmospheric Nitrogen/ha; reduces subsequent crop urea requirement by 25%"
+  },
+  {
+    "crop_id": "kabuli_chickpea",
+    "name": "Kabuli Chickpea / Dollar Chana (కాబూలీ శనగ / काबुली चना)",
+    "category": "High-Value Export Pulses (Rabi)",
+    "season_suitability": "Rabi (Irrigated dry)",
+    "water_requirement_mm": "250 - 320 mm",
+    "water_savings_percentage": "78% less water than Paddy",
+    "msp_rate_per_quintal": 5440,
+    "market_price_per_quintal": "₹9,000 - ₹12,000 (Premium export market valuation)",
+    "recommended_varieties": ["MNK 1", "PKV Kabuli 2", "Phule G 0517", "Kripa"],
+    "sowing_window": "October 20 to November 10",
+    "duration_days": "100 - 110 days",
+    "expected_yield_qtl_per_acre": "7 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹55,000 - ₹75,000",
+    "soil_suitability": "Deep, well-drained black clay loams; sensitive to excess moisture",
+    "attached_schemes": [
+      "Agricultural and Processed Food Products Export Development Authority (APEDA) export credit",
+      "NFSM-Pulses demonstration clusters"
+    ],
+    "soil_health_benefit": "Leaves deep root channels that improve soil aeration and infiltration for the next season"
   },
   {
     "crop_id": "green_gram",
     "name": "Green Gram / Moong (పెసర / मूंग)",
     "category": "Short-Duration Pulses (Summer / Catch Crop / Kharif)",
-    "water_requirement_mm": "250 - 300 mm",
+    "season_suitability": "Summer (March-May) or Kharif onset (June-July)",
+    "water_requirement_mm": "200 - 280 mm",
     "water_savings_percentage": "80% less water than Paddy",
     "msp_rate_per_quintal": 8682,
-    "recommended_varieties": ["MGG 295", "WGG 42", "IPM 02-14", "Shikha"],
-    "sowing_window": "Immediately after Rabi harvest (March) or Kharif onset (June-July)",
-    "duration_days": "60 - 65 days (Fastest cash turnover)",
+    "recommended_varieties": ["MGG 295", "WGG 42", "IPM 02-14", "Shikha", "Samrat"],
+    "sowing_window": "March 1 to March 25 (Summer) or June 15 to July 15 (Kharif)",
+    "duration_days": "60 - 65 days (Fastest cash liquidity turnaround)",
     "expected_yield_qtl_per_acre": "5 - 7 Quintals",
     "net_income_estimate_per_acre": "₹38,000 - ₹48,000",
-    "soil_suitability": "Well-drained loams and red soils; tolerates mild heat",
+    "soil_suitability": "Well-drained loams, sandy loams, and light red soils; highly responsive to micro-sprinklers",
     "attached_schemes": [
-      "National Food Security Mission: Free Mini-Kit Seed Distribution",
-      "MSP Procurement via NAFED / State Oilfed"
+      "National Food Security Mission: Free Certified Mini-Kit Seed Distribution at Rythu Vedikas",
+      "MSP Procurement Operations through NAFED and State Oilfed",
+      "Summer Moong Promotion under State Pulses Missions"
     ],
-    "soil_health_benefit": "Super-fast crop cycle restores organic carbon; ideal green manure break crop"
+    "soil_health_benefit": "Biomass incorporation after 2 pickings adds 3 to 4 tonnes of green manure per acre"
   },
   {
     "crop_id": "black_gram",
     "name": "Black Gram / Urad (మినుములు / उड़द)",
-    "category": "Pulses",
-    "water_requirement_mm": "300 - 350 mm",
-    "water_savings_percentage": "75% less water than Paddy",
+    "category": "Pulses (Zero-Tillage Rice Fallows / Kharif)",
+    "season_suitability": "Rabi Rice-Fallows (November-December) or Kharif",
+    "water_requirement_mm": "250 - 320 mm",
+    "water_savings_percentage": "78% less water than Paddy",
     "msp_rate_per_quintal": 7400,
-    "recommended_varieties": ["PU 31", "LBG 752", "TBG 104", "VBN 8"],
-    "sowing_window": "November - December (as rice-fallow zero-tillage crop)",
+    "recommended_varieties": ["PU 31", "LBG 752", "TBG 104", "VBN 8", "Shekhar 2"],
+    "sowing_window": "Broadcast into standing paddy 2-3 days before harvest or sown November-December",
     "duration_days": "75 - 85 days",
     "expected_yield_qtl_per_acre": "6 - 8 Quintals",
     "net_income_estimate_per_acre": "₹40,000 - ₹50,000",
-    "soil_suitability": "Clayey loams and residual moisture black soils",
+    "soil_suitability": "Clayey loams and residual moisture black soils; ideal relay crop in delta and canal commands",
     "attached_schemes": [
-      "Zero-Tillage Rice Fallows Promotion Scheme (Seed + Weedicide subsidy)",
-      "NAFED MSP Procurement"
+      "Zero-Tillage Rice Fallows Promotion Scheme (Subsidised seeds and pre-emergence weedicides)",
+      "NAFED Price Support Scheme (PSS) Procurement"
     ],
-    "soil_health_benefit": "Zero tillage saves ₹4,000/acre in land preparation costs"
+    "soil_health_benefit": "Zero tillage saves ₹4,000/acre in land preparation; deep taproot breaks plough-pan layer"
+  },
+  {
+    "crop_id": "red_gram",
+    "name": "Red Gram / Pigeonpea / Tur (కందులు / अरहर-तुअर)",
+    "category": "Deep-Rooted Drought Avoidance Pulses (Kharif / Annual)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "350 - 450 mm",
+    "water_savings_percentage": "70% less water than flooded Paddy",
+    "msp_rate_per_quintal": 7550,
+    "recommended_varieties": ["PRG 176", "ICPL 87119 (Asha)", "WRG 65", "BDN 711", "Maruti"],
+    "sowing_window": "June 15 to July 20",
+    "duration_days": "150 - 180 days (Intercropped with Cotton/Soybean or Sole Crop)",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹45,000 - ₹60,000",
+    "soil_suitability": "Deep, well-drained red and black soils with no waterlogging",
+    "attached_schemes": [
+      "Targeted Pulses Production Programme (TPPD) under NFSM",
+      "Special Tur Procurement Portal via e-Samridhi NAFED/NCCF with 100% procurement commitment",
+      "Drip fertigation subsidy under PMKSY"
+    ],
+    "soil_health_benefit": "Root depth of 2 meters mines sub-soil nutrients and moisture; recycles 1.5 tonnes leaf litter"
+  },
+  {
+    "crop_id": "horse_gram",
+    "name": "Horse Gram / Kulthi (ఉలవలు / कुलथी / కొల్లూ)",
+    "category": "Ultra Drought-Hardy Poor Soil Pulses (Late Kharif / Rabi)",
+    "season_suitability": "Late Kharif / Post-flood / Contingency crop (August to October)",
+    "water_requirement_mm": "150 - 220 mm (Survives where other crops fail)",
+    "water_savings_percentage": "88% less water than Paddy",
+    "msp_rate_per_quintal": 4500,
+    "recommended_varieties": ["CRIDA 18R", "Palem 1", "Palem 2", "AK 21", "Madhu"],
+    "sowing_window": "August 15 to October 15",
+    "duration_days": "80 - 90 days",
+    "expected_yield_qtl_per_acre": "4 - 6 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹30,000 with near-zero chemical input cost",
+    "soil_suitability": "Shallow, gravelly, poor, eroded red gravels and degraded marginal wastelands",
+    "attached_schemes": [
+      "State Contingent Crop Planning mini-kits after delayed or failed monsoon",
+      "Traditional Nutri-Feed Promotion for dairy and poultry"
+    ],
+    "soil_health_benefit": "Extreme ground cover prevents topsoil erosion; thrives on zero synthetic fertilizer"
+  },
+  {
+    "crop_id": "cowpea",
+    "name": "Cowpea / Lobia / Black-Eyed Pea (బొబ్బర్లు / అలసందలు / लोबिया)",
+    "category": "Dual-Purpose Pulse & Nutritious Green Fodder",
+    "season_suitability": "Kharif, Summer, or Pre-Rabi",
+    "water_requirement_mm": "220 - 300 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 5800,
+    "recommended_varieties": ["C 152", "CP 4", "VBN 1", "Pusa Komal"],
+    "sowing_window": "June-July or February-March",
+    "duration_days": "70 - 80 days",
+    "expected_yield_qtl_per_acre": "5 - 7 Quintals grain + 60 quintals green fodder",
+    "net_income_estimate_per_acre": "₹32,000 - ₹42,000",
+    "soil_suitability": "Wide range from light sandy to loamy soils; tolerates heat and shade",
+    "attached_schemes": [
+      "National Livestock Mission: Fodder & Grain seed subsidy",
+      "NFSM-Pulses demonstration kits"
+    ],
+    "soil_health_benefit": "Dense canopy smothers 90% of weeds naturally; adds high nitrogen organic matter"
+  },
+  {
+    "crop_id": "lentil",
+    "name": "Lentil / Masoor (మసూర్ / मसूर)",
+    "category": "Cool Season Low-Water Pulses (Rabi)",
+    "season_suitability": "Rabi (October-November)",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 6700,
+    "recommended_varieties": ["HUL 57", "KLS 218", "Pusa Ageti", "IPL 316"],
+    "sowing_window": "October 25 to November 20",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹50,000",
+    "soil_suitability": "All types of soils from light loams to heavy black clays; tolerates light salinity",
+    "attached_schemes": [
+      "National Food Security Mission Pulses Component (100% domestic procurement pledge)",
+      "Central seed distribution on e-Samridhi portal"
+    ],
+    "soil_health_benefit": "Enriches soil micro-flora with cold-tolerant rhizobium nodules"
+  },
+  {
+    "crop_id": "sesame",
+    "name": "Sesame / Til / Gingelly (నువ్వులు / तिल)",
+    "category": "High-Value Arid Oilseeds (Summer / Spring)",
+    "season_suitability": "Summer (January to March) or Kharif",
+    "water_requirement_mm": "180 - 240 mm (Extremely water-thrifty)",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 9267,
+    "recommended_varieties": ["Swetha (JCS 1020)", "Rajeshwari", "Hima", "Chandana", "GT 10"],
+    "sowing_window": "January 15 to February 28 (Summer) or June-July (Kharif)",
+    "duration_days": "80 - 85 days",
+    "expected_yield_qtl_per_acre": "3.5 - 5.0 Quintals",
+    "net_income_estimate_per_acre": "₹32,000 - ₹45,000 with very low input costs",
+    "soil_suitability": "Well-drained sandy loams and light red soils; highly sensitive to standing water",
+    "attached_schemes": [
+      "Highest Minimum Support Price (MSP) among all oilseeds in India (₹9,267/qtl)",
+      "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
+      "High global demand for Hulled Sesame Export"
+    ],
+    "soil_health_benefit": "Survives on only 2 to 3 light irrigations in total life cycle; breaks pest cycles"
   },
   {
     "crop_id": "groundnut",
     "name": "Groundnut / Peanut (వేరుశనగ / मूंगफली)",
-    "category": "Oilseeds (Rabi / Summer)",
-    "water_requirement_mm": "400 - 450 mm",
+    "category": "Oilseeds & Food Crop (Rabi / Summer / Kharif)",
+    "season_suitability": "Rabi/Summer (November to January) or Kharif (June-July)",
+    "water_requirement_mm": "380 - 450 mm",
     "water_savings_percentage": "65% less water than flooded Paddy",
     "msp_rate_per_quintal": 6783,
-    "recommended_varieties": ["Kadiri 6", "Kadiri 9", "TAG 24", "Dharani"],
-    "sowing_window": "November to December",
+    "recommended_varieties": ["Kadiri 6 (K6)", "Kadiri 9", "TAG 24", "Dharani", "Greeshma"],
+    "sowing_window": "November 15 to January 15 (Rabi/Summer)",
     "duration_days": "105 - 115 days",
     "expected_yield_qtl_per_acre": "10 - 14 Quintals",
-    "net_income_estimate_per_acre": "₹50,000 - ₹65,000",
-    "soil_suitability": "Sandy loam or light red soils with good drainage; easy peg penetration",
+    "net_income_estimate_per_acre": "₹50,000 - ₹68,000",
+    "soil_suitability": "Sandy loam or loose red soils with good calcium content; easy peg penetration and pod lifting",
     "attached_schemes": [
       "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
-      "Gypsum 50% Subsidy through Agriculture Department",
-      "Micro-sprinkler subsidy under TSMIP / PMKSY"
+      "Gypsum 50% Subsidy via Agriculture Extension Officers (AEOs)",
+      "Micro-sprinkler subsidy under TSMIP / PMKSY (reduces water usage by 40%)"
     ],
-    "soil_health_benefit": "High oil and haulm fodder value (cattle feed); high cash return"
+    "soil_health_benefit": "High protein haulm provides ₹8,000/acre in cattle fodder value; fixes soil nitrogen"
   },
   {
-    "crop_id": "sesame",
-    "name": "Sesame / Til (నువ్వులు / तिल)",
-    "category": "Dryland Oilseeds (Summer / Spring)",
-    "water_requirement_mm": "180 - 250 mm (Extremely drought-hardy)",
-    "water_savings_percentage": "85% less water than Paddy",
-    "msp_rate_per_quintal": 9267,
-    "recommended_varieties": ["Swetha", "Rajeshwari", "Hima"],
-    "sowing_window": "January 15 to February 28",
-    "duration_days": "80 - 85 days",
-    "expected_yield_qtl_per_acre": "3 - 5 Quintals",
-    "net_income_estimate_per_acre": "₹28,000 - ₹40,000 with very low input investment",
-    "soil_suitability": "Light sandy loams to well-drained soils; sensitive to waterlogging",
+    "crop_id": "mustard_rapeseed",
+    "name": "Mustard & Rapeseed (ఆవాలు / सरसों-राई)",
+    "category": "Rabi Oilseeds (Low-Water Winter Crop)",
+    "season_suitability": "Rabi (October to November)",
+    "water_requirement_mm": "240 - 300 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 5650,
+    "recommended_varieties": ["Pusa Bold", "Pusa Mustard 25", "RH 749", "Giriraj", "Kranti"],
+    "sowing_window": "October 1 to October 25",
+    "duration_days": "115 - 125 days",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Light to heavy soils with good drainage; tolerates salinity and alkalinity",
     "attached_schemes": [
-      "Highest MSP among all oilseeds (₹9,267/qtl)",
-      "High export demand in domestic & global oil trade"
+      "Special Mustard Promotion Clusters under NMEO-OS",
+      "Free hybrid seed mini-kit distribution",
+      "Guaranteed procurement through NAFED and HAFED"
     ],
-    "soil_health_benefit": "Survives on only 2-3 light irrigations in total life cycle"
+    "soil_health_benefit": "Glucosinolate root exudates act as natural biofumigants, suppressing soil nematodes and fungal spores"
   },
   {
-    "crop_id": "sorghum_millets",
-    "name": "Jowar / Sorghum & Pearl Millet (జొన్నలు & సజ్జలు / ज्वार-बाजरा)",
-    "category": "Nutri-Cereals / Shree Anna (Millets)",
-    "water_requirement_mm": "250 - 350 mm",
+    "crop_id": "safflower",
+    "name": "Safflower / Kardi (కుసుమలు / कुसुम-करडी)",
+    "category": "Deep-Rooted Drought Champion Oilseeds (Rabi)",
+    "season_suitability": "Rabi (Post-Kharif residual moisture)",
+    "water_requirement_mm": "220 - 300 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 5800,
+    "recommended_varieties": ["PBNS 12", "NARI 6", "Manjira", "DSH 129", "Bhima"],
+    "sowing_window": "September 25 to October 25",
+    "duration_days": "120 - 130 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹32,000 - ₹44,000",
+    "soil_suitability": "Deep black vertisols capable of holding moisture at depth; spiny leaves protect against wild boar and cattle",
+    "attached_schemes": [
+      "Technology Mission on Oilseeds (NMEO-OS)",
+      "State crop border planting incentive against wild animals"
+    ],
+    "soil_health_benefit": "Deep 2.5m taproot draws moisture and nutrient reserves from sub-soil; opens compacted clay"
+  },
+  {
+    "crop_id": "sunflower",
+    "name": "Sunflower (పొద్దుతిరుగుడు / सूरजमुखी)",
+    "category": "Day-Neutral Irrigated Dry Oilseeds (Rabi / Summer)",
+    "season_suitability": "Rabi (October-November) or Summer (January-February)",
+    "water_requirement_mm": "300 - 380 mm",
     "water_savings_percentage": "75% less water than Paddy",
-    "msp_rate_per_quintal": 3371,
-    "recommended_varieties": ["CSH 16", "CSH 24MF", "ICMV 221", "Dhanashakti"],
-    "sowing_window": "October (Rabi) or June (Kharif)",
-    "duration_days": "100 - 110 days",
-    "expected_yield_qtl_per_acre": "12 - 16 Quintals",
-    "net_income_estimate_per_acre": "₹32,000 - ₹42,000 + nutritious green fodder",
-    "soil_suitability": "Wide soil range from shallow red to deep black soils",
+    "msp_rate_per_quintal": 7280,
+    "recommended_varieties": ["KBSH 41", "KBSH 53", "DRSH 1", "NDSH 1012"],
+    "sowing_window": "November 1 to November 30 or January 15 to February 15",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "7 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹42,000 - ₹55,000",
+    "soil_suitability": "Well-drained soils; adaptable across sandy loams and deep vertisols",
     "attached_schemes": [
-      "National Shree Anna Mission: Free seed kits & processing machinery subsidies",
-      "State procurement for Public Distribution System (PDS) & Mid-Day Meal"
+      "NMEO-OS: ₹4,000/ha input subsidy on hybrid seeds and boron",
+      "Assured procurement by State Cooperative Oil Federations"
     ],
-    "soil_health_benefit": "Zero water overdraft; extreme heat resilience up to 42°C"
+    "soil_health_benefit": "Photo-insensitive nature allows perfect fitting into any crop gap after water-stressed paddy failure"
+  },
+  {
+    "crop_id": "castor",
+    "name": "Castor (ఆముదము / अरंडी)",
+    "category": "Industrial Semi-Arid Oilseeds (Kharif / Rabi)",
+    "season_suitability": "Kharif (July-August) or Rabi (September-October)",
+    "water_requirement_mm": "300 - 400 mm",
+    "water_savings_percentage": "72% less water than Paddy",
+    "msp_rate_per_quintal": 6000,
+    "recommended_varieties": ["GCH 7", "DCH 519", "PCH 111", "DCH 177", "Jyoti"],
+    "sowing_window": "July 1 to August 15",
+    "duration_days": "150 - 180 days (Multiple pickings)",
+    "expected_yield_qtl_per_acre": "8 - 12 Quintals",
+    "net_income_estimate_per_acre": "₹45,000 - ₹65,000",
+    "soil_suitability": "Sandy and red loamy soils; ideal for poor, well-drained rainfed uplands",
+    "attached_schemes": [
+      "High global demand for castor oil and sebacic acid derivatives",
+      "Drip irrigation subsidy under PMKSY yields 35% extra production"
+    ],
+    "soil_health_benefit": "Not grazed by stray cattle or wild boars; deep root system binds soil against wind erosion"
+  },
+  {
+    "crop_id": "linseed",
+    "name": "Linseed / Flaxseed (అవిసెలు / अलसी)",
+    "category": "High-Value Omega-3 Dual Purpose Oilseed & Fiber (Rabi)",
+    "season_suitability": "Rabi (October-November)",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 6200,
+    "recommended_varieties": ["T 397", "Padmini", "JLS 67", "Deepika"],
+    "sowing_window": "October 15 to November 15",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "5 - 7 Quintals",
+    "net_income_estimate_per_acre": "₹30,000 - ₹42,000",
+    "soil_suitability": "Clayey loams and vertisols with good moisture retention; ideal utera/paira crop in paddy fallow",
+    "attached_schemes": [
+      "Promotion under Nutraceutical and Functional Foods Mission",
+      "Subsidised certified seed kits under NFSM-OS"
+    ],
+    "soil_health_benefit": "Minimal fertilizer requirement; excellent cool-season intercrop with gram or mustard"
+  },
+  {
+    "crop_id": "soybean",
+    "name": "Soybean (సోయాబీన్ / सोयाबीन)",
+    "category": "Rainfed Protein & Edible Oil Crop (Kharif)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "350 - 450 mm",
+    "water_savings_percentage": "68% less water than flooded Paddy",
+    "msp_rate_per_quintal": 4892,
+    "recommended_varieties": ["JS 335", "JS 95-60", "JS 20-34", "NRC 127", "MACS 1407"],
+    "sowing_window": "June 15 to July 10",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "8 - 12 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Well-drained medium to deep black clay soils with pH 6.5 to 7.5",
+    "attached_schemes": [
+      "National Mission on Edible Oils - Oilseeds (NMEO-OS)",
+      "Broad-Bed Furrow (BBF) machine subsidy to counter rainfed dry spells"
+    ],
+    "soil_health_benefit": "Fixes 60-80 kg atmospheric nitrogen per hectare; leaves rich organic nitrogen in soil"
+  },
+  {
+    "crop_id": "sorghum_jowar",
+    "name": "Sorghum / Jowar (జొన్నలు / ज्वार)",
+    "category": "Nutri-Cereals / Shree Anna (Kharif & Rabi Dual-Purpose)",
+    "season_suitability": "Kharif (June-July) or Rabi (September-October)",
+    "water_requirement_mm": "250 - 350 mm",
+    "water_savings_percentage": "75% less water than flooded Paddy",
+    "msp_rate_per_quintal": 3371,
+    "recommended_varieties": ["CSH 16", "CSH 24MF", "CSV 29R", "Maldandi (M 35-1)", "Parbhani Moti"],
+    "sowing_window": "June 15 - July 15 (Kharif) or September 15 - October 15 (Rabi)",
+    "duration_days": "100 - 110 days",
+    "expected_yield_qtl_per_acre": "12 - 16 Quintals grain + 35 quintals nutritious stover",
+    "net_income_estimate_per_acre": "₹36,000 - ₹50,000",
+    "soil_suitability": "Wide soil range from shallow red gravels to deep black soils; highly tolerant to drought and heat",
+    "attached_schemes": [
+      "National Shree Anna Mission: Free seed kits, custom hiring center machinery",
+      "Public Distribution System (PDS) & Mid-Day Meal state procurement at MSP"
+    ],
+    "soil_health_benefit": "Extracts water down to 1.5m; deep fibrous root system binds soil against desertification"
+  },
+  {
+    "crop_id": "pearl_millet_bajra",
+    "name": "Pearl Millet / Bajra (సజ్జలు / बाजरा)",
+    "category": "Nutri-Cereals / Shree Anna (Extreme Heat & Arid Climate)",
+    "season_suitability": "Kharif or Summer",
+    "water_requirement_mm": "200 - 300 mm (Lowest water need among major cereals)",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 2625,
+    "recommended_varieties": ["HHB 67 Improved", "Dhanashakti (Biofortified Iron)", "RHB 177", "GHB 558"],
+    "sowing_window": "June 25 to July 15 (Kharif) or February (Summer)",
+    "duration_days": "70 - 80 days",
+    "expected_yield_qtl_per_acre": "10 - 14 Quintals",
+    "net_income_estimate_per_acre": "₹28,000 - ₹38,000",
+    "soil_suitability": "Drought-prone sandy loams and light arid soils; thrives even under 45°C ambient temperatures",
+    "attached_schemes": [
+      "National Shree Anna Mission: Biofortified high-iron variety promotion",
+      "Decentralized MSP procurement for ICDS and Anganwadi programs"
+    ],
+    "soil_health_benefit": "Super-fast photosynthetic C4 pathway; zero irrigation required after seedling establishment"
+  },
+  {
+    "crop_id": "finger_millet_ragi",
+    "name": "Finger Millet / Ragi (రాగులు / रागी-मडुआ)",
+    "category": "Nutri-Cereals / Shree Anna (Calcium & Iron Powerhouse)",
+    "season_suitability": "Kharif (June-August) or Rabi (September-October)",
+    "water_requirement_mm": "280 - 350 mm",
+    "water_savings_percentage": "75% less water than Paddy",
+    "msp_rate_per_quintal": 4290,
+    "recommended_varieties": ["GPU 28", "ML 365", "Indaf 5", "Vakula", "Birsa Marua 2"],
+    "sowing_window": "July 1 to August 15",
+    "duration_days": "95 - 110 days",
+    "expected_yield_qtl_per_acre": "9 - 13 Quintals",
+    "net_income_estimate_per_acre": "₹38,000 - ₹52,000",
+    "soil_suitability": "Red sandy loams, gravelly laterites, and upland light soils; tolerates acidic soils",
+    "attached_schemes": [
+      "National Shree Anna Mission: MSP procurement via FCI & Civil Supplies Corporations",
+      "Special Ragi Processing Machinery Subsidies for Women Self Help Groups (SHGs)"
+    ],
+    "soil_health_benefit": "Contains 344 mg calcium per 100g grain; straw makes premium digestible livestock feed"
+  },
+  {
+    "crop_id": "foxtail_millet_korra",
+    "name": "Foxtail Millet / Kangni (కొర్రలు / कांगनी)",
+    "category": "Small Millets / Shree Anna (Short-Duration 70 Days)",
+    "season_suitability": "Kharif or Contingency early rabi",
+    "water_requirement_mm": "180 - 250 mm",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 3200,
+    "recommended_varieties": ["SIA 3088", "SIA 3156", "Pratap Kangani 1", "Meera"],
+    "sowing_window": "July 15 to August 15 (Best crop when main monsoon is delayed)",
+    "duration_days": "70 - 75 days",
+    "expected_yield_qtl_per_acre": "6 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹24,000 - ₹35,000",
+    "soil_suitability": "Shallow to medium soils, light red soils; highly resilient to intermittent dry spells",
+    "attached_schemes": [
+      "State Small Millet Mission seed mini-kits",
+      "Local Mandi procurement support and FPO direct-to-consumer processing hubs"
+    ],
+    "soil_health_benefit": "Mature crop ready in just 10 weeks; frees up land quickly for subsequent rabi pulse sowing"
+  },
+  {
+    "crop_id": "little_millet_samalu",
+    "name": "Little Millet / Kutki (సామలు / कुटकी)",
+    "category": "Small Millets / Shree Anna (Extreme Flood & Drought Flexibility)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "180 - 240 mm",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 3000,
+    "recommended_varieties": ["OLM 203", "JK 8", "Kolab", "Paiyur 2"],
+    "sowing_window": "June 25 to July 20",
+    "duration_days": "75 - 85 days",
+    "expected_yield_qtl_per_acre": "5 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹32,000",
+    "soil_suitability": "Tolerates waterlogging as well as severe drought; excels on steep tribal undulating slopes",
+    "attached_schemes": [
+      "Tribal Sub-Plan (TSP) free seed distributions and de-hulling machine grants",
+      "High urban demand for low-glycemic diabetic lifestyle foods"
+    ],
+    "soil_health_benefit": "Survives without pesticide or synthetic fertilizers; ideal certified organic crop"
+  },
+  {
+    "crop_id": "barnyard_millet_oodalu",
+    "name": "Barnyard Millet / Sanwa (ఊదలు / सांवा)",
+    "category": "Small Millets / Shree Anna (Fastest Maturing Cereal on Earth)",
+    "season_suitability": "Kharif or Contingency",
+    "water_requirement_mm": "200 - 260 mm",
+    "water_savings_percentage": "82% less water than Paddy",
+    "msp_rate_per_quintal": 3100,
+    "recommended_varieties": ["PRJ 1", "VL Madira 207", "CO 2"],
+    "sowing_window": "July 1 to July 31",
+    "duration_days": "60 - 65 days (Ready in 6 weeks)",
+    "expected_yield_qtl_per_acre": "6 - 9 Quintals",
+    "net_income_estimate_per_acre": "₹25,000 - ₹34,000",
+    "soil_suitability": "Poor marginal soils; highly tolerant to salinity, alkalinity, and water stagnation",
+    "attached_schemes": [
+      "National Shree Anna Mission Fast-Track Food Aid",
+      "Fasting food (Vrat Ka Chawal) premium market sales"
+    ],
+    "soil_health_benefit": "Produces rapid high-tonnage green fodder within 40 days of sowing"
+  },
+  {
+    "crop_id": "kodo_millet_arikalu",
+    "name": "Kodo Millet / Kodra (అరికెలు / कोदो)",
+    "category": "Small Millets / Shree Anna (Centuries-Old Drought Survivor)",
+    "season_suitability": "Kharif (June to July)",
+    "water_requirement_mm": "200 - 280 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 3200,
+    "recommended_varieties": ["GPUK 3", "RBK 155", "TNAU 86", "Jawahar Kodo 48"],
+    "sowing_window": "June 20 to July 15",
+    "duration_days": "95 - 105 days",
+    "expected_yield_qtl_per_acre": "7 - 10 Quintals",
+    "net_income_estimate_per_acre": "₹26,000 - ₹38,000",
+    "soil_suitability": "Gravelly, stoney, infertile soils where other grains perish completely",
+    "attached_schemes": [
+      "State Millet Missions and Millets-in-Ration PDS distribution initiatives",
+      "High anti-oxidant polyphenolic market demand"
+    ],
+    "soil_health_benefit": "Grain stores for 10+ years without pest damage; ancient famine reserve grain"
+  },
+  {
+    "crop_id": "proso_millet_varigalu",
+    "name": "Proso Millet / Cheena (వరిగలు / चीना)",
+    "category": "Small Millets / Shree Anna (Lowest Water Footprint Grain)",
+    "season_suitability": "Summer (Catch crop) or Rabi",
+    "water_requirement_mm": "160 - 220 mm",
+    "water_savings_percentage": "88% less water than Paddy",
+    "msp_rate_per_quintal": 2900,
+    "recommended_varieties": ["TNAU 202", "DHPM 2769", "Meenakshi"],
+    "sowing_window": "February 15 to March 15 (Summer) or September-October (Rabi)",
+    "duration_days": "55 - 65 days",
+    "expected_yield_qtl_per_acre": "6 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹22,000 - ₹30,000",
+    "soil_suitability": "Sandy loam, alluvial, and red soils with moderate drainage",
+    "attached_schemes": [
+      "Summer catch-crop diversification packages",
+      "Export bird-feed and specialty flour processing contracts"
+    ],
+    "soil_health_benefit": "Consumes less water per gram of dry matter produced than any other domestic grain crop"
+  },
+  {
+    "crop_id": "cluster_bean_guar",
+    "name": "Cluster Bean / Guar (గోరుచిక్కుడు / ग्वार)",
+    "category": "Industrial Export & Fodder Arid Crop",
+    "season_suitability": "Kharif (July to August)",
+    "water_requirement_mm": "180 - 250 mm (Extreme desert drought hardy)",
+    "water_savings_percentage": "85% less water than Paddy",
+    "msp_rate_per_quintal": 5200,
+    "recommended_varieties": ["RGC 936", "RGC 1002", "HG 365", "HG 563"],
+    "sowing_window": "July 1 to July 31",
+    "duration_days": "85 - 95 days",
+    "expected_yield_qtl_per_acre": "5 - 8 Quintals",
+    "net_income_estimate_per_acre": "₹30,000 - ₹48,000 depending on global gum exports",
+    "soil_suitability": "Arid sandy soils, light red soils; highly sensitive to stagnant water and clay compaction",
+    "attached_schemes": [
+      "Industrial Guar Gum Export Council market linkages",
+      "National Mission on Sustainable Agriculture (NMSA) dryland support"
+    ],
+    "soil_health_benefit": "Root nodules fix generous atmospheric nitrogen; enriches depleted sandy soils"
+  },
+  {
+    "crop_id": "barley_jau",
+    "name": "Barley / Jau (బార్లీ / जौ)",
+    "category": "Salinity & Drought Resilient Cereal (Rabi)",
+    "season_suitability": "Rabi (November-December)",
+    "water_requirement_mm": "220 - 280 mm",
+    "water_savings_percentage": "80% less water than Paddy",
+    "msp_rate_per_quintal": 1850,
+    "recommended_varieties": ["RD 2552", "RD 2035", "DWRB 123", "PL 426", "K 551"],
+    "sowing_window": "November 5 to December 5",
+    "duration_days": "110 - 120 days",
+    "expected_yield_qtl_per_acre": "14 - 18 Quintals",
+    "net_income_estimate_per_acre": "₹28,000 - ₹38,000",
+    "soil_suitability": "Tolerates high salinity (EC up to 8 dS/m) and sodicity where wheat and rice dry up completely",
+    "attached_schemes": [
+      "Malting industry contract farming and buyback guarantees",
+      "FCI MSP procurement operations"
+    ],
+    "soil_health_benefit": "Tolerates brackish and saline borewell water; acts as a soil reclamation grain"
   }
 ]

@@ -64,14 +64,19 @@ OpenQuest/
 - Under PMFBY and State Calamity regulations, individual crop losses (hail, flooding, cloudburst) **must be intimated within 72 hours**.
 - Provides a real-time countdown timer (`00h 00m 00s`), color-coded urgency banner, geo-tagged photo guidance, and one-click SMS/WhatsApp intimation generator.
 
-### 2. 🚿 Water-Saving Subsidy Matcher (PMKSY, PM-KUSUM, TSMIP)
-- Automatically suggests drip/sprinkler and solar pump schemes when water risk is detected.
-- Incorporates state-specific rules: 100% subsidy for SC/ST farmers and 90% for BC smallholders in Telangana (TSMIP).
-- Standalone off-grid solar pumps covered up to 60% under PM-KUSUM Component B.
+### 2. 🚿 Diversified Water-Saving Subsidy Matcher (18+ Schemes Across India)
+- Automatically matches farmers across all Indian states to 18+ verified Central & State water conservation schemes:
+  - **PMKSY - Per Drop More Crop (PDMC)**: 55% Central baseline for Drip & Sprinkler (up to 90-100% in progressive states).
+  - **PMKSY - Har Khet Ko Pani (HKKP)** & **Watershed Development Component (WDC 2.0)**: Surface minor irrigation, RRR of tanks, and ridge-to-valley recharge.
+  - **PM-KUSUM Components A, B & C**: 500kW-2MW solar plants on barren land, standalone solar pumps (up to 60% subsidy), and feeder level solarisation with net metering.
+  - **State-Specific Schemes**: **TSMIP (Telangana)** (100% SC/ST, 90% BC), **APMIP (Andhra Pradesh)** (90-100% Rayalaseema dry tracts), **Magel Tyala Shet Tale (Maharashtra)** (₹50k-₹75k farm pond grant), **Krishi Bhagya (Karnataka)** (80-90% farm pond/micro-irrigation package), **GGRC & SKY (Gujarat)** (70% drip + solar power sale), **Mera Pani Meri Virasat (Haryana)** (₹7,000/ac cash incentive to shift from paddy + 85% drip subsidy), **UGPL (Punjab)** (50% subsidy on underground PVC irrigation piping), **Tamil Nadu Micro Irrigation** (100% subsidy for small/marginal farmers), **Rajasthan Khet Talai** (₹1.20 Lakh subsidy on plastic-lined ponds), and **MP Balram Talab** (up to ₹1 Lakh pond subsidy).
 
-### 3. 🌱 Next-Season Crop & Water Planning
-- Proactively suggests low-water alternative crops (Bengal Gram, Green Gram, Sesame, Groundnut, Millets) after a water-stressed season.
-- Displays water savings % (up to 85%), expected duration, and statutory MSP support (e.g., Sesame MSP ₹9,267/qtl).
+### 3. 🌱 Next-Season Crop & Water Planning (26+ Diversified Low-Water Alternatives)
+- Proactively suggests 26+ resilient alternative crops after water-stressed seasons spanning all major agro-climatic zones:
+  - **Pulses**: Bengal Gram (Chana - MSP ₹5,440), Kabuli Chickpea (₹9k-12k market), Green Gram (Moong - MSP ₹8,682, 60 days duration), Black Gram (Urad - MSP ₹7,400, zero-till rice fallow), Red Gram (Tur/Arhar - MSP ₹7,550), Horse Gram (Kulthi/Ulavalu - 88% water savings), Cowpea (Lobia), and Lentil (Masoor - MSP ₹6,700).
+  - **Oilseeds**: Sesame (Til/Nuvvulu - MSP ₹9,267, highest MSP oilseed, 85% water savings), Groundnut (Peanut - MSP ₹6,783), Mustard & Rapeseed (Sarson - MSP ₹5,650), Safflower (Kardi/Kusum - MSP ₹5,800, deep taproot), Sunflower (MSP ₹7,280), Castor (Arandi), Linseed (Alsi - MSP ₹6,200), and Soybean (MSP ₹4,892).
+  - **Nutri-Cereals / Shree Anna (Millets)**: Sorghum (Jowar - MSP ₹3,371), Pearl Millet (Bajra - MSP ₹2,625, heat tolerant to 45°C), Finger Millet (Ragi - MSP ₹4,290), Foxtail Millet (Korra - 70 days), Little Millet (Samalu), Barnyard Millet (Sanwa - ready in 6 weeks), Kodo Millet (Arikalu), and Proso Millet (Cheena - 88% water savings).
+  - **Commercial & Fodder**: Cluster Bean (Guar - MSP ₹5,200, industrial export gum) and Barley (Jau - MSP ₹1,850, salinity & drought champion).
 
 ### 4. 💳 Kisan Credit Card (KCC) & 4% Interest Subvention
 - Calculates District Level Technical Committee (DLTC) Scale of Finance per acre.

@@ -564,12 +564,12 @@ with tab2:
 # TAB 3: Water-Saving Subsidies & Next-Crop Planning
 # -------------------------------------------------------------
 with tab3:
-    st.subheader("💧 Water-Saving Subsidies & Next-Season Crop Planning")
+    st.subheader("💧 Diversified Pan-India Water-Saving Subsidies & Next-Season Crop Planning")
     st.markdown("""
-    *Turns water stress into action: Matches farmers to verified drip/sprinkler & solar pump subsidies (PMKSY, PM-KUSUM, TSMIP) and provides lower-water crop alternatives with MSP.*
+    *Turns water stress into action: Matches farmers to 18+ verified Central and State drip/sprinkler, solar pump and farm pond schemes (PMKSY, PM-KUSUM, TSMIP, APMIP, Krishi Bhagya, Magel Tyala Shet Tale) and 26+ lower-water crop alternatives with MSP support.*
     """)
 
-    st.markdown("### 1. 🚿 Drip, Sprinkler & Solar Pump Subsidy Matcher")
+    st.markdown("### 1. 🚿 Drip, Sprinkler, Solar Pump and Farm Pond Subsidy Matcher")
     
     water_schemes_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "water_saving_schemes.json")
     try:
@@ -578,12 +578,16 @@ with tab3:
     except Exception:
         water_schemes = []
 
-    sub_col1, sub_col2 = st.columns([1.2, 1.8], gap="large")
+    sub_col1, sub_col2 = st.columns([1.1, 1.9], gap="large")
     with sub_col1:
         st.markdown("**Your Farm Configuration:**")
+        w_sub_st = st.selectbox("Your State", [
+            "All States / Central", "Telangana", "Andhra Pradesh", "Maharashtra", "Karnataka",
+            "Gujarat", "Haryana", "Punjab", "Tamil Nadu", "Rajasthan", "Madhya Pradesh", "Uttar Pradesh"
+        ], key="w_sub_st_sel")
         w_sub_caste = st.selectbox("Social Category", ["BC", "SC", "ST", "General"], key="w_sub_caste")
         w_sub_land = st.number_input("Land Holding (Acres)", 0.5, 25.0, 2.5, 0.5, key="w_sub_land")
-        w_sub_type = st.radio("Interested Subsidy Equipment", ["Micro Irrigation (Drip / Sprinkler)", "Solar Pump (PM-KUSUM Component B / C)"])
+        w_sub_type = st.radio("Equipment Category", ["Micro Irrigation (Drip / Sprinkler)", "Solar Pump (PM-KUSUM A/B/C)", "Farm Pond / Water Harvesting (Shet Tale / Talab)"])
 
         if "Micro" in w_sub_type:
             if w_sub_caste in ["SC", "ST"] and w_sub_land <= 5.0:
@@ -601,36 +605,51 @@ with tab3:
             unit_cost = int(w_sub_land * 35000)
             subsidy_amount = int(unit_cost * (subsidy_pct / 100))
             farmer_amount = unit_cost - subsidy_amount
-        else:
+        elif "Solar" in w_sub_type:
             subsidy_pct = 60
             farmer_share_pct = 40
             unit_cost = 240000
             subsidy_amount = int(unit_cost * 0.60)
             farmer_amount = unit_cost - subsidy_amount
+        else:
+            subsidy_pct = 75 if w_sub_caste in ["SC", "ST"] else 50
+            farmer_share_pct = 100 - subsidy_pct
+            unit_cost = 100000
+            subsidy_amount = int(unit_cost * (subsidy_pct / 100))
+            farmer_amount = unit_cost - subsidy_amount
 
         st.markdown(f"""
         <div class="metric-card">
             <h4 style="margin:0; color:#1b5e20;">💰 Estimated Government Subsidy: {subsidy_pct}%</h4>
-            <p style="margin:0.3rem 0;">• Estimated System Value: <b>₹{unit_cost:,}</b></p>
+            <p style="margin:0.3rem 0;">• Estimated System Benchmark: <b>₹{unit_cost:,}</b></p>
             <p style="margin:0.3rem 0; color:#2e7d32;">• <b>Govt Subsidy: ₹{subsidy_amount:,}</b></p>
             <p style="margin:0.3rem 0; color:#c62828;">• Farmer Contribution: <b>₹{farmer_amount:,} ({farmer_share_pct}%)</b></p>
         </div>
         """, unsafe_allow_html=True)
 
     with sub_col2:
-        st.markdown("**Verified Government Subsidy Schemes:**")
-        for ws in water_schemes:
-            with st.expander(f"💧 **{ws['name']}**", expanded=True):
+        filtered_water_schemes = water_schemes
+        if w_sub_st != "All States / Central":
+            filtered_water_schemes = [
+                s for s in water_schemes 
+                if "All States" in s.get("applicable_states", []) or w_sub_st in s.get("applicable_states", [])
+            ]
+
+        st.markdown(f"**Verified Government Subsidy Schemes ({len(filtered_water_schemes)} Available):**")
+        for ws in filtered_water_schemes:
+            with st.expander(f"💧 **{ws['name']}** ({ws.get('level', 'Govt Scheme')})", expanded=False):
                 st.markdown(f"**Category**: `{ws['category']}` | **Status**: `{ws['current_status']}`")
-                st.markdown(f"**Water Savings**: {ws['water_savings_potential']}")
-                st.markdown(f"**Subsidy Rules**: {ws['subsidy_rules']}")
+                st.markdown(f"**Water Savings Impact**: {ws['water_savings_potential']}")
+                st.markdown(f"**Subsidy Rules**: {json.dumps(ws['subsidy_rules'], indent=1, ensure_ascii=False) if isinstance(ws['subsidy_rules'], dict) else ws['subsidy_rules']}")
+                st.markdown(f"**Eligible Systems**: {', '.join(ws.get('eligible_systems', []))}")
                 st.markdown(f"**Portal**: [{ws['portal_url']}]({ws['portal_url']}) | *Last Verified: {ws['last_verified']}*")
 
     st.markdown("---")
 
-    st.markdown("### 2. 🌱 Next-Season Crop & Water Planning (Post Water-Stress)")
+    # Part B: Next-Season Crop and Water Planning (Diversified Across 26 Crops)
+    st.markdown("### 2. 🌱 Next-Season Crop & Water Planning (Diversified Low-Water Alternatives)")
     st.markdown("""
-    *When groundwater levels deplete or monsoon falters, shift from water-intensive Paddy (which needs 1,200–1,400 mm) to ID (Irrigated Dry) crops. These crops consume 65% to 85% less water and carry statutory Minimum Support Price (MSP) protection.*
+    *When groundwater levels deplete or monsoon dry spells strike, shift from water-guzzling Paddy (which consumes 1,200–1,400 mm) to ID (Irrigated Dry) crops, pulses, oilseeds, and nutri-cereals. These crops consume 65% to 88% less water, restore soil nitrogen, and carry guaranteed Minimum Support Price (MSP) protection.*
     """)
 
     crops_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "low_water_crops.json")
@@ -640,8 +659,39 @@ with tab3:
     except Exception:
         low_water_crops = []
 
+    flt_col1, flt_col2 = st.columns([1.5, 2.5])
+    with flt_col1:
+        crop_cat_filter = st.selectbox("Filter Crop Category", [
+            "All Categories (26 Crops)",
+            "Pulses (Bengal Gram, Moong, Urad, Tur, Horse Gram, Cowpea, Lentil)",
+            "Oilseeds (Sesame, Groundnut, Mustard, Safflower, Sunflower, Castor, Linseed)",
+            "Nutri-Cereals / Millets (Jowar, Bajra, Ragi, Foxtail, Little, Barnyard, Kodo, Proso)",
+            "Commercial & Fodder Diversification (Guar, Barley)"
+        ], key="crop_cat_filter_sel")
+    with flt_col2:
+        crop_search_kw = st.text_input("🔍 Search alternative crops by name, variety, or MSP:", placeholder="e.g. Sesame, Moong, Ragi, 9267, JG 11...", key="crop_kw_search")
+
+    active_crops = low_water_crops
+    if "Pulses" in crop_cat_filter:
+        active_crops = [c for c in active_crops if "Pulse" in c.get("category", "")]
+    elif "Oilseeds" in crop_cat_filter:
+        active_crops = [c for c in active_crops if "Oilseed" in c.get("category", "")]
+    elif "Millets" in crop_cat_filter:
+        active_crops = [c for c in active_crops if "Millet" in c.get("category", "") or "Cereal" in c.get("category", "")]
+    elif "Commercial" in crop_cat_filter:
+        active_crops = [c for c in active_crops if "Commercial" in c.get("category", "") or "Salinity" in c.get("category", "")]
+
+    if crop_search_kw.strip():
+        kw = crop_search_kw.lower().strip()
+        active_crops = [
+            c for c in active_crops 
+            if kw in c["name"].lower() or kw in c.get("category", "").lower() or kw in str(c.get("msp_rate_per_quintal", "")) or kw in str(c.get("recommended_varieties", [])).lower()
+        ]
+
+    st.caption(f"Showing {len(active_crops)} alternative crops:")
+
     crop_cards = st.columns(3)
-    for idx, c in enumerate(low_water_crops):
+    for idx, c in enumerate(active_crops):
         col_target = crop_cards[idx % 3]
         with col_target:
             with st.container():
@@ -649,10 +699,10 @@ with tab3:
                 <div class="metric-card">
                     <h4 style="margin:0; color:#1b5e20;">🌾 {c['name']}</h4>
                     <p style="margin:0.2rem 0; font-size:0.85rem;"><b>Category</b>: {c['category']}</p>
-                    <p style="margin:0.2rem 0; color:#1565c0;">💧 <b>Water Savings: {c['water_savings_percentage']}</b></p>
-                    <p style="margin:0.2rem 0;">⚖️ <b>MSP</b>: <span style="font-size:1.1rem; font-weight:700; color:#2e7d32;">₹{c['msp_rate_per_quintal']:,} / qtl</span></p>
+                    <p style="margin:0.2rem 0; color:#1565c0;">💧 <b>Water Need</b>: {c.get('water_requirement_mm', 'Low')} (<b>{c['water_savings_percentage']}</b>)</p>
+                    <p style="margin:0.2rem 0;">⚖️ <b>MSP / Rate</b>: <span style="font-size:1.1rem; font-weight:700; color:#2e7d32;">₹{c['msp_rate_per_quintal']:,} / qtl</span></p>
                     <p style="margin:0.2rem 0; font-size:0.85rem;">⏳ Duration: {c['duration_days']} | Yield: {c['expected_yield_qtl_per_acre']}</p>
-                    <p style="margin:0.2rem 0; font-size:0.85rem;">🌱 <b>Varieties</b>: {', '.join(c['recommended_varieties'][:2])}</p>
+                    <p style="margin:0.2rem 0; font-size:0.85rem;">🌱 <b>Varieties</b>: {', '.join(c.get('recommended_varieties', [])[:2])}</p>
                     <p style="margin:0.2rem 0; font-size:0.85rem; color:#424242;"><i>{c['soil_health_benefit']}</i></p>
                 </div>
                 """, unsafe_allow_html=True)

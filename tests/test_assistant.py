@@ -191,33 +191,64 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         self.assertEqual(sms["target_helpline"], "1800-180-1551")
 
     def test_11_water_saving_subsidy_matcher(self):
-        """Test loading and content of water saving subsidy schemes (PMKSY, PM-KUSUM, TSMIP)."""
+        """Test loading and content of diversified water saving subsidy schemes (18+ schemes across India)."""
         import json
         water_schemes_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "water_saving_schemes.json")
         self.assertTrue(os.path.exists(water_schemes_path))
         with open(water_schemes_path, "r", encoding="utf-8") as f:
             schemes = json.load(f)
         
+        self.assertGreaterEqual(len(schemes), 15, "Must contain diversified Pan-India water-saving subsidy schemes.")
         ids = [s["scheme_id"] for s in schemes]
         self.assertIn("PMKSY_PDMC", ids)
+        self.assertIn("PMKSY_HKKP", ids)
+        self.assertIn("PMKSY_WDC", ids)
+        self.assertIn("PM_KUSUM_A", ids)
         self.assertIn("PM_KUSUM_B", ids)
+        self.assertIn("PM_KUSUM_C", ids)
         self.assertIn("TSMIP_TELANGANA", ids)
+        self.assertIn("APMIP_ANDHRA_PRADESH", ids)
+        self.assertIn("MAHA_SHET_TALE", ids)
+        self.assertIn("KARNATAKA_KRISHI_BHAGYA", ids)
+        self.assertIn("HARYANA_MERA_PANI", ids)
+        self.assertIn("PUNJAB_UGPL_PIPELINE", ids)
 
         tsmip = next(s for s in schemes if s["scheme_id"] == "TSMIP_TELANGANA")
         self.assertIn("100% subsidy", tsmip["subsidy_rules"]["sc_st_farmers"])
 
     def test_12_low_water_crops_and_msp(self):
-        """Test low-water crop alternatives and statutory MSP data."""
+        """Test diversified low-water crop alternatives across pulses, oilseeds and millets (26+ crops)."""
         import json
         crops_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "low_water_crops.json")
         self.assertTrue(os.path.exists(crops_path))
         with open(crops_path, "r", encoding="utf-8") as f:
             crops = json.load(f)
 
+        self.assertGreaterEqual(len(crops), 25, "Must contain at least 25 diversified alternative crops.")
         crop_ids = [c["crop_id"] for c in crops]
+        
+        # Pulses
         self.assertIn("bengal_gram", crop_ids)
+        self.assertIn("green_gram", crop_ids)
+        self.assertIn("black_gram", crop_ids)
+        self.assertIn("red_gram", crop_ids)
+        self.assertIn("horse_gram", crop_ids)
+        self.assertIn("cowpea", crop_ids)
+        
+        # Oilseeds
         self.assertIn("sesame", crop_ids)
         self.assertIn("groundnut", crop_ids)
+        self.assertIn("mustard_rapeseed", crop_ids)
+        self.assertIn("safflower", crop_ids)
+        self.assertIn("sunflower", crop_ids)
+        self.assertIn("castor", crop_ids)
+        
+        # Millets / Shree Anna
+        self.assertIn("sorghum_jowar", crop_ids)
+        self.assertIn("pearl_millet_bajra", crop_ids)
+        self.assertIn("finger_millet_ragi", crop_ids)
+        self.assertIn("foxtail_millet_korra", crop_ids)
+        self.assertIn("little_millet_samalu", crop_ids)
 
         sesame = next(c for c in crops if c["crop_id"] == "sesame")
         self.assertGreaterEqual(sesame["msp_rate_per_quintal"], 9000)
