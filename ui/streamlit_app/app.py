@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from utils.llm import process_farmer_query, generate_plain_explanation, FALLBACK_PMKISAN, FALLBACK_UNCERTAIN
 from utils.translation import get_label, UI_LABELS
-from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
+from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory, INDIAN_STATES_DISTRICTS
 
 # Backend URL (can also run in embedded mode if backend is not running standalone)
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
@@ -400,20 +400,26 @@ with tab4:
     *Protects Paddy/Rice cultivators from severe losses caused by declining water tables, canal dry spells, and terminal moisture heat.*
     """)
 
-    c_col1, c_col2, c_col3 = st.columns([1.2, 1.2, 1.2])
+    c_col0, c_col1, c_col2, c_col3 = st.columns([1.1, 1.1, 1.1, 1.1])
+    with c_col0:
+        w_state = st.selectbox("Select State (Pan-India)", list(INDIAN_STATES_DISTRICTS.keys()), index=0, key="w_state_select")
     with c_col1:
-        w_dist = st.selectbox("Select District for Climate Scan", ["Warangal", "Nalgonda", "Khammam", "Karimnagar", "Nizamabad", "Mahabubnagar", "Suryapet"], key="w_dist_select")
+        dist_options = INDIAN_STATES_DISTRICTS.get(w_state, ["Warangal"])
+        w_dist = st.selectbox(f"Select District in {w_state}", dist_options, key="w_dist_select")
     with c_col2:
         w_source = st.selectbox("Primary Irrigation Source", ["Borewell (Deep > 200 ft)", "Canal Tail-end", "Tank / Open Well", "Borewell (Normal)"])
     with c_col3:
         w_crop_stage = st.selectbox("Paddy Growth Stage", ["Panicle Initiation / Milking (Most Vulnerable)", "Grain Hardening (80-85% Golden)", "Tillering / Vegetative", "Transplanting"])
 
+    custom_loc = st.text_input("🔍 Or enter any custom district, tehsil, or city in India (e.g. Ludhiana, Bardhaman, Thanjavur, Kurnool, Varanasi)", "")
+    active_dist = custom_loc.strip() if custom_loc.strip() else w_dist
+
     # Fetch live meteorological data
-    weather_data = get_live_weather(w_dist)
+    weather_data = get_live_weather(active_dist, state=w_state)
     stress_eval = evaluate_water_stress(weather_data, crop="Paddy", water_source=w_source)
 
     # Meteorological summary cards
-    st.markdown("#### 🛰️ Live Meteorological Readings (Open-Meteo IMD Grid)")
+    st.markdown(f"#### 🛰️ Live Meteorological Readings: {weather_data['location']} (Open-Meteo IMD Grid)")
     wc1, wc2, wc3, wc4 = st.columns(4)
     with wc1:
         st.metric("Current Temperature", f"{weather_data['current_temperature']} °C", f"Avg Max: {weather_data['avg_max_temp']} °C")
@@ -430,7 +436,7 @@ with tab4:
     <div class="{alert_box_class}">
         <h3 style="margin:0; color:#b71c1c;">⚠️ {stress_eval['stress_title']}</h3>
         <p style="margin:0.3rem 0; font-size:1.05rem;">
-            District <b>{w_dist}</b> is experiencing <b>{weather_data['consecutive_dry_days']} consecutive dry days</b> with only <b>{weather_data['forecast_7day_total_rain_mm']} mm</b> rain forecasted. 
+            Location <b>{weather_data['location']}</b> is experiencing <b>{weather_data['consecutive_dry_days']} consecutive dry days</b> with only <b>{weather_data['forecast_7day_total_rain_mm']} mm</b> rain forecasted. 
             Farmers with <i>{w_source}</i> cultivating Paddy at <i>{w_crop_stage}</i> face high risk of mid-season moisture failure.
         </p>
     </div>

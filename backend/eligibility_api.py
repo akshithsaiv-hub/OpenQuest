@@ -360,11 +360,11 @@ def get_msp_comparison():
         }
     ]
 
-# Live Climate & Water Stress Assessment endpoint
+# Live Climate & Water Stress Assessment endpoint (Pan-India)
 @app.get("/climate_water_stress")
-def get_climate_water_stress(district: str = "Warangal", crop: str = "Paddy", water_source: str = "Borewell", lang: str = "en"):
+def get_climate_water_stress(district: str = "Warangal", state: Optional[str] = None, crop: str = "Paddy", water_source: str = "Borewell", lang: str = "en"):
     from utils.weather_api import get_live_weather, evaluate_water_stress, generate_multilingual_water_advisory
-    weather = get_live_weather(district)
+    weather = get_live_weather(district, state=state)
     assessment = evaluate_water_stress(weather, crop=crop, water_source=water_source)
     advisory_text = generate_multilingual_water_advisory(assessment, lang=lang)
     return {

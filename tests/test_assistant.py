@@ -143,5 +143,22 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         self.assertIn("వరి పంట", adv_te)
         self.assertIn("1800-180-1551", adv_te)
 
+    def test_09_pan_india_geocoding_and_weather(self):
+        """Test Pan-India meteorological lookups across different states."""
+        from utils.weather_api import get_live_weather, resolve_pan_india_coordinates
+        # Punjab
+        punjab_coords = resolve_pan_india_coordinates("Ludhiana", state="Punjab")
+        self.assertEqual(punjab_coords["name"], "Ludhiana")
+        punjab_weather = get_live_weather("Ludhiana", state="Punjab")
+        self.assertIn("Ludhiana", punjab_weather["location"])
+
+        # Tamil Nadu
+        tn_weather = get_live_weather("Thanjavur", state="Tamil Nadu")
+        self.assertIn("Thanjavur", tn_weather["location"])
+
+        # West Bengal
+        wb_weather = get_live_weather("Bardhaman", state="West Bengal")
+        self.assertIn("Bardhaman", wb_weather["location"])
+
 if __name__ == "__main__":
     unittest.main()
