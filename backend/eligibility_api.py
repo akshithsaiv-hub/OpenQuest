@@ -1066,6 +1066,18 @@ def get_water_saving_schemes_compat(state: Optional[str] = None):
         data = json.load(f)
     if state and state.lower() != "all":
         data = [s for s in data if "All States" in s.get("applicable_states", []) or state.lower() in [st.lower() for st in s.get("applicable_states", [])]]
+    # Normalize fields to guarantee no undefined
+    for s in data:
+        title = s.get("name") or s.get("scheme_name") or "Water Conservation Scheme"
+        s["name"] = title
+        s["scheme_name"] = title
+        desc = s.get("water_savings_potential") or s.get("target_beneficiaries") or s.get("objective") or "Official government water conservation and irrigation scheme."
+        s["objective"] = desc
+        s["water_savings_potential"] = desc
+        if not s.get("portal_url") and s.get("official_portal"):
+            s["portal_url"] = s["official_portal"]
+        if not s.get("official_portal") and s.get("portal_url"):
+            s["official_portal"] = s["portal_url"]
     return data
 
 @app.get("/low_water_crops")
@@ -1076,6 +1088,14 @@ def get_low_water_crops_compat(category: Optional[str] = None):
         data = json.load(f)
     if category and category.lower() != "all":
         data = [c for c in data if category.lower() in c.get("category", "").lower()]
+    # Normalize fields to guarantee no undefined
+    for c in data:
+        title = c.get("name") or c.get("crop_name") or "Resilient Low-Water Crop"
+        c["name"] = title
+        c["crop_name"] = title
+        savings = c.get("water_savings_percentage") or c.get("water_savings_vs_paddy") or "-65% Water"
+        c["water_savings_percentage"] = savings
+        c["water_savings_vs_paddy"] = savings
     return data
 
 @app.get("/disaster_relief")
