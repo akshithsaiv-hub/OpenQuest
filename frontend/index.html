@@ -222,8 +222,8 @@
         <div class="chat-bot-info">
           <div class="chat-bot-avatar">🤖</div>
           <div>
-            <h3 class="chat-bot-title">Kisan Sahayak / రైతు సహాయత AI Chatbot</h3>
-            <p class="chat-bot-subtitle">Grounded agricultural assistance in English, తెలుగు (Telugu) & हिंदी (Hindi)</p>
+            <h3 class="chat-bot-title" id="chatBotTitle" data-i18n="chat_title">Kisan Sahayak AI Chatbot</h3>
+            <p class="chat-bot-subtitle" id="chatBotSubtitle" data-i18n="chat_subtitle">Grounded agricultural assistance in your regional language</p>
           </div>
         </div>
         <div class="chat-status-pill">
@@ -235,12 +235,12 @@
       <!-- Quick Prompt Chips -->
       <div class="quick-chips-wrapper">
         <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick Ask:</span>
-        <button type="button" class="quick-chip-btn" data-query="Documents">📄 Required Documents</button>
-        <button type="button" class="quick-chip-btn" data-query="72-Hour Claim Rule">⏱️ 72-Hr Loss Claim</button>
-        <button type="button" class="quick-chip-btn" data-query="KCC Loan 4% Interest">💳 KCC 4% Loan Rate</button>
-        <button type="button" class="quick-chip-btn" data-query="Tenant CCRC Card Rights">🤝 Tenant CCRC Card</button>
-        <button type="button" class="quick-chip-btn" data-query="Water and Drip Subsidies">💧 Water Subsidies</button>
-        <button type="button" class="quick-chip-btn" data-query="PM-KISAN Status">🌾 PM-KISAN</button>
+        <button type="button" class="quick-chip-btn" data-query="Documents" data-i18n="chip_docs">📄 Required Documents</button>
+        <button type="button" class="quick-chip-btn" data-query="72-Hour Claim Rule" data-i18n="chip_claim">⏱️ 72-Hr Loss Claim</button>
+        <button type="button" class="quick-chip-btn" data-query="KCC Loan 4% Interest" data-i18n="chip_kcc">💳 KCC 4% Loan Rate</button>
+        <button type="button" class="quick-chip-btn" data-query="Tenant CCRC Card Rights" data-i18n="chip_tenant">🤝 Tenant CCRC Card</button>
+        <button type="button" class="quick-chip-btn" data-query="Water and Drip Subsidies" data-i18n="chip_water">💧 Water Subsidies</button>
+        <button type="button" class="quick-chip-btn" data-query="PM-KISAN Status" data-i18n="chip_pmkisan">🌾 PM-KISAN</button>
       </div>
 
       <!-- Chat Message Stream -->
@@ -263,9 +263,9 @@ Ask me anything about:
 
       <!-- Chat Input Bar -->
       <form id="chatForm" class="chat-input-bar">
-        <input type="text" id="chatMessageInput" class="chat-text-input" placeholder="Type your question (e.g. Documents, How to get CCRC, KCC loan limit)..." required>
+        <input type="text" id="chatMessageInput" class="chat-text-input" placeholder="Type your question (e.g. Documents, How to get CCRC, KCC loan limit)..." data-i18n-placeholder="chat_placeholder" required>
         <button type="submit" class="chat-send-btn" id="btnSendChat">
-          <span>Send</span> <span>↗</span>
+          <span data-i18n="chat_send">Send</span> <span>↗</span>
         </button>
       </form>
     </div>
@@ -449,8 +449,8 @@ Ask me anything about:
   <!-- TAB 2: 72-HR CLAIM SHIELD -->
   <div id="view-tab2" class="tab-view" role="tabpanel" aria-labelledby="btn-tab2">
     <div class="view-header">
-      <h2 class="view-title"><span>⚡</span> Pan-India Climate Risk Shield & 72-Hour Claim Assistant</h2>
-      <p class="view-desc">
+      <h2 class="view-title"><span>⚡</span> <span data-i18n="tab2_title">Pan-India Climate Risk Shield & 72-Hour Claim Assistant</span></h2>
+      <p class="view-desc" data-i18n="tab2_desc">
         Detects drought, excess rain, heat waves, and pest outbreaks in real-time. Immediately unlocks statutory PMFBY insurance intimation, in-app geo-tagged field photo capture with live GPS location, and an active 72-hour countdown to prevent claim repudiation.
       </p>
     </div>
@@ -1280,8 +1280,8 @@ Ask me anything about:
   <!-- TAB 4: KCC CREDIT & STATUS TRACKER -->
   <div id="view-tab4" class="tab-view" role="tabpanel" aria-labelledby="btn-tab4">
     <div class="view-header">
-      <h2 class="view-title"><span>💳</span> Kisan Credit Card (KCC) 4% Subvention Engine & Application Hub</h2>
-      <p class="view-desc">
+      <h2 class="view-title"><span>💳</span> <span data-i18n="tab4_title">Kisan Credit Card (KCC) 4% Subvention Engine & Application Hub</span></h2>
+      <p class="view-desc" data-i18n="tab4_desc">
         Calculate your statutory DLTC Scale of Finance credit limit, 4% net interest under Central Modified Interest Subvention Scheme (MISS), 100% collateral-free limit verification, and track your pending scheme applications with SLA countdowns.
       </p>
     </div>
@@ -1681,8 +1681,8 @@ Ask me anything about:
   <!-- TAB 6: MSP VS MANDI -->
   <div id="view-tab6" class="tab-view" role="tabpanel" aria-labelledby="btn-tab6">
     <div class="view-header">
-      <h2 class="view-title"><span>📈</span> Minimum Support Price (MSP) vs Mandi Benchmark (2025-2026)</h2>
-      <p class="view-desc">
+      <h2 class="view-title"><span>📈</span> <span data-i18n="tab6_title">Minimum Support Price (MSP) vs Mandi Benchmark (2025-2026)</span></h2>
+      <p class="view-desc" data-i18n="tab6_desc">
         Protects small and marginal farmers from distress selling below support price to local commission agents. Compare official procurement rates with prevailing market prices.
       </p>
     </div>
@@ -1731,8 +1731,8 @@ Ask me anything about:
   <!-- TAB 7: INTERMEDIARY DESK & ESCALATION -->
   <div id="view-tab7" class="tab-view" role="tabpanel" aria-labelledby="btn-tab7">
     <div class="view-header">
-      <h2 class="view-title"><span>🏛️</span> Intermediary Desk, Feedback Curation & Higher Official Escalation</h2>
-      <p class="view-desc">
+      <h2 class="view-title"><span>🏛️</span> <span data-i18n="tab7_title">Intermediary Desk, Feedback Curation & Higher Official Escalation</span></h2>
+      <p class="view-desc" data-i18n="tab7_desc">
         Equips CSC Operators, Extension Officers (AEOs), and FPOs to resolve farmer issues, curate scheme updates, and escalate unaddressed grievances to Mandal, District, or State Authorities.
       </p>
     </div>

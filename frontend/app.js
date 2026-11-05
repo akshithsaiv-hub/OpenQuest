@@ -9,10 +9,58 @@
     ? 'http://127.0.0.1:8000'
     : '';
 
+  // State-to-Regional-Language Mapping (Location & State based)
+  const STATE_TO_LANG_MAP = {
+    'Telangana': 'te',
+    'Andhra Pradesh': 'te',
+    'Maharashtra': 'mr',
+    'Karnataka': 'kn',
+    'Tamil Nadu': 'ta',
+    'Gujarat': 'gu',
+    'Punjab': 'pa',
+    'West Bengal': 'bn',
+    'Odisha': 'or',
+    'Kerala': 'ml',
+    'Uttar Pradesh': 'hi',
+    'Madhya Pradesh': 'hi',
+    'Rajasthan': 'hi',
+    'Bihar': 'hi',
+    'Haryana': 'hi',
+    'Himachal Pradesh': 'hi',
+    'Chhattisgarh': 'hi',
+    'Jharkhand': 'hi',
+    'Uttarakhand': 'hi',
+    'Delhi': 'hi',
+    'Assam': 'hi',
+    'Goa': 'mr',
+    'Jammu and Kashmir': 'hi',
+    'Ladakh': 'hi'
+  };
+
+  const LANG_TO_VOICE_LOCALE = {
+    'te': 'te-IN',
+    'hi': 'hi-IN',
+    'mr': 'mr-IN',
+    'ta': 'ta-IN',
+    'kn': 'kn-IN',
+    'bn': 'bn-IN',
+    'gu': 'gu-IN',
+    'pa': 'pa-IN',
+    'ml': 'ml-IN',
+    'or': 'or-IN',
+    'en': 'en-IN'
+  };
+
   // Application State
+  const initialSavedState = localStorage.getItem('kisan_state') || 'Telangana';
+  const initialManualLang = localStorage.getItem('kisan_lang_manual') === 'true';
+  const initialLang = initialManualLang 
+    ? (localStorage.getItem('kisan_lang') || 'te')
+    : (STATE_TO_LANG_MAP[initialSavedState] || 'te');
+
   const state = {
-    lang: localStorage.getItem('kisan_lang') || 'en',
-    selectedState: localStorage.getItem('kisan_state') || 'Telangana',
+    lang: initialLang,
+    selectedState: initialSavedState,
     activeTab: 'all', // 'all' | 'state' | 'central'
     typeFilter: 'all',
     eligibilityFilter: 'all',
@@ -21,6 +69,235 @@
     waterTypeFilter: 'All',
     cropCategoryFilter: 'All'
   };
+
+  // Global Speech Synthesis Engine
+  function stopSpeaking() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    document.querySelectorAll('.btn-bubble-voice-stop').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('.btn-bubble-voice-speak').forEach(b => b.style.display = 'inline-flex');
+    document.querySelectorAll('.btn-voice-re-stop').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('.btn-voice-re-speak').forEach(b => b.style.display = 'inline-block');
+  }
+
+  function speakText(rawText, lang, onStart, onEnd) {
+    if (!('speechSynthesis' in window)) {
+      console.warn('SpeechSynthesis API not supported by browser.');
+      if (onEnd) onEnd();
+      return;
+    }
+
+    stopSpeaking();
+    if (!rawText || !rawText.trim()) {
+      if (onEnd) onEnd();
+      return;
+    }
+
+    let cleanText = rawText
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\*\*([^\*]+)\*\*/g, '$1')
+      .replace(/\*([^\*]+)\*/g, '$1')
+      .replace(/#+\s*/g, '')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/[🗓️⏱️💳🌾📄🤝💧📋✅⚠️❌🚨🤖🧑‍🌾🔊⏹️🎙️↗️]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) {
+      if (onEnd) onEnd();
+      return;
+    }
+
+    const targetLocale = LANG_TO_VOICE_LOCALE[lang] || 'te-IN';
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = targetLocale;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const prefix = targetLocale.split('-')[0].toLowerCase();
+    const matchedVoice = voices.find(v => {
+      const vLang = v.lang.replace('_', '-').toLowerCase();
+      return vLang === targetLocale.toLowerCase() || vLang.startsWith(prefix);
+    });
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
+    }
+
+    utterance.onstart = () => {
+      if (onStart) onStart();
+    };
+
+    utterance.onend = () => {
+      if (onEnd) onEnd();
+      document.querySelectorAll('.btn-bubble-voice-stop').forEach(b => b.style.display = 'none');
+      document.querySelectorAll('.btn-bubble-voice-speak').forEach(b => b.style.display = 'inline-flex');
+      document.querySelectorAll('.btn-voice-re-stop').forEach(b => b.style.display = 'none');
+      document.querySelectorAll('.btn-voice-re-speak').forEach(b => b.style.display = 'inline-block');
+    };
+
+    utterance.onerror = (e) => {
+      console.warn('SpeechSynthesis error:', e);
+      if (onEnd) onEnd();
+      document.querySelectorAll('.btn-bubble-voice-stop').forEach(b => b.style.display = 'none');
+      document.querySelectorAll('.btn-bubble-voice-speak').forEach(b => b.style.display = 'inline-flex');
+      document.querySelectorAll('.btn-voice-re-stop').forEach(b => b.style.display = 'none');
+      document.querySelectorAll('.btn-voice-re-speak').forEach(b => b.style.display = 'inline-block');
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Pre-fetch voices
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    }
+  }
+
+  // Central Multi-Tab Language Switcher
+  function applyLanguage(lang) {
+    if (!lang) return;
+    state.lang = lang;
+    localStorage.setItem('kisan_lang', lang);
+
+    // Sync dropdowns
+    const topLang = document.getElementById('langSelect');
+    if (topLang && topLang.value !== lang) topLang.value = lang;
+    const voiceLang = document.getElementById('voiceLangSelect');
+    if (voiceLang && voiceLang.value !== lang) voiceLang.value = lang;
+
+    // 1. Translate all data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = t(key);
+      if (val && val !== key) {
+        el.textContent = val;
+      }
+    });
+
+    // 2. Translate all data-i18n-placeholder elements
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      const val = t(key);
+      if (val && val !== key) {
+        el.setAttribute('placeholder', val);
+      }
+    });
+
+    // 3. Tab 0: Scheme browser re-render
+    populateStateDropdown();
+    renderSchemeBrowser();
+
+    // 4. Tab 1: If eligibility results exist, re-render
+    const resultsContainer = document.getElementById('eligibilityResultsContainer');
+    if (resultsContainer && resultsContainer.innerHTML.trim() !== '') {
+      const elForm = document.getElementById('eligibilityForm');
+      if (elForm) {
+        const submitEvt = new Event('submit', { cancelable: true });
+        elForm.dispatchEvent(submitEvt);
+      }
+    }
+
+    // 5. Tab 4: Re-render status tracker clean claims
+    if (typeof renderCleanClaims === 'function') {
+      renderCleanClaims();
+    }
+
+    // 6. Tab 6: Re-render MSP table rows
+    if (typeof renderMspTable === 'function') {
+      renderMspTable();
+    }
+
+    // 7. Update voice status prompt
+    const voiceStatus = document.getElementById('voiceStatusText');
+    if (voiceStatus) {
+      const langNames = {
+        'te': 'తెలుగు (Telugu)',
+        'hi': 'हिन्दी (Hindi)',
+        'mr': 'मराठी (Marathi)',
+        'ta': 'தமிழ் (Tamil)',
+        'kn': 'ಕನ್ನಡ (Kannada)',
+        'bn': 'বাংলা (Bengali)',
+        'gu': 'ગુજરાતી (Gujarati)',
+        'pa': 'ਪੰਜਾਬੀ (Punjabi)',
+        'ml': 'മലയാളം (Malayalam)',
+        'or': 'ଓଡ଼ିଆ (Odia)',
+        'en': 'English'
+      };
+      voiceStatus.textContent = `${t('voice_click_speak') || 'Click microphone to speak...'} [${langNames[lang] || lang}]`;
+    }
+  }
+
+  function onStateChanged(newState) {
+    if (!newState) return;
+    state.selectedState = newState;
+    localStorage.setItem('kisan_state', newState);
+
+    const topState = document.getElementById('stateSelect');
+    if (topState && topState.value !== newState) topState.value = newState;
+    const elState = document.getElementById('elState');
+    if (elState && elState.value !== newState) elState.value = newState;
+    const ecoState = document.getElementById('ecoStateSelect');
+    if (ecoState && ecoState.value !== newState) ecoState.value = newState;
+
+    if (localStorage.getItem('kisan_lang_manual') !== 'true') {
+      const regionalLang = STATE_TO_LANG_MAP[newState] || 'te';
+      applyLanguage(regionalLang);
+    } else {
+      renderSchemeBrowser();
+    }
+  }
+
+  function onManualLanguageSelected(newLang) {
+    localStorage.setItem('kisan_lang_manual', 'true');
+    applyLanguage(newLang);
+  }
+
+  function detectLocationAndSetDefaultLanguage() {
+    const isManual = localStorage.getItem('kisan_lang_manual') === 'true';
+    if (isManual) {
+      applyLanguage(state.lang);
+      return;
+    }
+
+    const regionalLang = STATE_TO_LANG_MAP[state.selectedState] || 'te';
+    applyLanguage(regionalLang);
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (localStorage.getItem('kisan_lang_manual') === 'true') return;
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          let detectedState = null;
+          if (lat >= 15.5 && lat <= 19.9 && lon >= 77.0 && lon <= 81.5) detectedState = 'Telangana';
+          else if (lat >= 13.0 && lat <= 19.1 && lon >= 76.5 && lon <= 84.8) detectedState = 'Andhra Pradesh';
+          else if (lat >= 15.6 && lat <= 22.0 && lon >= 72.6 && lon <= 80.9) detectedState = 'Maharashtra';
+          else if (lat >= 11.5 && lat <= 18.5 && lon >= 74.0 && lon <= 78.6) detectedState = 'Karnataka';
+          else if (lat >= 8.0 && lat <= 13.5 && lon >= 76.2 && lon <= 80.4) detectedState = 'Tamil Nadu';
+          else if (lat >= 20.0 && lat <= 24.7 && lon >= 68.1 && lon <= 74.5) detectedState = 'Gujarat';
+          else if (lat >= 29.5 && lat <= 32.5 && lon >= 73.8 && lon <= 76.9) detectedState = 'Punjab';
+          else if (lat >= 21.5 && lat <= 27.2 && lon >= 85.8 && lon <= 89.9) detectedState = 'West Bengal';
+          else if (lat >= 17.8 && lat <= 22.6 && lon >= 81.4 && lon <= 87.5) detectedState = 'Odisha';
+          else if (lat >= 8.3 && lat <= 12.8 && lon >= 74.8 && lon <= 77.4) detectedState = 'Kerala';
+          else if (lat >= 23.8 && lat <= 30.4 && lon >= 77.0 && lon <= 84.6) detectedState = 'Uttar Pradesh';
+
+          if (detectedState) {
+            state.selectedState = detectedState;
+            localStorage.setItem('kisan_state', detectedState);
+            const autoLang = STATE_TO_LANG_MAP[detectedState] || 'te';
+            applyLanguage(autoLang);
+          }
+        },
+        (err) => {
+          // Fallback to state's regional language
+        },
+        { timeout: 4000 }
+      );
+    }
+  }
 
   // Helper to fetch translated UI label
   function t(key) {
@@ -439,8 +716,9 @@
     const chatInput = document.getElementById('chatMessageInput');
     const chatList = document.getElementById('chatMessagesList');
     const quickChips = document.querySelectorAll('.quick-chip-btn');
+    const btnSendChat = document.getElementById('btnSendChat');
 
-    function appendMessage(sender, text) {
+    function appendMessage(sender, text, autoSpeak = false) {
       if (!chatList) return;
       const row = document.createElement('div');
       row.className = `chat-bubble-row ${sender}`;
@@ -455,13 +733,57 @@
         .replace(/\n/g, '<br>');
       bubble.innerHTML = formatted;
 
+      if (sender === 'bot') {
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'chat-bubble-actions';
+        actionsDiv.style.cssText = 'margin-top: 0.6rem; display: flex; gap: 0.5rem; align-items: center; border-top: 1px dashed rgba(22, 101, 52, 0.2); padding-top: 0.4rem;';
+
+        const speakBtn = document.createElement('button');
+        speakBtn.type = 'button';
+        speakBtn.className = 'btn-bubble-voice-speak';
+        speakBtn.style.cssText = 'background: #15803d; color: white; border: none; border-radius: 4px; padding: 0.25rem 0.65rem; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600;';
+        speakBtn.innerHTML = `<span>🔊</span> <span>${t('listen_voice_btn') || 'Listen'}</span>`;
+
+        const stopBtn = document.createElement('button');
+        stopBtn.type = 'button';
+        stopBtn.className = 'btn-bubble-voice-stop';
+        stopBtn.style.cssText = 'background: #dc2626; color: white; border: none; border-radius: 4px; padding: 0.25rem 0.65rem; font-size: 0.78rem; cursor: pointer; display: none; align-items: center; gap: 0.35rem; font-weight: 600;';
+        stopBtn.innerHTML = `<span>⏹️</span> <span>${t('stop_voice_btn') || 'Stop'}</span>`;
+
+        speakBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          speakText(text, state.lang, () => {
+            speakBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-flex';
+          }, () => {
+            speakBtn.style.display = 'inline-flex';
+            stopBtn.style.display = 'none';
+          });
+        });
+
+        stopBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          stopSpeaking();
+          speakBtn.style.display = 'inline-flex';
+          stopBtn.style.display = 'none';
+        });
+
+        actionsDiv.appendChild(speakBtn);
+        actionsDiv.appendChild(stopBtn);
+        bubble.appendChild(actionsDiv);
+      }
+
       row.appendChild(avatar);
       row.appendChild(bubble);
       chatList.appendChild(row);
       chatList.scrollTop = chatList.scrollHeight;
+
+      if (sender === 'bot' && autoSpeak) {
+        speakText(text, state.lang);
+      }
     }
 
-    async function handleSendQuery(qText) {
+    async function handleSendQuery(qText, autoSpeak = false) {
       if (!qText || !qText.trim()) return;
       appendMessage('user', qText);
       if (chatInput) chatInput.value = '';
@@ -482,23 +804,206 @@
       }
 
       if (res && res.response) {
-        appendMessage('bot', res.response);
+        appendMessage('bot', res.response, autoSpeak);
       } else {
-        appendMessage('bot', 'Sorry, I could not process your query at this moment. Please ask about "Documents", "72-Hour Claim", or "KCC Loan".');
+        appendMessage('bot', 'Sorry, I could not process your query at this moment. Please ask about "Documents", "72-Hour Claim", or "KCC Loan".', autoSpeak);
       }
     }
 
     if (chatForm && chatInput) {
       chatForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        handleSendQuery(chatInput.value);
+        handleSendQuery(chatInput.value, false);
+      });
+    }
+
+    if (btnSendChat && chatInput) {
+      btnSendChat.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleSendQuery(chatInput.value, false);
       });
     }
 
     quickChips.forEach(chip => {
       chip.addEventListener('click', function () {
         const q = this.getAttribute('data-query');
-        handleSendQuery(q);
+        handleSendQuery(q, false);
+      });
+    });
+  }
+
+  // Multilingual AI Voice Assistant Console Logic
+  function initVoiceAssistantConsole() {
+    const voiceLangSelect = document.getElementById('voiceLangSelect');
+    const voiceMicBtn = document.getElementById('voiceMicBtn');
+    const voiceStatusText = document.getElementById('voiceStatusText');
+    const voiceTranscriptInput = document.getElementById('voiceTranscriptInput');
+    const voiceSendBtn = document.getElementById('voiceSendBtn');
+    const voiceChatHistory = document.getElementById('voiceChatHistory');
+
+    if (voiceLangSelect) {
+      voiceLangSelect.value = state.lang;
+      voiceLangSelect.addEventListener('change', function () {
+        onManualLanguageSelected(this.value);
+      });
+    }
+
+    function appendVoiceBubble(sender, text) {
+      if (!voiceChatHistory) return;
+      const bubble = document.createElement('div');
+      bubble.className = `voice-bubble ${sender === 'user' ? 'voice-bubble-user' : 'voice-bubble-bot'}`;
+
+      if (sender === 'user') {
+        bubble.style.cssText = 'background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.75rem; margin-left: 2rem;';
+        bubble.innerHTML = `<div style="font-weight: 700; color: #1d4ed8; font-size: 0.82rem; margin-bottom: 0.2rem;">🧑‍🌾 You (మీరు)</div><div style="font-size: 0.88rem; color: #1e293b;">${escapeHtml(text)}</div>`;
+      } else {
+        bubble.style.cssText = 'background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.75rem;';
+        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        bubble.innerHTML = `
+          <div style="font-weight: 700; color: #15803d; font-size: 0.82rem; margin-bottom: 0.2rem;">🤖 Kisan Voice Sahayak</div>
+          <div style="font-size: 0.88rem; color: #14532d; line-height: 1.5;">${formatted}</div>
+          <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+            <button type="button" class="btn-voice-re-speak" style="background: #15803d; color: white; border: none; border-radius: 4px; padding: 0.2rem 0.55rem; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem;">🔊 ${t('listen_voice_btn') || 'Listen'}</button>
+            <button type="button" class="btn-voice-re-stop" style="background: #dc2626; color: white; border: none; border-radius: 4px; padding: 0.2rem 0.55rem; font-size: 0.75rem; cursor: pointer; display: none; align-items: center; gap: 0.3rem;">⏹️ ${t('stop_voice_btn') || 'Stop'}</button>
+          </div>
+        `;
+        const reSpeak = bubble.querySelector('.btn-voice-re-speak');
+        const reStop = bubble.querySelector('.btn-voice-re-stop');
+        if (reSpeak && reStop) {
+          reSpeak.addEventListener('click', () => {
+            speakText(text, state.lang, () => {
+              reSpeak.style.display = 'none';
+              reStop.style.display = 'inline-flex';
+            }, () => {
+              reSpeak.style.display = 'inline-flex';
+              reStop.style.display = 'none';
+            });
+          });
+          reStop.addEventListener('click', () => {
+            stopSpeaking();
+            reSpeak.style.display = 'inline-flex';
+            reStop.style.display = 'none';
+          });
+        }
+      }
+
+      voiceChatHistory.appendChild(bubble);
+      voiceChatHistory.scrollTop = voiceChatHistory.scrollHeight;
+    }
+
+    async function handleVoiceQuery(queryText, autoSpeak = true) {
+      if (!queryText || !queryText.trim()) return;
+      const q = queryText.trim();
+      appendVoiceBubble('user', q);
+      if (voiceTranscriptInput) voiceTranscriptInput.value = '';
+
+      if (voiceStatusText) {
+        voiceStatusText.textContent = '⏳ Processing query / పరిశీలిస్తున్నాము...';
+      }
+
+      const res = await fetchAiQuery(q);
+      const answer = (res && res.response) ? res.response : 'క్షమించండి, మీ ప్రశ్నకు సమాచారం అందుబాటులో లేదు. దయచేసి పత్రాలు, KCC లేదా 72-గంటల క్లెయిమ్ గురించి అడగండి.';
+      appendVoiceBubble('bot', answer);
+
+      if (voiceStatusText) {
+        voiceStatusText.textContent = `${t('voice_click_speak') || 'Click microphone to speak...'}`;
+      }
+
+      if (autoSpeak) {
+        speakText(answer, state.lang);
+      }
+    }
+
+    // Web Speech Recognition
+    let recognition = null;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (voiceMicBtn) {
+      voiceMicBtn.addEventListener('click', function () {
+        if (!SpeechRecognition) {
+          alert('Speech recognition is not supported in this browser. Please type your query in the input box below.');
+          if (voiceTranscriptInput) voiceTranscriptInput.focus();
+          return;
+        }
+
+        if (recognition && recognition.isListening) {
+          recognition.stop();
+          return;
+        }
+
+        try {
+          recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = LANG_TO_VOICE_LOCALE[state.lang] || 'te-IN';
+
+          recognition.onstart = function () {
+            recognition.isListening = true;
+            voiceMicBtn.style.background = '#dc2626';
+            voiceMicBtn.style.color = '#ffffff';
+            if (voiceStatusText) {
+              voiceStatusText.textContent = `🎙️ Listening (${recognition.lang})... మాట్లాడండి...`;
+            }
+          };
+
+          recognition.onresult = function (event) {
+            const transcript = event.results[0][0].transcript;
+            if (voiceTranscriptInput) voiceTranscriptInput.value = transcript;
+            if (voiceStatusText) {
+              voiceStatusText.textContent = `✅ Captured: "${transcript}"`;
+            }
+            handleVoiceQuery(transcript, true);
+          };
+
+          recognition.onerror = function (event) {
+            console.warn('SpeechRecognition error:', event.error);
+            recognition.isListening = false;
+            voiceMicBtn.style.background = '';
+            voiceMicBtn.style.color = '';
+            if (voiceStatusText) {
+              voiceStatusText.textContent = `⚠️ Microphone unavailable (${event.error}). Please type below.`;
+            }
+          };
+
+          recognition.onend = function () {
+            recognition.isListening = false;
+            voiceMicBtn.style.background = '';
+            voiceMicBtn.style.color = '';
+          };
+
+          recognition.start();
+        } catch (err) {
+          console.error('SpeechRecognition launch error:', err);
+          if (voiceStatusText) {
+            voiceStatusText.textContent = 'Click microphone to speak or type below...';
+          }
+        }
+      });
+    }
+
+    if (voiceSendBtn && voiceTranscriptInput) {
+      voiceSendBtn.addEventListener('click', function () {
+        handleVoiceQuery(voiceTranscriptInput.value, true);
+      });
+      voiceTranscriptInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleVoiceQuery(voiceTranscriptInput.value, true);
+        }
+      });
+    }
+
+    // Expose quick prompt globally
+    window.askQuickVoicePrompt = function (promptText) {
+      if (voiceTranscriptInput) voiceTranscriptInput.value = promptText;
+      handleVoiceQuery(promptText, true);
+    };
+
+    // Wire voice chips
+    document.querySelectorAll('.voice-chip').forEach(chip => {
+      chip.addEventListener('click', function () {
+        const txt = this.getAttribute('data-prompt') || this.textContent.replace(/^[^\w\sఀ-౿]+/, '').trim();
+        window.askQuickVoicePrompt(txt);
       });
     });
   }
@@ -2458,14 +2963,41 @@ Copy submitted for information to:
     }
   }
 
+  // Tab 5 Document Wallet Sample Previews
+  window.openDocPreviewModal = function (docType, title, src) {
+    const modal = document.getElementById('sampleDocModal');
+    const modalTitle = document.getElementById('sampleDocModalTitle');
+    const modalImg = document.getElementById('sampleDocModalImg');
+    const modalDownload = document.getElementById('sampleDocModalDownload');
+
+    if (modalTitle) modalTitle.textContent = title || 'Sample Document Preview';
+    if (modalImg) modalImg.src = src;
+    if (modalDownload) modalDownload.href = src;
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+    }
+  };
+
+  window.closeDocPreviewModal = function () {
+    const modal = document.getElementById('sampleDocModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+
   // =========================================================================
   // 9. INITIALIZATION ENTRY POINT
   // =========================================================================
   function init() {
-    populateStateDropdown();
-    renderSchemeBrowser();
+    // 1. Detect location and initialize regional language
+    detectLocationAndSetDefaultLanguage();
+
+    // 2. Initialize Tab Views & Modules
     initPrimaryTabs();
     initChatbot();
+    initVoiceAssistantConsole();
     initEligibilityTab();
     initClaimShieldTab();
     initWaterSubsidiesTab();
@@ -2473,12 +3005,10 @@ Copy submitted for information to:
     initMspTab();
     initIntermediaryTab();
 
-    // Event listeners for Tab 0 controls
+    // 3. Tab 0: Scheme Browser Event Handlers
     if (stateSelect) {
       stateSelect.addEventListener('change', function () {
-        state.selectedState = this.value;
-        localStorage.setItem('kisan_state', this.value);
-        renderSchemeBrowser();
+        onStateChanged(this.value);
       });
     }
 
@@ -2540,10 +3070,92 @@ Copy submitted for information to:
     if (langSelect) {
       langSelect.value = state.lang;
       langSelect.addEventListener('change', function () {
-        state.lang = this.value;
-        localStorage.setItem('kisan_lang', this.value);
-        populateStateDropdown();
-        renderSchemeBrowser();
+        onManualLanguageSelected(this.value);
+      });
+    }
+
+    // 4. Tab 1: State change sync
+    const elState = document.getElementById('elState');
+    if (elState) {
+      elState.addEventListener('change', function () {
+        onStateChanged(this.value);
+      });
+    }
+
+    const btnMatchEligibility = document.getElementById('btnMatchEligibility');
+    const eligibilityForm = document.getElementById('eligibilityForm');
+    if (btnMatchEligibility && eligibilityForm) {
+      btnMatchEligibility.addEventListener('click', function () {
+        eligibilityForm.requestSubmit ? eligibilityForm.requestSubmit() : eligibilityForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    // 5. Tab 2: 72-Hour Claim Loss SMS button
+    const btnGenSms = document.getElementById('btnGenSms');
+    const claimLossForm = document.getElementById('claimLossForm');
+    if (btnGenSms && claimLossForm) {
+      btnGenSms.addEventListener('click', function () {
+        claimLossForm.requestSubmit ? claimLossForm.requestSubmit() : claimLossForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    // 6. Tab 3: State change sync & buttons
+    const ecoStateSelect = document.getElementById('ecoStateSelect');
+    if (ecoStateSelect) {
+      ecoStateSelect.addEventListener('change', function () {
+        onStateChanged(this.value);
+      });
+    }
+
+    // 7. Tab 4: KCC buttons
+    const btnCalcKcc = document.getElementById('btnCalcKcc');
+    const kccForm = document.getElementById('kccForm');
+    if (btnCalcKcc && kccForm) {
+      btnCalcKcc.addEventListener('click', function () {
+        kccForm.requestSubmit ? kccForm.requestSubmit() : kccForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    const btnAddClaim = document.getElementById('btnAddClaim');
+    const newClaimForm = document.getElementById('newClaimForm');
+    if (btnAddClaim && newClaimForm) {
+      btnAddClaim.addEventListener('click', function () {
+        newClaimForm.requestSubmit ? newClaimForm.requestSubmit() : newClaimForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    // 8. Tab 7: Intermediary & Escalation buttons
+    const btnVerifyName = document.getElementById('btnVerifyName');
+    const nameVerifyForm = document.getElementById('nameVerifyForm');
+    if (btnVerifyName && nameVerifyForm) {
+      btnVerifyName.addEventListener('click', function () {
+        nameVerifyForm.requestSubmit ? nameVerifyForm.requestSubmit() : nameVerifyForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    const btnSubmitFeedback = document.getElementById('btnSubmitFeedback');
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (btnSubmitFeedback && feedbackForm) {
+      btnSubmitFeedback.addEventListener('click', function () {
+        feedbackForm.requestSubmit ? feedbackForm.requestSubmit() : feedbackForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    const btnGenPetition = document.getElementById('btnGenPetition');
+    const escalateForm = document.getElementById('escalateForm');
+    if (btnGenPetition && escalateForm) {
+      btnGenPetition.addEventListener('click', function () {
+        escalateForm.requestSubmit ? escalateForm.requestSubmit() : escalateForm.dispatchEvent(new Event('submit'));
+      });
+    }
+
+    // Close preview modal on backdrop click
+    const sampleDocModal = document.getElementById('sampleDocModal');
+    if (sampleDocModal) {
+      sampleDocModal.addEventListener('click', function (e) {
+        if (e.target === this) {
+          window.closeDocPreviewModal();
+        }
       });
     }
   }
