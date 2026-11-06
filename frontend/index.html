@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Kisan Setu - Unified Pan-India Farmer Scheme & Subsidy Assistant</title>
   <meta name="description" content="Discover Central and State agricultural subsidies, 72-hr crop loss claim assistant, water saving subsidies, KCC loans, and higher official escalation across India.">
-  <link rel="stylesheet" href="styles.css?v=2.7">
+  <link rel="stylesheet" href="styles.css?v=2.8">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
 <body>
@@ -950,63 +950,16 @@ Ask me anything about:
       </div>
     </div>
 
-    <!-- 2. Dynamic Near-Future Weather & Dry Spell Radar -->
-    <div class="weather-ecosystem-card" style="margin-bottom: 1.25rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+    <!-- Contextual Agro-Met Alert Banner (Minimal 1-Line Insight) -->
+    <div style="background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span style="font-size: 1.3rem;">⚠️</span>
         <div>
-          <span id="ecoDroughtBadge" class="drought-alert-badge">🚨 CRITICAL DRY SPELL ALERT</span>
-          <h3 style="margin: 0.35rem 0 0 0; color: #0f172a; font-size: 1.2rem;">
-            <span>🌦️</span> <span id="ecoLocationTitle">Near-Future Agro-Met Weather Forecast: Warangal, Telangana</span>
-          </h3>
-        </div>
-        <span class="badge-tag badge-tag-blue" id="ecoWeatherHorizon">14-Day Outlook</span>
-      </div>
-
-      <!-- Clean Horizontal Status Badge Bar (Minimal, No Vertical Stacking) -->
-      <div class="weather-status-bar">
-        <div class="weather-status-pill">
-          <span>📉</span> <span>Rain Deficit: <strong id="ecoRainDeficit" style="color: #dc2626;">-46%</strong></span>
-        </div>
-        <div class="weather-status-pill">
-          <span>🌧️</span> <span>14-Day Rain: <strong id="ecoRainMm" style="color: #0284c7;">12.5 mm</strong></span>
-        </div>
-        <div class="weather-status-pill">
-          <span>🌱</span> <span>Soil Moisture: <strong id="ecoSoilMoisture" style="color: #ea580c;">18% (Low)</strong></span>
-        </div>
-        <div class="weather-status-pill">
-          <span>🚰</span> <span>Dry Spell: <strong id="ecoDryDays" style="color: #b91c1c;">19 Days</strong></span>
+          <strong style="color: #9a3412; font-size: 0.92rem;">Near-Future Dry Spell Active:</strong>
+          <span style="color: #7c2d12; font-size: 0.86rem;"> Zero significant rain forecast over next 21 days. The 2 immediate precautions below have been customized for your farm.</span>
         </div>
       </div>
-
-      <!-- Plain Language Advisory Banner -->
-      <div class="drought-alert-banner" id="ecoAdvisoryBanner" style="margin: 0.75rem 0;">
-        <span style="font-size: 1.6rem;">⚠️</span>
-        <div>
-          <h4 style="margin: 0; color: #991b1b; font-size: 0.95rem;">Dry Spell Critical Early Warning</h4>
-          <p id="ecoAdvisoryText" style="margin: 0.25rem 0 0 0; font-size: 0.86rem; color: #7f1d1d; line-height: 1.5;">
-            High evaporation rates and zero significant precipitation forecast over next 21 days. Traditional flood or borewell irrigation on routine Paddy will cause massive water exhaustion. Immediate micro-irrigation deployment or crop migration is recommended.
-          </p>
-        </div>
-      </div>
-
-      <!-- 14-Day Micro-Forecast Horizontal Scrollable Bar -->
-      <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 0.85rem; font-weight: 800; color: #1e293b; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
-            <span>📅</span> 14-Day Horizontal Agro-Met Weather Forecast
-          </span>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <button type="button" id="btnScrollForecastLeft" title="Scroll Left" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">◀</button>
-            <button type="button" id="btnScrollForecastRight" title="Scroll Right" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">▶</button>
-            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700; background: #e0f2fe; padding: 3px 8px; border-radius: 12px;">
-              Slide Horizontally ↔
-            </span>
-          </div>
-        </div>
-        <div id="ecoForecastRow" class="weather-forecast-row" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 12px !important; overflow-x: auto !important; overflow-y: hidden !important; padding: 8px 4px !important; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; width: 100%; box-sizing: border-box;">
-          <!-- Rendered dynamically -->
-        </div>
-      </div>
+      <span style="background: #ffedd5; color: #c2410c; font-size: 0.75rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Precautionary Actions</span>
     </div>
 
     <!-- 3. ACTION-FIRST HERO SECTION: ONLY 2 DIRECT ACTIONS -->
@@ -1127,6 +1080,68 @@ Ask me anything about:
       </summary>
 
       <div style="margin-top: 1.25rem;">
+        <!-- Archived Raw 14-Day Agro-Met Weather Forecast -->
+    <!-- 2. Dynamic Near-Future Weather & Dry Spell Radar -->
+    <div class="weather-ecosystem-card" style="margin-bottom: 1.25rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <span id="ecoDroughtBadge" class="drought-alert-badge">🚨 CRITICAL DRY SPELL ALERT</span>
+          <h3 style="margin: 0.35rem 0 0 0; color: #0f172a; font-size: 1.2rem;">
+            <span>🌦️</span> <span id="ecoLocationTitle">Near-Future Agro-Met Weather Forecast: Warangal, Telangana</span>
+          </h3>
+        </div>
+        <span class="badge-tag badge-tag-blue" id="ecoWeatherHorizon">14-Day Outlook</span>
+      </div>
+
+      <!-- Clean Horizontal Status Badge Bar (Minimal, No Vertical Stacking) -->
+      <div class="weather-status-bar">
+        <div class="weather-status-pill">
+          <span>📉</span> <span>Rain Deficit: <strong id="ecoRainDeficit" style="color: #dc2626;">-46%</strong></span>
+        </div>
+        <div class="weather-status-pill">
+          <span>🌧️</span> <span>14-Day Rain: <strong id="ecoRainMm" style="color: #0284c7;">12.5 mm</strong></span>
+        </div>
+        <div class="weather-status-pill">
+          <span>🌱</span> <span>Soil Moisture: <strong id="ecoSoilMoisture" style="color: #ea580c;">18% (Low)</strong></span>
+        </div>
+        <div class="weather-status-pill">
+          <span>🚰</span> <span>Dry Spell: <strong id="ecoDryDays" style="color: #b91c1c;">19 Days</strong></span>
+        </div>
+      </div>
+
+      <!-- Plain Language Advisory Banner -->
+      <div class="drought-alert-banner" id="ecoAdvisoryBanner" style="margin: 0.75rem 0;">
+        <span style="font-size: 1.6rem;">⚠️</span>
+        <div>
+          <h4 style="margin: 0; color: #991b1b; font-size: 0.95rem;">Dry Spell Critical Early Warning</h4>
+          <p id="ecoAdvisoryText" style="margin: 0.25rem 0 0 0; font-size: 0.86rem; color: #7f1d1d; line-height: 1.5;">
+            High evaporation rates and zero significant precipitation forecast over next 21 days. Traditional flood or borewell irrigation on routine Paddy will cause massive water exhaustion. Immediate micro-irrigation deployment or crop migration is recommended.
+          </p>
+        </div>
+      </div>
+
+      <!-- 14-Day Micro-Forecast Horizontal Scrollable Bar -->
+      <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.85rem; font-weight: 800; color: #1e293b; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+            <span>📅</span> 14-Day Horizontal Agro-Met Weather Forecast
+          </span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" id="btnScrollForecastLeft" title="Scroll Left" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">◀</button>
+            <button type="button" id="btnScrollForecastRight" title="Scroll Right" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 800; cursor: pointer; color: #334155; font-size: 0.82rem;">▶</button>
+            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700; background: #e0f2fe; padding: 3px 8px; border-radius: 12px;">
+              Slide Horizontally ↔
+            </span>
+          </div>
+        </div>
+        <div id="ecoForecastRow" class="weather-forecast-row" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 12px !important; overflow-x: auto !important; overflow-y: hidden !important; padding: 8px 4px !important; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; width: 100%; box-sizing: border-box;">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+
+
         <!-- Routine Baseline -->
         <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem;">
           <div>
@@ -1915,7 +1930,7 @@ Ask me anything about:
 
   <!-- Scripts -->
   <script src="data.js"></script>
-  <script src="app.js?v=2.7"></script>
+  <script src="app.js?v=2.8"></script>
 
   <!-- Sample Document Full-Size Preview Modal -->
   <div id="sampleDocModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sampleDocModalTitle">
