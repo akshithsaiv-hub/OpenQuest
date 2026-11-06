@@ -60,7 +60,7 @@ def get_intermediary_farmers(
                        intermediary_id, uploaded_documents, bank_account_name,
                        created_at
                 FROM farmers
-                WHERE consent_status = 1 AND intermediary_id = ?
+                WHERE consent_status = 1 AND is_deleted = 0 AND intermediary_id = ?
                 ORDER BY farmer_name ASC
             """
             rows = con.execute(query, (str(intermediary_id).strip(),)).fetchall()
@@ -70,7 +70,7 @@ def get_intermediary_farmers(
                        intermediary_id, uploaded_documents, bank_account_name,
                        created_at
                 FROM farmers
-                WHERE consent_status = 1
+                WHERE consent_status = 1 AND is_deleted = 0
                 ORDER BY farmer_name ASC
             """
             rows = con.execute(query).fetchall()

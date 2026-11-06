@@ -17,6 +17,7 @@ from typing import Dict, Any
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+from security.dlp_middleware import scrub_ai_payload
 from utils.llm import process_farmer_query, generate_plain_explanation, FALLBACK_PMKISAN, FALLBACK_UNCERTAIN
 from utils.weather_api import get_live_weather, evaluate_multi_crop_climate_risk, generate_multilingual_water_advisory
 from utils.claim_assistant import calculate_72hr_window, generate_intimation_sms, PMFBY_HELPLINE
@@ -275,8 +276,12 @@ async def text_message_handler(update, context):
     })
     lang = profile.get("language", "en")
 
+    # Safeguard 6: Scrub sensitive citizen PII before AI processing
+    scrubbed_query = query
+    if query:
+        scrubbed_query, _ = scrub_ai_payload(query)
     eligible = get_farmer_schemes(profile)
-    res = process_farmer_query(query, eligible, language=lang)
+    res = process_farmer_query(scrubbed_query, eligible, language=lang)
     await update.message.reply_text(res["message"], parse_mode="Markdown", disable_web_page_preview=True)
 
 def run_cli_demo():

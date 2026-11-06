@@ -109,7 +109,7 @@ def get_due_alerts(
     # Query only farmers with active consent
     with connect(db_path) as con:
         rows = con.execute(
-            "SELECT farmer_id, farmer_name, preferred_language FROM farmers WHERE consent_status = 1"
+            "SELECT farmer_id, farmer_name, preferred_language FROM farmers WHERE consent_status = 1 AND is_deleted = 0"
         ).fetchall()
 
     for farmer in rows:

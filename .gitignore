@@ -1,4 +1,27 @@
+# Python bytecode & environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .venv/
+venv/
+env/
+
+# Databases & live operational storage
+*.db
+*.sqlite
+*.sqlite3
+database/*.db
+database/farmer_data.db
 database/test_*.db
+
+# Secrets & local environment configurations
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# Cache & operational logs
+.pytest_cache/
+*.log

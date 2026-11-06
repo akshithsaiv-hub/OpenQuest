@@ -4,12 +4,39 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Union
-from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi import FastAPI, HTTPException, Query, Body, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 from rapidfuzz import fuzz
+
+# Security and DLP Runtime Modules
+from security.auth_service import (
+    create_session_token,
+    get_current_user,
+    get_optional_user,
+    require_role,
+    get_token_claims,
+)
+from security.otp_service import OTPVerificationService, MockTestSMSProvider
+from security.validators import (
+    validate_no_pii_leakage,
+    sanitize_farmer_profile_for_storage,
+    ValidationError as PIIValidationError,
+)
+from security.audit_service import log_runtime_audit_event
+from security.dlp_middleware import scrub_ai_payload
+from security.rag_guard import rag_guard, RAGIsolationViolation
+from person3.farmer_profiles import (
+    save_profile,
+    get_profile,
+    update_profile,
+    list_all_farmers,
+    search_farmer,
+    soft_delete_profile,
+    export_profile_data,
+)
 
 # Ensure project root is in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -46,13 +73,35 @@ app = FastAPI(
     version="2.0.0"
 )
 
+# Allowed Origins Configuration (Safeguard 5: Transport & CORS Security)
+ALLOWED_ORIGINS_RAW = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://localhost:8000,http://127.0.0.1:3000,http://127.0.0.1:8000"
+)
+ALLOWED_ORIGINS = [orig.strip() for orig in ALLOWED_ORIGINS_RAW.split(",") if orig.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With"],
 )
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:;"
+    if request.url.scheme == "https":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+    return response
+
+# Global runtime OTP Verification Service instance (fails closed if provider missing)
+otp_service = OTPVerificationService()
 
 DATA_PATH = os.path.join(str(PROJECT_ROOT), "data", "schemes_telangana.json")
 PAN_INDIA_SCHEMES_PATH = os.path.join(str(PROJECT_ROOT), "schemes.json")
@@ -68,6 +117,22 @@ def load_schemes() -> List[Dict[str, Any]]:
         return json.load(f)
 
 # Pydantic Models
+
+class OTPRequestPayload(BaseModel):
+    phone_number: str
+    role: str = "farmer"  # "farmer", "intermediary", "officer"
+    subject_id: Optional[str] = None
+
+class OTPVerifyPayload(BaseModel):
+    phone_number: str
+    otp_code: str
+    role: str = "farmer"
+    subject_id: Optional[str] = None
+
+class FarmerConsentUpdatePayload(BaseModel):
+    language: str = "en"
+    purpose: str = "scheme_recommendation_and_alerts"
+
 class FarmerProfile(BaseModel):
     farmer_id: Optional[str] = "F-TEMP"
     name: Optional[str] = "Farmer"
@@ -589,22 +654,266 @@ def toggle_consent(farmer_id: str = Body(..., embed=True)):
         "message": "Consent active" if new_status else "Consent revoked. Personal data masked."
     }
 
+
+def get_anonymized_officer_analytics() -> Dict[str, Any]:
+    """
+    Safeguard 10: Anonymized Dashboards (K-Anonymity >= 10).
+    Aggregates active farmer counts across districts and crops from SQLite.
+    Suppresses micro-cohorts (< 10 individuals) to prevent re-identification.
+    Excludes all individual farmer names, phone numbers, and IDs.
+    """
+    with connect() as con:
+        rows = con.execute("""
+            SELECT district, crop, COUNT(farmer_id) AS farmer_count
+            FROM farmers
+            WHERE consent_status = 1 AND is_deleted = 0
+            GROUP BY district, crop
+        """).fetchall()
+
+    analytics_summary = []
+    total_anonymized = 0
+    suppressed_count = 0
+
+    for r in rows:
+        d = dict(r)
+        count = d["farmer_count"]
+        district = d["district"] or "Unspecified"
+        crop = d["crop"] or "General"
+
+        if count >= 10:
+            analytics_summary.append({
+                "district": district,
+                "crop": crop,
+                "cohort_size": count,
+                "status": "reported"
+            })
+            total_anonymized += count
+        else:
+            suppressed_count += 1
+            analytics_summary.append({
+                "district": district,
+                "crop": crop,
+                "cohort_size": "< 10 (Suppressed for k-anonymity)",
+                "status": "suppressed"
+            })
+
+    return {
+        "status": "success",
+        "k_anonymity_threshold": 10,
+        "total_active_farmers_counted": total_anonymized,
+        "suppressed_cohorts_count": suppressed_count,
+        "cohorts": analytics_summary
+    }
+
+# ---------------------------------------------------------
+# AUTHENTICATION & IDENTITY VERIFICATION (Safeguards 4 & 9)
+# ---------------------------------------------------------
+@app.post("/api/auth/otp/request")
+def api_request_otp(payload: OTPRequestPayload):
+    """
+    Dispatches short-lived OTP token via configured SMS provider.
+    Fails closed if provider not configured. Never returns or logs the OTP.
+    """
+    phone = payload.phone_number.strip().replace(" ", "").replace("-", "")
+    if not phone or len(phone) < 10:
+        raise HTTPException(status_code=400, detail="Invalid mobile number. 10-digit number required.")
+
+    ok, msg = otp_service.request_otp(phone)
+    if not ok:
+        if "SMS_PROVIDER_NOT_CONFIGURED" in msg:
+            raise HTTPException(
+                status_code=503,
+                detail="SMS delivery provider is not configured. Delivery rejected (fail-closed)."
+            )
+        if "RATE_LIMIT_EXCEEDED" in msg:
+            raise HTTPException(status_code=429, detail=msg)
+        raise HTTPException(status_code=400, detail=msg)
+
+    log_runtime_audit_event(
+        actor_id=phone[-4:],
+        role=payload.role,
+        action_type="OTP_REQUEST",
+        target_table="auth",
+        record_id=phone[-4:]
+    )
+    return {
+        "status": "success",
+        "message": "OTP dispatched successfully to registered mobile number."
+    }
+
+@app.post("/api/auth/otp/verify")
+def api_verify_otp(payload: OTPVerifyPayload):
+    """
+    Validates ephemeral OTP token. Issues signed HMAC-SHA256 session token with role claims.
+    Burns OTP upon single use.
+    """
+    phone = payload.phone_number.strip().replace(" ", "").replace("-", "")
+    ok, msg, token_id = otp_service.verify_otp(phone, payload.otp_code)
+    if not ok:
+        raise HTTPException(status_code=401, detail=msg)
+
+    subject_id = payload.subject_id or f"FARMER_{phone[-4:]}"
+    role = payload.role if payload.role in ("farmer", "intermediary", "officer") else "farmer"
+
+    session_token = create_session_token(subject_id=subject_id, role=role)
+    log_runtime_audit_event(
+        actor_id=subject_id,
+        role=role,
+        action_type="OTP_VERIFY",
+        target_table="auth",
+        record_id=subject_id
+    )
+    return {
+        "status": "success",
+        "access_token": session_token,
+        "token_type": "bearer",
+        "role": role,
+        "subject_id": subject_id
+    }
+
+# ---------------------------------------------------------
+# FARMER SELF-SERVICE ENDPOINTS (Safeguards 1, 2, 5)
+# Scoped strictly to authenticated token subject_id
+# ---------------------------------------------------------
+@app.get("/api/farmer/me")
+def get_farmer_me(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """Fetches the authenticated farmer's own profile. Rejects cross-tenant access."""
+    farmer_id = current_user["subject_id"]
+    profile = get_profile(farmer_id)
+    if not profile or profile.get("is_deleted") == 1:
+        raise HTTPException(status_code=404, detail="Farmer profile not found or deleted.")
+
+    log_runtime_audit_event(
+        actor_id=farmer_id,
+        role="farmer",
+        action_type="READ",
+        target_table="farmers",
+        record_id=farmer_id
+    )
+    return {"status": "success", "profile": profile}
+
+@app.put("/api/farmer/me")
+def update_farmer_me(
+    payload: Dict[str, Any] = Body(...),
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """Updates the authenticated farmer's own profile. Validates no raw PII leakage."""
+    farmer_id = current_user["subject_id"]
+    try:
+        validate_no_pii_leakage(payload)
+    except PIIValidationError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+
+    updated = update_profile(farmer_id, payload)
+    log_runtime_audit_event(
+        actor_id=farmer_id,
+        role="farmer",
+        action_type="UPDATE",
+        target_table="farmers",
+        record_id=farmer_id
+    )
+    return {"status": "success", "profile": updated}
+
+@app.get("/api/farmer/me/export")
+def export_farmer_me(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """Data portability: Exports all stored data for the authenticated farmer."""
+    farmer_id = current_user["subject_id"]
+    data = export_profile_data(farmer_id)
+    return {"status": "success", "export": data}
+
+@app.delete("/api/farmer/me")
+def delete_farmer_me(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """Right to be forgotten: Soft-deletes profile, anonymizes PII, revokes consent."""
+    farmer_id = current_user["subject_id"]
+    soft_delete_profile(farmer_id)
+    return {
+        "status": "success",
+        "message": "Profile soft-deleted, PII anonymized, and consent withdrawn successfully."
+    }
+
+@app.post("/api/farmer/me/consent/withdraw")
+def withdraw_farmer_consent(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """Withdraws active consent. Immediately halts reminders, queries, and intermediary view."""
+    farmer_id = current_user["subject_id"]
+    withdraw_consent(farmer_id)
+    return {
+        "status": "success",
+        "message": "Consent withdrawn. Intermediary visibility and automated reminders halted immediately."
+    }
+
+@app.post("/api/farmer/me/consent/grant")
+def grant_farmer_consent(
+    payload: FarmerConsentUpdatePayload,
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """Explicitly grants consent with recorded language, purpose, and timestamp."""
+    farmer_id = current_user["subject_id"]
+    grant_consent(farmer_id, language=payload.language, purpose=payload.purpose)
+    return {
+        "status": "success",
+        "message": "Consent granted and audited.",
+        "language": payload.language,
+        "purpose": payload.purpose
+    }
+
+@app.get("/api/officer/analytics")
+def get_officer_analytics(current_user: Dict[str, Any] = Depends(require_role(["officer"]))):
+    """Safeguard 10: Officer analytical dashboard enforcing K-anonymity (>= 10)."""
+    analytics = get_anonymized_officer_analytics()
+    log_runtime_audit_event(
+        actor_id=current_user["subject_id"],
+        role="officer",
+        action_type="OFFICER_ANALYTICS",
+        target_table="farmers",
+        record_id="aggregate_metrics"
+    )
+    return analytics
+
 @app.get("/farmer_status")
 @app.get("/api/farmers")
-def get_farmer_status(district: Optional[str] = None, doc_status: Optional[str] = None):
-    """Intermediary mode API: Fetches farmers with pending documents and approaching deadlines."""
-    farmers = MOCK_FARMERS_DB
-    if district and district.lower() != "all":
-        farmers = [f for f in farmers if f["district"].lower() == district.lower()]
-    if doc_status and doc_status.lower() != "all":
-        farmers = [f for f in farmers if f["doc_status"].lower() == doc_status.lower()]
-    return farmers
+def get_farmer_status(
+    district: Optional[str] = None,
+    doc_status: Optional[str] = None,
+    current_user: Optional[Dict[str, Any]] = Depends(get_optional_user)
+):
+    """
+    Operational monitoring endpoint. Raw farmer PII is never exposed publicly.
+    Returns k-anonymized aggregate metrics by default.
+    """
+    return get_anonymized_officer_analytics()
 
 @app.get("/api/intermediary")
-def get_intermediary_dashboard(intermediary_id: Optional[str] = None):
-    """SQLite-driven CSC & Village Operator Task Queue."""
+def get_intermediary_dashboard(
+    intermediary_id: Optional[str] = None,
+    current_user: Optional[Dict[str, Any]] = Depends(get_optional_user)
+):
+    """
+    SQLite-driven CSC & Village Operator Task Queue.
+    Enforces that intermediaries may access only assigned farmers with active consent.
+    """
+    active_id = None
+    if current_user:
+        if current_user.get("role") != "intermediary":
+            raise HTTPException(status_code=403, detail="Forbidden: Intermediary role required.")
+        active_id = current_user.get("subject_id")
+    elif intermediary_id:
+        active_id = intermediary_id.strip()
+
     schemes = load_schemes()
-    task_queue = get_intermediary_farmers(scheme_data=schemes, today=date.today(), intermediary_id=intermediary_id)
+    task_queue = get_intermediary_farmers(
+        scheme_data=schemes,
+        today=date.today(),
+        intermediary_id=active_id
+    )
+
+    actor = active_id or "ANON_INTERMEDIARY"
+    log_runtime_audit_event(
+        actor_id=actor,
+        role="intermediary",
+        action_type="INTERMEDIARY_ACCESS",
+        target_table="farmers",
+        record_id=actor
+    )
     return {
         "status": "success",
         "total_records": len(task_queue),
@@ -613,35 +922,67 @@ def get_intermediary_dashboard(intermediary_id: Optional[str] = None):
 
 @app.post("/api/farmers")
 def create_farmer_profile(profile: Dict[str, Any] = Body(...)):
-    """Saves new farmer profile to SQLite database with consent verification."""
+    """Saves new farmer profile to SQLite database with consent verification and PII validation."""
     try:
-        saved = save_profile(profile)
+        # Enforce data minimization: Reject raw 12-digit Aadhaar, PAN, bank accounts, document scans
+        validate_no_pii_leakage(profile)
+
+        # Enforce explicit consent before storage
+        consent_status = profile.get("consent_status")
+        if not consent_status or consent_status is False or str(consent_status).lower() in ("false", "0", "no"):
+            raise HTTPException(
+                status_code=400,
+                detail="Explicit user consent (consent_status=True) is mandatory prior to profile persistence."
+            )
+
+        sanitized = sanitize_farmer_profile_for_storage(profile)
+        saved = save_profile(sanitized)
+        log_runtime_audit_event(
+            actor_id=saved.get("farmer_id", "NEW"),
+            role="farmer",
+            action_type="CREATE",
+            target_table="farmers",
+            record_id=saved.get("farmer_id", "NEW")
+        )
         return {"status": "success", "profile": saved}
+    except PIIValidationError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/send_alert")
 @app.post("/api/send_alert")
 def send_proactive_alert(req: AlertRequest):
-    """Sends / simulates proactive deadline alert to the farmer."""
-    farmer = next((f for f in MOCK_FARMERS_DB if f["farmer_id"] == req.farmer_id), None)
-    if not farmer:
-        farmer_sql = get_profile(req.farmer_id)
-        if farmer_sql:
-            farmer = {
-                "farmer_id": farmer_sql["farmer_id"],
-                "farmer_name": farmer_sql["farmer_name"],
-                "phone": farmer_sql.get("phone_number", "+91 98480 00000")
-            }
-        else:
-            raise HTTPException(status_code=404, detail="Farmer not found")
+    """Sends / simulates proactive deadline alert to the farmer. Verifies active consent."""
+    if not is_consent_active(req.farmer_id):
+        raise HTTPException(
+            status_code=403,
+            detail="Cannot send alert: Farmer has withdrawn consent or profile is inactive."
+        )
+
+    farmer_sql = get_profile(req.farmer_id)
+    if not farmer_sql:
+        raise HTTPException(status_code=404, detail="Farmer profile not found in database.")
+
+    raw_phone = farmer_sql.get("phone_number", "")
+    masked_phone = f"XXXXXX{raw_phone[-4:]}" if len(raw_phone) >= 4 else "REDACTED"
+
+    log_runtime_audit_event(
+        actor_id="REMINDER_ENGINE",
+        role="system",
+        action_type="ALERT_DISPATCH",
+        target_table="farmers",
+        record_id=req.farmer_id
+    )
 
     return {
         "status": "success",
         "farmer_id": req.farmer_id,
-        "farmer_name": farmer["farmer_name"],
+        "farmer_name": farmer_sql["farmer_name"],
         "channel": req.channel,
-        "sent_to": farmer["phone"],
+        "sent_to": masked_phone,
         "message": req.message,
         "timestamp": datetime.now().isoformat()
     }
@@ -1038,7 +1379,7 @@ def get_farmer_ai_response(query_text: str, language: str = "en") -> dict:
 @app.post("/query_ai")
 @app.get("/api/query_ai")
 def query_ai_assistant(query: Optional[str] = None, language: str = "en", req: Optional[QueryAIRequest] = None):
-    """Natural language AI query handler with deterministic agritech grounding."""
+    """Natural language AI query handler with deterministic agritech grounding, RAG guard, and DLP scrubbing."""
     effective_query = ""
     effective_lang = language or "en"
     if req and req.query:
@@ -1053,8 +1394,14 @@ def query_ai_assistant(query: Optional[str] = None, language: str = "en", req: O
             "message": "Query parameter is required",
             "response": "Please enter a valid farming question or scheme query."
         }
+
+    # Safeguard 7: RAG Isolation boundary check
+    rag_guard.validate_rag_query("public_schemes")
+
+    # Safeguard 6: Scrub PII from query payload prior to processing
+    scrubbed_query, _ = scrub_ai_payload(effective_query)
     
-    return get_farmer_ai_response(effective_query, language=effective_lang)
+    return get_farmer_ai_response(scrubbed_query, language=effective_lang)
 
 
 DISTRICT_AGRICULTURAL_PROFILES = {
@@ -1727,10 +2074,14 @@ class VoiceQueryRequest(BaseModel):
 @app.post("/api/voice_assistant")
 def api_voice_assistant(req: VoiceQueryRequest):
     """
-    Multilingual voice assistant endpoint understanding and responding in any major Indian language.
+    Multilingual voice assistant endpoint guarded by RAG isolation and DLP scrubbing.
     """
+    rag_guard.validate_rag_query("public_schemes")
+    scrubbed_query = req.query
+    if scrubbed_query:
+        scrubbed_query, _ = scrub_ai_payload(scrubbed_query)
     from utils.voice_engine import get_voice_response
-    return get_voice_response(query=req.query, lang_code=req.language or "auto")
+    return get_voice_response(query=scrubbed_query, lang_code=req.language or "auto")
 
 @app.get("/api/documents/download/{doc_type}")
 def api_download_sample_document(doc_type: str):

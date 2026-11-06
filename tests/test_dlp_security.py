@@ -4,7 +4,7 @@ test_dlp_security.py
 Comprehensive automated verification suite for the 16 DLP architectural safeguards.
 Tests:
 1. Safeguard 6: AI Data Masking & PII Scrubber (Phones, Aadhaar, PAN, Surveys, Coordinates).
-2. Safeguard 9: Identity Check & OTP Verification (TTL, Rate-Limiting, Brute-Force lockout).
+2. Safeguard 9: Identity Check & OTP Verification (TTL, Rate-Limiting, Brute-Force lockout, Fail-Closed delivery).
 3. Safeguard 7: RAG Isolation Guard (Public vs Tenant access boundaries).
 4. Safeguard 5 & 15: Session context setting and ephemeral credential manager.
 """
@@ -12,7 +12,7 @@ Tests:
 import time
 import pytest
 from security.dlp_middleware import ai_masking_engine, scrub_ai_payload
-from security.otp_service import OTPVerificationService
+from security.otp_service import OTPVerificationService, MockTestSMSProvider
 from security.rag_guard import rag_guard, RAGIsolationViolation
 from database.security.db_connection_security import EphemeralCredentialManager
 
@@ -64,21 +64,32 @@ class TestAIDataMasking:
 
 
 class TestOTPService:
-    """Test Safeguard 9: Expiring OTP Tokens & Brute Force Prevention."""
+    """Test Safeguard 9: Expiring OTP Tokens, Fail-Closed Gateway & Brute Force Prevention."""
+
+    def test_otp_fail_closed_without_provider(self):
+        """Without configured SMS gateway, OTP request fails closed and rejects delivery."""
+        otp_svc = OTPVerificationService()
+        ok, msg = otp_svc.request_otp("9876500000")
+        assert ok is False
+        assert "SMS_PROVIDER_NOT_CONFIGURED" in msg
 
     def test_otp_generation_and_verification(self):
-        otp_svc = OTPVerificationService()
+        mock_provider = MockTestSMSProvider()
+        otp_svc = OTPVerificationService(provider=mock_provider)
         phone = "9876500001"
 
-        ok, code = otp_svc.request_otp(phone)
+        ok, msg = otp_svc.request_otp(phone)
         assert ok is True
+        # Verify raw OTP is not leaked in return message
+        assert "dispatched successfully" in msg.lower()
+        code = mock_provider.last_sent[phone]
         assert len(code) == 6
         assert code.isdigit()
 
         # Success on correct code
-        v_ok, msg, token = otp_svc.verify_otp(phone, code)
+        v_ok, vmsg, token = otp_svc.verify_otp(phone, code)
         assert v_ok is True
-        assert "VERIFICATION_SUCCESSFUL" in msg
+        assert "VERIFICATION_SUCCESSFUL" in vmsg
         assert token is not None
 
         # Burned after use
@@ -87,7 +98,8 @@ class TestOTPService:
         assert "OTP_NOT_FOUND" in msg2
 
     def test_otp_brute_force_lockout(self):
-        otp_svc = OTPVerificationService()
+        mock_provider = MockTestSMSProvider()
+        otp_svc = OTPVerificationService(provider=mock_provider)
         phone = "9876500002"
         otp_svc.request_otp(phone)
 
@@ -99,7 +111,8 @@ class TestOTPService:
         assert "Maximum attempts exceeded" in msg
 
     def test_otp_rate_limiting(self):
-        otp_svc = OTPVerificationService()
+        mock_provider = MockTestSMSProvider()
+        otp_svc = OTPVerificationService(provider=mock_provider)
         phone = "9876500003"
         # 3 allowed
         assert otp_svc.request_otp(phone)[0] is True
