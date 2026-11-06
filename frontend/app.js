@@ -3542,7 +3542,7 @@ Automated SLA follow-up alerts have been scheduled.`);
     `;
   }
 
-  function initWaterSubsidiesTab() {
+  async function initWaterSubsidiesTab() {
     // 1. Initialize Agro-Climate Ecosystem
     const ecoStateSelect = document.getElementById('ecoStateSelect');
     const ecoDistrictSelect = document.getElementById('ecoDistrictSelect');
