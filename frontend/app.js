@@ -3542,7 +3542,7 @@ Automated SLA follow-up alerts have been scheduled.`);
     `;
   }
 
-  async function initWaterSubsidiesTab() {
+  function initWaterSubsidiesTab() {
     // 1. Initialize Agro-Climate Ecosystem
     const ecoStateSelect = document.getElementById('ecoStateSelect');
     const ecoDistrictSelect = document.getElementById('ecoDistrictSelect');
@@ -3594,33 +3594,25 @@ Automated SLA follow-up alerts have been scheduled.`);
     // Trigger initial calculation
     loadWeatherEcosystemData();
 
-    // 2. Load Reference Schemes & Crops from API
-    try {
-      const resp = await fetch(`${API_BASE}/water_saving_schemes`);
-      if (resp.ok) cachedWaterSchemes = await resp.json();
-    } catch (err) {
-      console.warn('Backend /water_saving_schemes not available, using embedded.');
-    }
+    // 2. Immediately populate embedded schemes & crops so UI is instant and never hangs
     if (!cachedWaterSchemes || cachedWaterSchemes.length === 0) {
-      cachedWaterSchemes = typeof WATER_SAVING_SCHEMES_DATA !== 'undefined' ? WATER_SAVING_SCHEMES_DATA : [];
-    }
-
-    try {
-      const resp2 = await fetch(`${API_BASE}/low_water_crops`);
-      if (resp2.ok) cachedLowWaterCrops = await resp2.json();
-    } catch (err2) {
-      console.warn('Backend /low_water_crops not available, using embedded.');
+      cachedWaterSchemes = (typeof WATER_SAVING_SCHEMES_DATA !== 'undefined' && Array.isArray(WATER_SAVING_SCHEMES_DATA)) ? WATER_SAVING_SCHEMES_DATA : [];
     }
     if (!cachedLowWaterCrops || cachedLowWaterCrops.length === 0) {
-      cachedLowWaterCrops = typeof LOW_WATER_CROPS_DATA !== 'undefined' ? LOW_WATER_CROPS_DATA : [];
+      cachedLowWaterCrops = (typeof LOW_WATER_CROPS_DATA !== 'undefined' && Array.isArray(LOW_WATER_CROPS_DATA)) ? LOW_WATER_CROPS_DATA : [];
     }
 
-    renderTopAreaTechnologies(state.waterStateFilter);
+    // Render immediately
+    renderTopAreaTechnologies(state.waterStateFilter || 'All');
     renderWaterSchemes();
     renderLowWaterCrops();
 
+    // 3. Immediately attach event listeners so UI is completely responsive
     const waterStateFilter = document.getElementById('waterStateFilter');
     if (waterStateFilter) {
+      if (state.waterStateFilter) {
+        waterStateFilter.value = state.waterStateFilter;
+      }
       waterStateFilter.addEventListener('change', function () {
         state.waterStateFilter = this.value;
         renderTopAreaTechnologies(state.waterStateFilter);
@@ -3637,6 +3629,31 @@ Automated SLA follow-up alerts have been scheduled.`);
         renderLowWaterCrops();
       });
     });
+
+    // 4. Asynchronously background-refresh schemes & crops from backend if online
+    fetch(API_BASE + '/water_saving_schemes')
+      .then(resp => resp.ok ? resp.json() : null)
+      .then(data => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          cachedWaterSchemes = data;
+          renderWaterSchemes();
+        }
+      })
+      .catch(err => {
+        console.warn('Backend /water_saving_schemes not reachable, using embedded data.', err);
+      });
+
+    fetch(API_BASE + '/low_water_crops')
+      .then(resp => resp.ok ? resp.json() : null)
+      .then(data => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          cachedLowWaterCrops = data;
+          renderLowWaterCrops();
+        }
+      })
+      .catch(err => {
+        console.warn('Backend /low_water_crops not reachable, using embedded data.', err);
+      });
   }
 
   function renderWaterSchemes() {
