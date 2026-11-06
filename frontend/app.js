@@ -2504,7 +2504,6 @@ Automated SLA follow-up alerts have been scheduled.`);
     if (modal) modal.style.display = 'none';
   };
 
-  async 
   // =========================================================================
   // STATE-SPECIFIC TOP 4-5 WATER-SAVING TECHNOLOGIES & ENLISTED SUBSIDIZING BODIES
   // =========================================================================
