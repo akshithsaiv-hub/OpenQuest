@@ -2698,4 +2698,77 @@ body {
   align-items: center;
   font-size: 0.78rem;
   margin-top: 0.5rem;
+
+/* ==========================================================================
+   FARMER ACTION HUB & MINIMAL WEATHER STATUS BAR (Tab 3 Redesign)
+   ========================================================================== */
+
+.weather-status-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin: 0.85rem 0;
+}
+
+.weather-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.action-hero-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.action-crop-chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.action-crop-chip:hover {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.tech-archive-accordion {
+  margin-top: 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  transition: background 0.2s ease;
+}
+
+.tech-archive-accordion[open] {
+  background: #ffffff;
+}
+
+.tech-archive-accordion summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.tech-archive-accordion summary::-webkit-details-marker {
+  display: none; (feat(ui): overhaul Tab 3 into action-first farmer hub with minimal data reveal)
 }

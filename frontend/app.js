@@ -2160,6 +2160,35 @@ Automated SLA follow-up alerts have been scheduled.`);
       }).join('');
     }
 
+    // 4b. Top 3 Actionable Crops in Action Hub
+    const topActionCrops = document.getElementById('ecoTopActionCrops');
+    if (topActionCrops && data.crop_migrations) {
+      const top3 = data.crop_migrations.slice(0, 3);
+      topActionCrops.innerHTML = top3.map(m => {
+        const profitGain = m.net_profit_difference;
+        const profitSign = profitGain >= 0 ? `+₹${profitGain.toLocaleString()}` : `-₹${Math.abs(profitGain).toLocaleString()}`;
+        const profitColor = profitGain >= 0 ? '#15803d' : '#b45309';
+
+        return `
+          <div class="action-crop-chip">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: #1e293b; font-size: 0.95rem;">${escapeHtml(m.name)}</strong>
+                <span class="badge-tag badge-tag-green" style="font-size: 0.7rem; margin-left: 4px;">Saves ${m.water_saved_pct}% Water</span>
+              </div>
+              <span style="font-weight: 800; font-size: 0.85rem; color: ${profitColor};">${profitSign} Net Return</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #475569; margin-top: 2px;">
+              <span>MSP: <strong>₹${m.msp_per_quintal.toLocaleString()}/qtl</strong> • Duration: <strong>${m.duration_days}d</strong></span>
+              <button type="button" class="btn btn-secondary" style="font-size: 0.74rem; padding: 2px 8px; border-color: #f59e0b; color: #b45309;" onclick="openCropMigrationModal('${escapeHtml(m.name)}', '${m.water_saved_pct}%', '${escapeHtml(m.recommended_varieties)}', '${escapeHtml(m.soil_health)}', '₹${m.msp_per_quintal.toLocaleString()}/qtl', '${escapeHtml(m.buyer_body)}')">
+                📖 Sowing Guide
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     // 5. Comparison Table Body
     const tableBody = document.getElementById('ecoComparisonTableBody');
     if (tableBody && data.crop_migrations) {
@@ -2195,8 +2224,42 @@ Automated SLA follow-up alerts have been scheduled.`);
     }
   }
 
-  window.openCropMigrationModal = function(cropName, waterSaved, varieties, soilBenefit) {
-    alert(`🌾 Crop Migration Sowing Guide: ${cropName}\n\n💧 Water Savings: ${waterSaved} reduction vs routine flood crop\n🌱 Recommended ICAR Seeds: ${varieties}\n🌍 Soil & Climate Advantage: ${soilBenefit}\n\nAction: Register on State Horticulture / Agriculture Portal for ₹7,000/acre Crop Diversification DBT Incentive.`);
+  window.openCropMigrationModal = function(cropName, waterSaved, varieties, soilBenefit, mspRate, buyerBody) {
+    const modal = document.getElementById('cropMigrationModal');
+    if (!modal) {
+      alert(`🌾 Crop Migration Guide: ${cropName}\n💧 Water Saved: ${waterSaved}\n🌱 Recommended Seeds: ${varieties}\n💰 MSP: ${mspRate || 'Guaranteed'}\n🏛️ Procurement: ${buyerBody || 'NAFED/FPOs'}`);
+      return;
+    }
+    const title = document.getElementById('cmModalTitle');
+    const saved = document.getElementById('cmModalWaterSaved');
+    const msp = document.getElementById('cmModalMsp');
+    const seeds = document.getElementById('cmModalSeeds');
+    const soil = document.getElementById('cmModalSoil');
+    const proc = document.getElementById('cmModalProcurement');
+
+    if (title) title.textContent = `${cropName} - Sowing Guide`;
+    if (saved) saved.textContent = `${waterSaved} Less Water`;
+    if (msp) msp.textContent = mspRate || 'Guaranteed MSP Procurement';
+    if (seeds) seeds.textContent = varieties || 'ICAR drought-tolerant certified seeds';
+    if (soil) soil.textContent = soilBenefit || 'Restores soil nitrogen and organic carbon';
+    if (proc) proc.textContent = buyerBody || 'NAFED, State Civil Supplies & FPOs';
+
+    modal.style.display = 'flex';
+  };
+
+  window.closeCropMigrationModal = function() {
+    const modal = document.getElementById('cropMigrationModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.openChcRentalModal = function() {
+    const modal = document.getElementById('chcRentalModal');
+    if (modal) modal.style.display = 'flex';
+  };
+
+  window.closeChcRentalModal = function() {
+    const modal = document.getElementById('chcRentalModal');
+    if (modal) modal.style.display = 'none';
   };
 
   async function initWaterSubsidiesTab() {
