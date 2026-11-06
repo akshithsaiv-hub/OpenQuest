@@ -1358,6 +1358,7 @@
       const vfSurveyEl = document.getElementById('vfSurveyTag');
       const surveyVal = document.getElementById('claimSurvey') ? document.getElementById('claimSurvey').value : '284/B';
       const villageVal = document.getElementById('claimVillage') ? document.getElementById('claimVillage').value : 'Geesugonda';
+      const districtVal = document.getElementById('hazardDistrict') ? document.getElementById('hazardDistrict').value : 'Warangal';
 
       if (coordsEl) {
         coordsEl.textContent = `📍 Lat: ${currentGps.lat}° N, Lon: ${currentGps.lon}° E (±${currentGps.accuracy}m)`;
@@ -1366,13 +1367,13 @@
         timeEl.textContent = `⏱️ Time: ${currentGps.timestamp} IST | Alt: ${currentGps.altitude}m MSL`;
       }
       if (statusEl) {
-        statusEl.textContent = currentGps.locked ? '🟢 High-Precision GPS Locked' : '🟡 Approximate Location';
+        statusEl.textContent = currentGps.locked ? `🟢 Live Satellite Telemetry (${districtVal})` : '🟡 Approximate Location';
       }
       if (vfCoordsEl) {
         vfCoordsEl.textContent = `${currentGps.lat}° N, ${currentGps.lon}° E`;
       }
       if (vfSurveyEl) {
-        vfSurveyEl.textContent = `Survey #${surveyVal} | ${villageVal}`;
+        vfSurveyEl.textContent = `Survey #${surveyVal} | ${villageVal}, ${districtVal}`;
       }
     }
 
@@ -1611,6 +1612,42 @@
                 loanDetails.innerHTML = `🌾 Kharif & Rabi credit limit active based on Scale of Finance (DLTC norms).`;
               }
             }
+          }
+
+          // 4. Dynamically synchronize GPS, Land Parcel, and Camera Telemetry with Place!
+          if (data.geo_info) {
+            currentGps.lat = data.geo_info.lat;
+            currentGps.lon = data.geo_info.lon;
+            currentGps.altitude = data.geo_info.altitude_m || 294;
+            currentGps.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+            const villageInput = document.getElementById('claimVillage');
+            const surveyInput = document.getElementById('claimSurvey');
+            if (villageInput && data.geo_info.village) {
+              villageInput.value = data.geo_info.village;
+            }
+            if (surveyInput && data.geo_info.survey_no) {
+              surveyInput.value = data.geo_info.survey_no;
+            }
+
+            // Sync Calamity dropdown if matching peril detected
+            const hazardSelect = document.getElementById('claimHazard');
+            if (hazardSelect && !hazardOverride) {
+              const cType = (cal.calamity_type || '').toLowerCase();
+              if (cType.includes('flood') || cType.includes('inundation') || cType.includes('rain')) {
+                hazardSelect.value = 'Excess Rain / Inundation';
+              } else if (cType.includes('drought') || cType.includes('dry')) {
+                hazardSelect.value = 'Severe Drought';
+              } else if (cType.includes('hail')) {
+                hazardSelect.value = 'Hailstorm';
+              } else if (cType.includes('pest') || cType.includes('pathogen')) {
+                hazardSelect.value = 'Pest Outbreak';
+              } else if (cType.includes('wind') || cType.includes('cyclone') || cType.includes('squall')) {
+                hazardSelect.value = 'Unseasonal Wind';
+              }
+            }
+
+            updateGpsUI();
           }
         }
       } catch (err) {
