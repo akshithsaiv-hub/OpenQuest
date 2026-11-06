@@ -1555,167 +1555,124 @@ Ask me anything about:
     </div>
   </div>
 
-  <!-- TAB 5: DOCUMENT WALLET & DIGILOCKER -->
+  <!-- TAB 5: FARMER PASSBOOK WALLET & PIN-PROTECTED REVIEW DESK -->
   <div id="view-tab5" class="tab-view" role="tabpanel" aria-labelledby="btn-tab5">
     <div class="view-header">
-      <h2 class="view-title"><span>📁</span> <span data-i18n="doc_wallet_title">Consent-Driven Farmer Document Wallet & DigiLocker</span></h2>
+      <h2 class="view-title"><span>🏦</span> <span data-i18n="doc_wallet_title">Farmer Passbook Wallet &amp; Review Desk</span></h2>
       <p class="view-desc" data-i18n="doc_wallet_desc">
-        Store scanned land records (Pahani/Dharani), Aadhaar, Bank Passbooks, and CCRC agreements with explicit farmer consent. Download official sample templates below.
+        Store, inspect, replace, or delete your official Bank Passbook / DBT Mandate. All review requests to field officers and CSC intermediaries are cryptographically protected with your personal Argon2id PIN.
       </p>
     </div>
 
-    <!-- Security & Consent Notice -->
+    <!-- Security & PIN Protection Notice -->
     <div class="card" style="border-left: 5px solid #2e7d32; background: #f0fdf4;">
       <div style="display: flex; gap: 0.75rem; align-items: center;">
         <span style="font-size: 2rem;">🔒</span>
         <div>
-          <h4 style="margin:0; color: #166534;">Explicit Consent & Data Minimization Protocol</h4>
+          <h4 style="margin:0; color: #166534;">Single-Document Scope &amp; Argon2id PIN Review Guard</h4>
           <p style="margin: 0.25rem 0 0 0; font-size: 0.88rem; color: #14532d;">
-            Your documents are client-side encrypted and masked (e.g. Aadhaar <code>XXXX-XXXX-4921</code>). Zero unconsented data sharing. Only metadata required for scheme eligibility is evaluated.
+            Only your Farmer Bank Passbook is managed in this wallet. All sharing with agricultural officers requires your verified PIN and explicit consent. Plain PINs are never stored or logged.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Document Cards Grid with Photos & Direct Sample Downloads -->
-    <div class="schemes-grid" id="docWalletGrid">
-      <!-- Card 1: Aadhaar -->
-      <div class="scheme-card" style="border-left: 4px solid #16a34a;">
+    <!-- Passbook Wallet & Action Hub Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+      
+      <!-- Card A: Saved Passbook Status & Details -->
+      <div class="scheme-card" id="passbookMainCard" style="border-left: 5px solid #8b5cf6;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
-            <span class="badge-tag badge-tag-green">DigiLocker Verified</span>
-            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Aadhaar Identity Card</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">UIDAI Masked ID • Official Template</p>
+            <span class="badge-tag" id="passbookSavedBadge" style="background: #dcfce7; color: #166534; font-weight:600;">Passbook Saved</span>
+            <span class="badge-tag" id="passbookReviewBadge" style="display:none; margin-left: 0.25rem;"></span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.25rem;">Farmer Bank Passbook / DBT Mandate</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;" id="passbookUploadedMeta">Uploaded on: 2026-11-01 10:10 AM</p>
           </div>
-          <span style="font-size: 1.8rem;">🪪</span>
+          <span style="font-size: 2rem;">🏦</span>
         </div>
-        
+
         <!-- Thumbnail Sample Preview -->
-        <div class="doc-thumbnail-wrap" onclick="openDocPreviewModal('aadhaar', 'Sample Masked Aadhaar Card', 'samples/sample_aadhaar.svg')">
-          <img src="samples/sample_aadhaar.svg" alt="Sample Aadhaar Preview" class="doc-sample-img" />
-          <span class="doc-badge-overlay">👁️ Click to Inspect</span>
+        <div class="doc-thumbnail-wrap" onclick="openDocPreviewModal('passbook', 'Official Farmer Bank Passbook', 'samples/sample_passbook.svg')" style="cursor: pointer; margin: 0.75rem 0;">
+          <img src="samples/sample_passbook.svg" alt="Passbook Preview" class="doc-sample-img" style="max-height: 140px; width: 100%; object-fit: contain; border-radius: 6px; background: #fafafa; border: 1px solid #e2e8f0;" />
+          <span class="doc-badge-overlay" style="display: block; text-align: center; font-size: 0.8rem; color: #475569; margin-top: 0.25rem;">👁️ Click to inspect full-size passbook</span>
         </div>
 
-        <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-family: monospace; font-size: 0.95rem;">
-          XXXX - XXXX - 4921
-        </div>
-        <div style="font-size: 0.82rem; color: var(--text-muted);">
-          Verified Name: <strong>Komirelli Ramulu</strong> • Status: <strong>NPCI DBT Seeded</strong>
+        <!-- Details Grid -->
+        <div id="passbookDetailsBox" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.88rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div><strong>Bank:</strong> <span id="pbBankName">State Bank of India</span></div>
+            <div><strong>Branch:</strong> <span id="pbBranchName">Warangal Main</span></div>
+            <div><strong>A/C Holder:</strong> <span id="pbHolderName">Komirelli Ramulu</span></div>
+            <div><strong>Account:</strong> <code id="pbAccountMasked">******3492</code></div>
+            <div><strong>IFSC:</strong> <span id="pbIfsc">SBIN0020144</span></div>
+            <div><strong>DBT Status:</strong> <span id="pbDbtStatus" style="color: #16a34a; font-weight: 600;">Active (NPCI Seeded)</span></div>
+          </div>
         </div>
 
-        <!-- Download & Full Preview Actions -->
-        <div class="doc-actions-row">
-          <a href="/api/documents/download/aadhaar" download="Sample_Aadhaar_Card_Masked.svg" class="doc-download-btn">
-            <span>📥</span> <span data-i18n="download_sample_btn">Download Sample Copy</span>
-          </a>
-          <button type="button" class="btn btn-secondary doc-preview-btn" onclick="openDocPreviewModal('aadhaar', 'Sample Masked Aadhaar Card', 'samples/sample_aadhaar.svg')">
-            <span>👁️</span> <span data-i18n="preview_sample_btn">Preview</span>
+        <!-- Passbook Actions: View, Replace, Delete, Download -->
+        <div class="doc-actions-row" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;">
+          <button type="button" class="btn btn-primary" onclick="openUploadPassbookModal()" style="font-size: 0.88rem; padding: 0.5rem 0.85rem;">
+            <span>📤</span> <span id="btnUploadReplaceLabel">Upload / Replace</span>
           </button>
+          <button type="button" class="btn btn-secondary" onclick="openDocPreviewModal('passbook', 'Official Farmer Bank Passbook', 'samples/sample_passbook.svg')" style="font-size: 0.88rem; padding: 0.5rem 0.85rem;">
+            <span>👁️</span> <span>View Passbook</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnDeletePassbook" onclick="handleDeletePassbook()" style="font-size: 0.88rem; padding: 0.5rem 0.85rem; color: #dc2626; border-color: #fca5a5;">
+            <span>🗑️</span> <span>Delete</span>
+          </button>
+          <a href="/api/documents/download/passbook" download="Sample_Bank_Passbook_DBT_Active.svg" class="doc-download-btn" style="font-size: 0.85rem; text-decoration: none; padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; color: #334155; display: inline-flex; align-items: center; gap: 0.35rem;">
+            <span>📥</span> <span>Sample Template</span>
+          </a>
         </div>
       </div>
 
-      <!-- Card 2: Pahani / Land Record -->
-      <div class="scheme-card" style="border-left: 4px solid #2563eb;">
+      <!-- Card B: PIN Security & Review Desk -->
+      <div class="scheme-card" style="border-left: 5px solid #0284c7;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
           <div>
-            <span class="badge-tag badge-tag-blue">Revenue Record Verified</span>
-            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Land Title / Pahani / Dharani</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">Record of Rights (RoR-1B) Template</p>
+            <span class="badge-tag badge-tag-blue">Security Desk</span>
+            <h3 style="margin: 0.35rem 0; font-size: 1.25rem;">Passbook Review &amp; PIN Controls</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">Argon2id Salted PIN • Persistent Lockout</p>
           </div>
-          <span style="font-size: 1.8rem;">📜</span>
+          <span style="font-size: 2rem;">🛡️</span>
         </div>
 
-        <!-- Thumbnail Sample Preview -->
-        <div class="doc-thumbnail-wrap" onclick="openDocPreviewModal('pahani', 'Sample Pahani / Dharani Land Record (RoR-1B)', 'samples/sample_pahani.svg')">
-          <img src="samples/sample_pahani.svg" alt="Sample Pahani Preview" class="doc-sample-img" />
-          <span class="doc-badge-overlay">👁️ Click to Inspect</span>
+        <div style="margin: 0.75rem 0; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.25rem;">🔑</span>
+            <div>
+              <strong style="color: #0369a1;">PIN Status:</strong>
+              <span id="pbPinStatusText" style="font-weight: 600; color: #0284c7;">Configured (Argon2id Protected)</span>
+            </div>
+          </div>
+          <p style="margin: 0.35rem 0 0 0; font-size: 0.82rem; color: #0369a1;">
+            A 4 to 8-digit numeric PIN is required to authorize sharing your passbook with agriculture officers.
+          </p>
         </div>
 
-        <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.88rem;">
-          <strong>Survey No:</strong> 284/B • <strong>Extent:</strong> 2 Acres 20 Guntas • <strong>Village:</strong> Geesugonda
-        </div>
-        <div style="font-size: 0.82rem; color: var(--text-muted);">
-          Passbook No: <strong>T28090041284</strong> • Cultivator: <strong>Self / Pattadar</strong>
+        <!-- Lockout Warning Alert (hidden by default) -->
+        <div id="pinLockoutBanner" style="display:none; background: #fee2e2; border-left: 4px solid #ef4444; padding: 0.75rem; border-radius: 4px; margin: 0.5rem 0; font-size: 0.88rem; color: #991b1b;">
+          <strong>⚠️ Account Temporarily Locked</strong><br>
+          <span id="pinLockoutMsg">Too many incorrect attempts. Please wait before trying again.</span>
         </div>
 
-        <!-- Download & Full Preview Actions -->
-        <div class="doc-actions-row">
-          <a href="/api/documents/download/pahani" download="Sample_Pahani_Land_Record_RoR1B.svg" class="doc-download-btn">
-            <span>📥</span> <span data-i18n="download_sample_btn">Download Sample Copy</span>
-          </a>
-          <button type="button" class="btn btn-secondary doc-preview-btn" onclick="openDocPreviewModal('pahani', 'Sample Pahani / Dharani Land Record (RoR-1B)', 'samples/sample_pahani.svg')">
-            <span>👁️</span> <span data-i18n="preview_sample_btn">Preview</span>
+        <!-- Review Desk Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-secondary" onclick="openPinSetupModal()" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+            <span>🔑</span> <span id="btnPinSetupLabel">Setup / Change 4-8 Digit PIN</span>
+          </button>
+          <button type="button" class="btn btn-primary" onclick="openRequestReviewModal()" id="btnRequestReview" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; background: #0284c7; border-color: #0284c7;">
+            <span>📋</span> <span>Request Passbook Review (PIN Required)</span>
           </button>
         </div>
-      </div>
 
-      <!-- Card 3: CCRC Tenancy Card -->
-      <div class="scheme-card" style="border-left: 4px solid #f59e0b;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <span class="badge-tag badge-tag-amber">Statutory Agreement</span>
-            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Crop Cultivator Rights Card (CCRC)</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">Tenant Cultivator Legal Card Template</p>
+        <!-- Review Request Status Info -->
+        <div id="reviewStatusDisplay" style="margin-top: 1rem; padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem;">
+          <div><strong>Review Status:</strong> <span id="pbReviewStatusText" style="font-weight:600; color: #166534;">Verified (NPCI DBT Active)</span></div>
+          <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem;" id="pbReviewStatusDesc">
+            When you request a review, authorized officers verify your DBT mandate for scheme payouts.
           </div>
-          <span style="font-size: 1.8rem;">🤝</span>
-        </div>
-
-        <!-- Thumbnail Sample Preview -->
-        <div class="doc-thumbnail-wrap" onclick="openDocPreviewModal('ccrc', 'Sample Crop Cultivator Rights Card (CCRC)', 'samples/sample_ccrc.svg')">
-          <img src="samples/sample_ccrc.svg" alt="Sample CCRC Preview" class="doc-sample-img" />
-          <span class="doc-badge-overlay">👁️ Click to Inspect</span>
-        </div>
-
-        <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.88rem;">
-          <strong>Card ID:</strong> CCRC-TS-2026-9912 • <strong>Validity:</strong> Rabi 2025-26
-        </div>
-        <div style="font-size: 0.82rem; color: var(--text-muted);">
-          Gives full legal PMFBY &amp; Rythu Bharosa access without affecting owner title.
-        </div>
-
-        <!-- Download & Full Preview Actions -->
-        <div class="doc-actions-row">
-          <a href="/api/documents/download/ccrc" download="Sample_CCRC_Tenant_Card.svg" class="doc-download-btn">
-            <span>📥</span> <span data-i18n="download_sample_btn">Download Sample Copy</span>
-          </a>
-          <button type="button" class="btn btn-secondary doc-preview-btn" onclick="openDocPreviewModal('ccrc', 'Sample Crop Cultivator Rights Card (CCRC)', 'samples/sample_ccrc.svg')">
-            <span>👁️</span> <span data-i18n="preview_sample_btn">Preview</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Card 4: Bank Passbook -->
-      <div class="scheme-card" style="border-left: 4px solid #8b5cf6;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <span class="badge-tag badge-tag-blue">Bank Verified</span>
-            <h3 style="margin: 0.35rem 0; font-size: 1.15rem;">Bank Passbook / DBT Mandate</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">State Bank of India • Official Template</p>
-          </div>
-          <span style="font-size: 1.8rem;">🏦</span>
-        </div>
-
-        <!-- Thumbnail Sample Preview -->
-        <div class="doc-thumbnail-wrap" onclick="openDocPreviewModal('passbook', 'Sample Bank Passbook (DBT & NPCI Active)', 'samples/sample_passbook.svg')">
-          <img src="samples/sample_passbook.svg" alt="Sample Passbook Preview" class="doc-sample-img" />
-          <span class="doc-badge-overlay">👁️ Click to Inspect</span>
-        </div>
-
-        <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.88rem;">
-          <strong>A/C:</strong> ******3492 • <strong>IFSC:</strong> SBIN0020144 • <strong>Branch:</strong> Warangal Main
-        </div>
-        <div style="font-size: 0.82rem; color: var(--text-muted);">
-          Aadhaar Authentication: <strong>Active (Aadhaar Enabled Payment System ready)</strong>
-        </div>
-
-        <!-- Download & Full Preview Actions -->
-        <div class="doc-actions-row">
-          <a href="/api/documents/download/passbook" download="Sample_Bank_Passbook_DBT_Active.svg" class="doc-download-btn">
-            <span>📥</span> <span data-i18n="download_sample_btn">Download Sample Copy</span>
-          </a>
-          <button type="button" class="btn btn-secondary doc-preview-btn" onclick="openDocPreviewModal('passbook', 'Sample Bank Passbook (DBT & NPCI Active)', 'samples/sample_passbook.svg')">
-            <span>👁️</span> <span data-i18n="preview_sample_btn">Preview</span>
-          </button>
         </div>
       </div>
     </div>
@@ -2112,6 +2069,134 @@ Ask me anything about:
         <button type="button" class="btn btn-primary" onclick="alert('Booking Token Generated: CHC-WAR-2026-9182. Present this SMS at your nearest Rythu Vedika.'); closeChcRentalModal();" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
           Generate Booking Token
         </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Passbook Upload / Replace Modal -->
+  <div id="uploadPassbookModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 500px; width: 92%;">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-tag-blue">Farmer Document Wallet</span>
+          <h3 class="modal-title" style="margin-top: 0.25rem;">📤 Upload / Replace Passbook</h3>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeUploadPassbookModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <form id="passbookUploadForm" onsubmit="handlePassbookUploadSubmit(event)">
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpPbBankName">Bank Name *</label>
+            <input type="text" id="inpPbBankName" class="form-control" value="State Bank of India" required />
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpPbBranchName">Branch Name *</label>
+            <input type="text" id="inpPbBranchName" class="form-control" value="Warangal Main" required />
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpPbHolderName">Account Holder Name (as in passbook) *</label>
+            <input type="text" id="inpPbHolderName" class="form-control" value="Komirelli Ramulu" required />
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpPbAccountNo">Bank Account Number (Last 4 Digits) *</label>
+            <input type="text" id="inpPbAccountNo" class="form-control" value="3492" maxlength="4" placeholder="3492" required />
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Data Minimization: Stored in masked format (******3492).</span>
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpPbIfsc">IFSC Code *</label>
+            <input type="text" id="inpPbIfsc" class="form-control" value="SBIN0020144" required />
+          </div>
+          <div id="pbUploadAlert" style="display:none; padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 0.75rem;"></div>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="closeUploadPassbookModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSavePassbookSubmit">Save to Wallet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN Setup / Change Modal -->
+  <div id="pinSetupModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 480px; width: 92%;">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-tag-green">Argon2id Salted Security</span>
+          <h3 class="modal-title" style="margin-top: 0.25rem;">🔑 Configure Passbook Review PIN</h3>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closePinSetupModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.85rem; color: #166534;">
+          <strong>PIN Requirements:</strong>
+          <ul style="margin: 0.35rem 0 0 1.2rem; padding: 0;">
+            <li>Must be between <strong>4 and 8 numeric digits</strong>.</li>
+            <li>Do not use repeating digits (e.g. 0000, 1111) or simple sequences.</li>
+            <li>Plain PINs are never stored or logged in database or server logs.</li>
+            <li>5 incorrect attempts triggers a 15-minute persistent lockout.</li>
+          </ul>
+        </div>
+        <form id="pinSetupForm" onsubmit="handlePinSetupSubmit(event)">
+          <div id="pinCurrentWrap" style="display:none; margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpCurrentPin">Current PIN *</label>
+            <input type="password" id="inpCurrentPin" class="form-control" maxlength="8" inputmode="numeric" placeholder="Enter current PIN" />
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpNewPin">New PIN (4-8 digits) *</label>
+            <input type="password" id="inpNewPin" class="form-control" maxlength="8" inputmode="numeric" placeholder="e.g. 784920" required />
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpConfirmPin">Confirm New PIN *</label>
+            <input type="password" id="inpConfirmPin" class="form-control" maxlength="8" inputmode="numeric" placeholder="Re-enter new PIN" required />
+          </div>
+          <div id="pinSetupAlert" style="display:none; padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 0.75rem;"></div>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="closePinSetupModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSavePinSubmit">Save Secure PIN</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Passbook Review Modal (PIN Prompt) -->
+  <div id="requestReviewModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 480px; width: 92%;">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-tag-blue">PIN Verification Required</span>
+          <h3 class="modal-title" style="margin-top: 0.25rem;">📋 Request Passbook Review</h3>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeRequestReviewModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0;">
+          Requesting a review securely shares your passbook details with the Agriculture Extension Officer (AEO) or CSC center for DBT subsidy verification.
+        </p>
+
+        <!-- Explicit Consent Checkbox -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
+          <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; cursor: pointer; color: #1e293b;">
+            <input type="checkbox" id="chkReviewConsent" style="margin-top: 0.2rem;" checked required />
+            <span><strong>Explicit Consent:</strong> I authorize sharing my bank passbook with the agriculture officer strictly for scheme subsidy &amp; PMFBY claim verification.</span>
+          </label>
+        </div>
+
+        <form id="requestReviewForm" onsubmit="handleRequestReviewSubmit(event)">
+          <div style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="inpReviewPin">Enter Your 4 to 8-Digit Security PIN *</label>
+            <input type="password" id="inpReviewPin" class="form-control" maxlength="8" inputmode="numeric" placeholder="Enter PIN" required autocomplete="off" />
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Protected by Argon2id. 5 failed attempts will lock your account for 15 minutes.</span>
+          </div>
+
+          <div id="reviewPinAlert" style="display:none; padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 0.75rem;"></div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="closeRequestReviewModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitReviewPin">Verify PIN &amp; Request Review</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

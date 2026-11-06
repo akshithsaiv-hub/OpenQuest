@@ -1,6 +1,6 @@
 {
-  "vault_version": "1.0",
-  "last_updated": "2026-11-05T16:12:14.848276",
+  "vault_version": "2.0",
+  "last_updated": "2026-11-06T14:25:00",
   "farmers": {
     "DEMO_FARMER_1": {
       "farmer_id": "DEMO_FARMER_1",
@@ -10,24 +10,6 @@
       "consent_granted": true,
       "consent_timestamp": "2026-11-01T10:00:00",
       "documents": [
-        {
-          "doc_type": "aadhaar",
-          "title": "Aadhaar Card",
-          "identifier_masked": "XXXX-XXXX-4921",
-          "verified": true,
-          "source": "DigiLocker Verified",
-          "uploaded_at": "2026-11-01T10:05:00",
-          "uri": "digilocker://in.gov.uidai/aadhaar/4921"
-        },
-        {
-          "doc_type": "land_record",
-          "title": "Dharani RoR Passbook (Survey 142/A)",
-          "identifier_masked": "T192004210",
-          "verified": true,
-          "source": "Dharani Portal API Sync",
-          "uploaded_at": "2026-11-01T10:06:00",
-          "uri": "dharani://telangana.gov.in/passbook/T192004210"
-        },
         {
           "doc_type": "bank_passbook",
           "title": "Telangana Grameena Bank Passbook",

@@ -1,3 +1,18 @@
+from security.pin_service import (
+    validate_pin_format,
+    set_farmer_pin,
+    change_farmer_pin,
+    verify_farmer_pin,
+    get_farmer_pin_status,
+)
+from person3.passbook_service import (
+    get_farmer_passbook,
+    save_or_replace_passbook,
+    delete_farmer_passbook,
+    request_passbook_review,
+    get_passbook_for_reviewer,
+    record_reviewer_decision,
+)
 import json
 import os
 import sys
@@ -128,6 +143,34 @@ class OTPVerifyPayload(BaseModel):
     otp_code: str
     role: str = "farmer"
     subject_id: Optional[str] = None
+
+
+class PINSetupPayload(BaseModel):
+    pin: str
+    confirm_pin: str
+
+class PINChangePayload(BaseModel):
+    current_pin: str
+    new_pin: str
+    confirm_new_pin: str
+
+class PassbookUploadPayload(BaseModel):
+    bank_name: str = "State Bank of India"
+    branch: Optional[str] = "Main Branch"
+    account_holder_name: Optional[str] = None
+    account_number: Optional[str] = "******3492"
+    ifsc: Optional[str] = "SBIN0020144"
+    npci_dbt_seeded: bool = True
+    notes: Optional[str] = None
+
+class PassbookReviewRequestPayload(BaseModel):
+    pin: str
+    consent_to_share: bool = True
+    notes: Optional[str] = None
+
+class PassbookReviewDecisionPayload(BaseModel):
+    decision: str  # "verified" or "rejected"
+    notes: Optional[str] = None
 
 class FarmerConsentUpdatePayload(BaseModel):
     language: str = "en"
@@ -855,6 +898,156 @@ def grant_farmer_consent(
         "language": payload.language,
         "purpose": payload.purpose
     }
+
+
+# -----------------------------------------------------------------------------
+# FARMER PASSBOOK WALLET & PIN-PROTECTED REVIEW ENDPOINTS
+# -----------------------------------------------------------------------------
+@app.get("/api/farmer/me/passbook")
+def api_get_my_passbook(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """
+    Retrieves the authenticated farmer's saved passbook metadata and review status.
+    Never returns PIN hash or plain credentials.
+    """
+    farmer_id = current_user["subject_id"]
+    return get_farmer_passbook(farmer_id)
+
+@app.post("/api/farmer/me/passbook")
+def api_upload_or_replace_passbook(
+    payload: PassbookUploadPayload,
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """
+    Upload or replace the farmer's passbook in the wallet.
+    Enforces data minimization (masks account number, rejects raw PII).
+    """
+    farmer_id = current_user["subject_id"]
+    try:
+        result = save_or_replace_passbook(farmer_id, payload.model_dump())
+        return result
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+
+@app.delete("/api/farmer/me/passbook")
+def api_delete_my_passbook(current_user: Dict[str, Any] = Depends(require_role(["farmer"]))):
+    """
+    Deletes the farmer's saved passbook and resets any active review requests.
+    """
+    farmer_id = current_user["subject_id"]
+    deleted = delete_farmer_passbook(farmer_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="No passbook found to delete.")
+    return {"status": "success", "message": "Passbook deleted successfully."}
+
+@app.post("/api/farmer/me/pin/setup")
+def api_setup_pin(
+    payload: PINSetupPayload,
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """
+    Sets up a 4 to 8-digit numeric Argon2id salted PIN to protect passbook review requests.
+    Never logs or stores the plain PIN.
+    """
+    farmer_id = current_user["subject_id"]
+    if payload.pin != payload.confirm_pin:
+        raise HTTPException(status_code=400, detail="PIN and Confirm PIN do not match.")
+
+    ok, msg = set_farmer_pin(farmer_id, payload.pin)
+    if not ok:
+        raise HTTPException(status_code=400, detail=msg)
+    return {"status": "success", "message": msg}
+
+@app.post("/api/farmer/me/pin/change")
+def api_change_pin(
+    payload: PINChangePayload,
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """
+    Changes the farmer's PIN after validating the current PIN with lockout protection.
+    """
+    farmer_id = current_user["subject_id"]
+    if payload.new_pin != payload.confirm_new_pin:
+        raise HTTPException(status_code=400, detail="New PIN and Confirm New PIN do not match.")
+
+    ok, msg = change_farmer_pin(farmer_id, payload.current_pin, payload.new_pin)
+    if not ok:
+        if "LOCKED_OUT" in msg:
+            raise HTTPException(status_code=423, detail=msg)
+        if "INCORRECT_PIN" in msg:
+            raise HTTPException(status_code=401, detail=msg)
+        raise HTTPException(status_code=400, detail=msg)
+    return {"status": "success", "message": msg}
+
+@app.post("/api/farmer/me/passbook/review-request")
+def api_request_passbook_review(
+    payload: PassbookReviewRequestPayload,
+    current_user: Dict[str, Any] = Depends(require_role(["farmer"]))
+):
+    """
+    PIN-protected passbook review request:
+    Verifies Argon2id PIN and explicit farmer consent before sharing passbook for review.
+    Fails closed with lockout tracking on repeated incorrect PINs.
+    """
+    farmer_id = current_user["subject_id"]
+    ok, msg, details = request_passbook_review(
+        farmer_id=farmer_id,
+        submitted_pin=payload.pin,
+        consent_to_share=payload.consent_to_share,
+        notes=payload.notes
+    )
+    if not ok:
+        if "LOCKED_OUT" in msg:
+            raise HTTPException(status_code=423, detail=msg)
+        if "INCORRECT_PIN" in msg:
+            raise HTTPException(status_code=401, detail=msg)
+        raise HTTPException(status_code=400, detail=msg)
+
+    return {"status": "success", "message": msg, "details": details}
+
+@app.get("/api/officer/passbook/review/{farmer_id}")
+def api_get_farmer_passbook_review(
+    farmer_id: str,
+    current_user: Dict[str, Any] = Depends(require_role(["officer", "intermediary"]))
+):
+    """
+    Authorized reviewer endpoint for officers and assigned intermediaries to inspect
+    a farmer's submitted passbook. Strictly requires farmer's active consent.
+    """
+    reviewer_id = current_user["subject_id"]
+    reviewer_role = current_user["role"]
+
+    ok, msg, details = get_passbook_for_reviewer(
+        farmer_id=farmer_id,
+        reviewer_id=reviewer_id,
+        reviewer_role=reviewer_role
+    )
+    if not ok:
+        if "CONSENT_WITHDRAWN" in msg or "UNAUTHORIZED_INTERMEDIARY" in msg or "REVIEW_NOT_REQUESTED" in msg:
+            raise HTTPException(status_code=403, detail=msg)
+        raise HTTPException(status_code=404, detail=msg)
+
+    return {"status": "success", "review_dossier": details}
+
+@app.post("/api/officer/passbook/review/{farmer_id}/decision")
+def api_record_passbook_decision(
+    farmer_id: str,
+    payload: PassbookReviewDecisionPayload,
+    current_user: Dict[str, Any] = Depends(require_role(["officer"]))
+):
+    """
+    Officer records verification or rejection decision for a submitted passbook.
+    """
+    reviewer_id = current_user["subject_id"]
+    ok, msg = record_reviewer_decision(
+        farmer_id=farmer_id,
+        reviewer_id=reviewer_id,
+        decision=payload.decision,
+        notes=payload.notes
+    )
+    if not ok:
+        raise HTTPException(status_code=400, detail=msg)
+    return {"status": "success", "message": msg}
+
 
 @app.get("/api/officer/analytics")
 def get_officer_analytics(current_user: Dict[str, Any] = Depends(require_role(["officer"]))):

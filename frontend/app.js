@@ -3294,6 +3294,326 @@ Copy submitted for information to:
   };
 
   // =========================================================================
+  // TAB 5: FARMER PASSBOOK WALLET & PIN REVIEW CONTROLLER
+  // =========================================================================
+  let currentPassbookState = {
+    is_saved: true,
+    pin_configured: true,
+    review_status: 'verified',
+    lockout_remaining_seconds: 0
+  };
+
+  async function loadPassbookWalletState() {
+    try {
+      const token = localStorage.getItem('farmer_auth_token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const resp = await fetch('/api/farmer/me/passbook', { headers });
+      if (resp.ok) {
+        const data = await resp.json();
+        currentPassbookState = data;
+        renderPassbookUI(data);
+      }
+    } catch (e) {
+      console.warn('Could not fetch remote passbook state, using local cached data', e);
+    }
+  }
+
+  function renderPassbookUI(state) {
+    const savedBadge = document.getElementById('passbookSavedBadge');
+    const uploadMeta = document.getElementById('passbookUploadedMeta');
+    const btnUploadLabel = document.getElementById('btnUploadReplaceLabel');
+    const detailsBox = document.getElementById('passbookDetailsBox');
+    const btnDelete = document.getElementById('btnDeletePassbook');
+    const pinStatusText = document.getElementById('pbPinStatusText');
+    const pinLockBanner = document.getElementById('pinLockoutBanner');
+    const pinLockMsg = document.getElementById('pinLockoutMsg');
+    const reviewStatusText = document.getElementById('pbReviewStatusText');
+    const reviewStatusDesc = document.getElementById('pbReviewStatusDesc');
+
+    if (state.is_saved) {
+      if (savedBadge) {
+        savedBadge.textContent = 'Passbook Saved';
+        savedBadge.style.background = '#dcfce7';
+        savedBadge.style.color = '#166534';
+      }
+      if (uploadMeta) {
+        uploadMeta.textContent = state.uploaded_at ? `Uploaded on: ${state.uploaded_at.substring(0, 16).replace('T', ' ')}` : 'Uploaded & Active';
+      }
+      if (btnUploadLabel) btnUploadLabel.textContent = 'Replace Passbook';
+      if (detailsBox) detailsBox.style.display = 'block';
+      if (btnDelete) btnDelete.style.display = 'inline-flex';
+    } else {
+      if (savedBadge) {
+        savedBadge.textContent = 'No Passbook Saved';
+        savedBadge.style.background = '#fee2e2';
+        savedBadge.style.color = '#991b1b';
+      }
+      if (uploadMeta) uploadMeta.textContent = 'Upload your passbook for direct benefit transfers & claim payouts';
+      if (btnUploadLabel) btnUploadLabel.textContent = 'Upload Passbook';
+      if (detailsBox) detailsBox.style.display = 'none';
+      if (btnDelete) btnDelete.style.display = 'none';
+    }
+
+    // PIN status
+    if (state.pin_configured) {
+      if (pinStatusText) {
+        pinStatusText.textContent = 'Configured (Argon2id Protected)';
+        pinStatusText.style.color = '#16a34a';
+      }
+    } else {
+      if (pinStatusText) {
+        pinStatusText.textContent = '⚠️ Not Configured (Review Disabled)';
+        pinStatusText.style.color = '#dc2626';
+      }
+    }
+
+    // Lockout banner
+    if (state.pin_locked && state.lockout_remaining_seconds > 0) {
+      if (pinLockBanner) pinLockBanner.style.display = 'block';
+      const mins = Math.max(1, Math.ceil(state.lockout_remaining_seconds / 60));
+      if (pinLockMsg) pinLockMsg.textContent = `Too many incorrect attempts. Account locked for ${mins} minute(s).`;
+    } else {
+      if (pinLockBanner) pinLockBanner.style.display = 'none';
+    }
+
+    // Review status
+    if (reviewStatusText) {
+      const st = state.review_status || 'not_requested';
+      if (st === 'pending_review') {
+        reviewStatusText.textContent = 'Review Requested (Pending Review)';
+        reviewStatusText.style.color = '#d97706';
+      } else if (st === 'under_review') {
+        reviewStatusText.textContent = 'Under Officer Review';
+        reviewStatusText.style.color = '#2563eb';
+      } else if (st === 'verified') {
+        reviewStatusText.textContent = 'Verified (DBT Active)';
+        reviewStatusText.style.color = '#16a34a';
+      } else if (st === 'rejected') {
+        reviewStatusText.textContent = 'Review Rejected (Please Update)';
+        reviewStatusText.style.color = '#dc2626';
+      } else {
+        reviewStatusText.textContent = 'Not Requested';
+        reviewStatusText.style.color = '#475569';
+      }
+    }
+  }
+
+  // Window modal controls
+  window.openUploadPassbookModal = function() {
+    const m = document.getElementById('uploadPassbookModal');
+    if (m) m.style.display = 'flex';
+  };
+  window.closeUploadPassbookModal = function() {
+    const m = document.getElementById('uploadPassbookModal');
+    if (m) m.style.display = 'none';
+  };
+
+  window.handlePassbookUploadSubmit = async function(e) {
+    e.preventDefault();
+    const bank = document.getElementById('inpPbBankName').value;
+    const branch = document.getElementById('inpPbBranchName').value;
+    const holder = document.getElementById('inpPbHolderName').value;
+    const accLast4 = document.getElementById('inpPbAccountNo').value;
+    const ifsc = document.getElementById('inpPbIfsc').value;
+    const alertBox = document.getElementById('pbUploadAlert');
+
+    try {
+      const token = localStorage.getItem('farmer_auth_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const resp = await fetch('/api/farmer/me/passbook', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          bank_name: bank,
+          branch: branch,
+          account_holder_name: holder,
+          account_number: `******${accLast4}`,
+          ifsc: ifsc,
+          npci_dbt_seeded: true
+        })
+      });
+
+      if (resp.ok) {
+        document.getElementById('pbBankName').textContent = bank;
+        document.getElementById('pbBranchName').textContent = branch;
+        document.getElementById('pbHolderName').textContent = holder;
+        document.getElementById('pbAccountMasked').textContent = `******${accLast4}`;
+        document.getElementById('pbIfsc').textContent = ifsc;
+        currentPassbookState.is_saved = true;
+        currentPassbookState.uploaded_at = new Date().toISOString();
+        renderPassbookUI(currentPassbookState);
+        closeUploadPassbookModal();
+        alert('✅ Passbook successfully saved to your Document Wallet!');
+      } else {
+        const err = await resp.json();
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#fee2e2';
+          alertBox.style.color = '#991b1b';
+          alertBox.textContent = err.detail || 'Failed to save passbook.';
+        }
+      }
+    } catch (err) {
+      alert('Error connecting to backend: ' + err.message);
+    }
+  };
+
+  window.handleDeletePassbook = async function() {
+    if (!confirm('Are you sure you want to delete your saved passbook from the wallet?')) return;
+    try {
+      const token = localStorage.getItem('farmer_auth_token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const resp = await fetch('/api/farmer/me/passbook', { method: 'DELETE', headers });
+      currentPassbookState.is_saved = false;
+      renderPassbookUI(currentPassbookState);
+      alert('Passbook deleted from wallet.');
+    } catch (e) {
+      alert('Failed to delete passbook: ' + e.message);
+    }
+  };
+
+  window.openPinSetupModal = function() {
+    const m = document.getElementById('pinSetupModal');
+    const currWrap = document.getElementById('pinCurrentWrap');
+    if (currWrap) {
+      currWrap.style.display = currentPassbookState.pin_configured ? 'block' : 'none';
+    }
+    if (m) m.style.display = 'flex';
+  };
+  window.closePinSetupModal = function() {
+    const m = document.getElementById('pinSetupModal');
+    if (m) m.style.display = 'none';
+  };
+
+  window.handlePinSetupSubmit = async function(e) {
+    e.preventDefault();
+    const currPin = document.getElementById('inpCurrentPin')?.value;
+    const newPin = document.getElementById('inpNewPin').value;
+    const confirmPin = document.getElementById('inpConfirmPin').value;
+    const alertBox = document.getElementById('pinSetupAlert');
+
+    if (newPin !== confirmPin) {
+      if (alertBox) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#fee2e2';
+        alertBox.style.color = '#991b1b';
+        alertBox.textContent = 'New PIN and Confirm PIN do not match.';
+      }
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('farmer_auth_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      let url = '/api/farmer/me/pin/setup';
+      let bodyData = { pin: newPin, confirm_pin: confirmPin };
+
+      if (currentPassbookState.pin_configured && currPin) {
+        url = '/api/farmer/me/pin/change';
+        bodyData = { current_pin: currPin, new_pin: newPin, confirm_new_pin: confirmPin };
+      }
+
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(bodyData)
+      });
+
+      const res = await resp.json();
+      if (resp.ok) {
+        currentPassbookState.pin_configured = true;
+        renderPassbookUI(currentPassbookState);
+        closePinSetupModal();
+        alert('🔒 ' + (res.message || 'Passbook PIN saved successfully!'));
+      } else {
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#fee2e2';
+          alertBox.style.color = '#991b1b';
+          alertBox.textContent = res.detail || 'PIN validation failed.';
+        }
+      }
+    } catch (err) {
+      alert('Error updating PIN: ' + err.message);
+    }
+  };
+
+  window.openRequestReviewModal = function() {
+    if (!currentPassbookState.is_saved) {
+      alert('⚠️ No passbook uploaded. Please upload your passbook first.');
+      return;
+    }
+    if (!currentPassbookState.pin_configured) {
+      alert('⚠️ PIN not configured. Please set up a 4 to 8 digit PIN before requesting review.');
+      openPinSetupModal();
+      return;
+    }
+    const m = document.getElementById('requestReviewModal');
+    const alertBox = document.getElementById('reviewPinAlert');
+    if (alertBox) alertBox.style.display = 'none';
+    const pinInp = document.getElementById('inpReviewPin');
+    if (pinInp) pinInp.value = '';
+    if (m) m.style.display = 'flex';
+  };
+  window.closeRequestReviewModal = function() {
+    const m = document.getElementById('requestReviewModal');
+    if (m) m.style.display = 'none';
+  };
+
+  window.handleRequestReviewSubmit = async function(e) {
+    e.preventDefault();
+    const pin = document.getElementById('inpReviewPin').value;
+    const consent = document.getElementById('chkReviewConsent').checked;
+    const alertBox = document.getElementById('reviewPinAlert');
+
+    if (!consent) {
+      alert('Explicit consent is required to share your passbook for review.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('farmer_auth_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const resp = await fetch('/api/farmer/me/passbook/review-request', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          pin: pin,
+          consent_to_share: consent
+        })
+      });
+
+      const res = await resp.json();
+      if (resp.ok) {
+        currentPassbookState.review_status = 'pending_review';
+        renderPassbookUI(currentPassbookState);
+        closeRequestReviewModal();
+        alert('✅ Passbook review requested successfully! An Agriculture Officer will verify your records.');
+      } else {
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#fee2e2';
+          alertBox.style.color = '#991b1b';
+          alertBox.textContent = res.detail || 'Incorrect PIN.';
+        }
+        if (resp.status === 423) {
+          currentPassbookState.pin_locked = true;
+          renderPassbookUI(currentPassbookState);
+        }
+      }
+    } catch (err) {
+      alert('Network error submitting review request: ' + err.message);
+    }
+  };
+
+
+  // =========================================================================
   // 9. INITIALIZATION ENTRY POINT
   // =========================================================================
   function init() {
@@ -3310,6 +3630,7 @@ Copy submitted for information to:
     initKccAndTrackerTab();
     initMspTab();
     initIntermediaryTab();
+    loadPassbookWalletState();
 
     // 3. Tab 0: Scheme Browser Event Handlers
     if (stateSelect) {

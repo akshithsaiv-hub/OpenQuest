@@ -106,7 +106,19 @@ def init_db(db_path=None):
             "district": "TEXT DEFAULT 'Warangal'",
             "crop": "TEXT DEFAULT 'Paddy'",
             "land_acres": "REAL DEFAULT 2.0",
-            "farmer_type": "TEXT DEFAULT 'owner'"
+            "farmer_type": "TEXT DEFAULT 'owner'",
+            "passbook_saved": "INTEGER NOT NULL DEFAULT 0",
+            "passbook_filename": "TEXT",
+            "passbook_uploaded_at": "TEXT",
+            "passbook_data": "TEXT",
+            "passbook_review_status": "TEXT DEFAULT 'not_requested'",
+            "passbook_reviewed_at": "TEXT",
+            "passbook_reviewer_id": "TEXT",
+            "pin_hash": "TEXT",
+            "pin_salt": "TEXT",
+            "pin_failed_attempts": "INTEGER NOT NULL DEFAULT 0",
+            "pin_locked_until": "TEXT",
+            "pin_created_at": "TEXT"
         }
         for col, col_type in migration_cols.items():
             if col not in existing_cols:
@@ -133,6 +145,8 @@ def init_db(db_path=None):
         con.execute("CREATE INDEX IF NOT EXISTS idx_farmers_intermediary ON farmers(intermediary_id);")
         con.execute("CREATE INDEX IF NOT EXISTS idx_farmers_consent ON farmers(consent_status);")
         con.execute("CREATE INDEX IF NOT EXISTS idx_farmers_deleted ON farmers(is_deleted);")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_farmers_passbook_review ON farmers(passbook_review_status);")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_farmers_pin_locked ON farmers(pin_locked_until);")
         con.execute("CREATE INDEX IF NOT EXISTS idx_audit_events_actor ON audit_events(actor_id);")
         con.execute("CREATE INDEX IF NOT EXISTS idx_audit_events_created ON audit_events(created_at);")
 
