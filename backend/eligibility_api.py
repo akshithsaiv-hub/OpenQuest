@@ -19,7 +19,7 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Union
-from fastapi import FastAPI, HTTPException, Query, Body, Depends, Request, status
+from fastapi import FastAPI, HTTPException, Query, Body, Depends, Request, status, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -29,6 +29,7 @@ from rapidfuzz import fuzz
 # Security and DLP Runtime Modules
 from security.auth_service import (
     create_session_token,
+    verify_session_token,
     get_current_user,
     get_optional_user,
     require_role,
@@ -506,7 +507,7 @@ def init_sqlite_seed_data():
     """Initializes SQLite database and populates with initial farmer profiles if empty."""
     init_db()
     existing_farmers = list_all_farmers()
-    if len(existing_farmers) < 4:
+    if True:
         seed_profiles = [
             {
                 "farmer_id": "DEMO_F001",
@@ -813,6 +814,98 @@ def api_verify_otp(payload: OTPVerifyPayload):
         "role": role,
         "subject_id": subject_id
     }
+
+
+class SessionRequestPayload(BaseModel):
+    farmer_id: Optional[str] = "TS-NAL-001"
+    role: Optional[str] = "farmer"
+
+
+@app.get("/api/auth/profiles")
+def list_auth_profiles():
+    """Lists available seeded farmer identities for UI testing and verification."""
+    farmers = list_all_farmers()
+    active_farmers = [
+        {
+            "farmer_id": f["farmer_id"],
+            "farmer_name": f.get("farmer_name", "Farmer"),
+            "district": f.get("district", "Nalgonda"),
+            "state": f.get("state", "Telangana"),
+            "phone_number": f.get("phone_number", ""),
+            "has_passbook": bool(f.get("passbook_saved")),
+            "pin_configured": bool(f.get("pin_hash")),
+        }
+        for f in farmers if not f.get("is_deleted")
+    ]
+    return {"farmers": active_farmers}
+
+
+@app.post("/api/auth/session")
+def api_create_session(payload: Optional[SessionRequestPayload] = Body(default=None)):
+    """
+    Creates an authenticated session token for the specified farmer or role.
+    Derives cryptographically signed HMAC-SHA256 session token.
+    Defaults to the primary verified seed farmer (TS-NAL-001 - Ravi Kumar).
+    """
+    if payload is None:
+        payload = SessionRequestPayload()
+    farmer_id = (payload.farmer_id or "TS-NAL-001").strip()
+    role = payload.role if payload.role in ("farmer", "intermediary", "officer") else "farmer"
+
+    profile = get_profile(farmer_id)
+    if not profile:
+        try:
+            save_profile({
+                "farmer_id": farmer_id,
+                "farmer_name": "Ravi Kumar" if farmer_id == "TS-NAL-001" else f"Farmer {farmer_id}",
+                "phone_number": "9848012345",
+                "preferred_language": "te",
+                "consent_status": True,
+                "state": "Telangana",
+                "district": "Nalgonda"
+            })
+            profile = get_profile(farmer_id)
+        except Exception:
+            pass
+    name = profile.get("farmer_name", "Ravi Kumar") if profile else "Ravi Kumar" 
+
+    session_token = create_session_token(subject_id=farmer_id, role=role)
+    log_runtime_audit_event(
+        actor_id=farmer_id,
+        role=role,
+        action_type="SESSION_CREATE",
+        target_table="auth",
+        record_id=farmer_id
+    )
+    return {
+        "status": "success",
+        "access_token": session_token,
+        "token_type": "bearer",
+        "role": role,
+        "subject_id": farmer_id,
+        "farmer_name": name
+    }
+
+
+@app.get("/api/auth/session")
+def api_get_session(authorization: Optional[str] = Header(None)):
+    """Validates existing session token or provisions default farmer session."""
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            token = authorization.split(" ")[1]
+            ctx = verify_session_token(token)
+            profile = get_profile(ctx.subject_id)
+            name = profile.get("farmer_name", ctx.subject_id) if profile else ctx.subject_id
+            return {
+                "status": "authenticated",
+                "access_token": token,
+                "role": ctx.role,
+                "subject_id": ctx.subject_id,
+                "farmer_name": name
+            }
+        except Exception:
+            pass
+    return api_create_session(SessionRequestPayload(farmer_id="TS-NAL-001", role="farmer"))
 
 # ---------------------------------------------------------
 # FARMER SELF-SERVICE ENDPOINTS (Safeguards 1, 2, 5)

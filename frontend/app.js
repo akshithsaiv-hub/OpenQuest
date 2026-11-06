@@ -4342,17 +4342,83 @@ Copy submitted for information to:
   // TAB 5: FARMER PASSBOOK WALLET & PIN REVIEW CONTROLLER
   // =========================================================================
   let currentPassbookState = {
-    is_saved: true,
-    pin_configured: true,
-    review_status: 'verified',
+    is_saved: false,
+    pin_configured: false,
+    review_status: 'not_requested',
     lockout_remaining_seconds: 0
+  };
+
+  function updateFarmerSessionBadge(name, farmerId) {
+    const lbl = document.getElementById('activeFarmerLabel');
+    const sel = document.getElementById('selFarmerProfile');
+    if (lbl) lbl.textContent = `${name || 'Farmer'} (${farmerId})`;
+    if (sel && sel.value !== farmerId) sel.value = farmerId;
+  }
+
+  async function getOrInitFarmerToken() {
+    let token = localStorage.getItem('farmer_auth_token');
+    let farmerId = localStorage.getItem('active_farmer_id') || 'TS-NAL-001';
+
+    if (!token) {
+      try {
+        const resp = await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ farmer_id: farmerId, role: 'farmer' })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          token = data.access_token;
+          farmerId = data.subject_id;
+          localStorage.setItem('farmer_auth_token', token);
+          localStorage.setItem('active_farmer_id', farmerId);
+          localStorage.setItem('active_farmer_name', data.farmer_name || 'Ravi Kumar');
+          updateFarmerSessionBadge(data.farmer_name, farmerId);
+        }
+      } catch (e) {
+        console.warn('Could not auto-initialize session token:', e);
+      }
+    } else {
+      const storedName = localStorage.getItem('active_farmer_name') || 'Ravi Kumar';
+      updateFarmerSessionBadge(storedName, farmerId);
+    }
+    return token;
+  }
+
+  window.handleFarmerProfileChange = async function(farmerId) {
+    try {
+      const resp = await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ farmer_id: farmerId, role: 'farmer' })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        localStorage.setItem('farmer_auth_token', data.access_token);
+        localStorage.setItem('active_farmer_id', data.subject_id);
+        localStorage.setItem('active_farmer_name', data.farmer_name || farmerId);
+        updateFarmerSessionBadge(data.farmer_name, data.subject_id);
+        await loadPassbookWalletState();
+        alert(`Switched active farmer profile to: ${data.farmer_name} (${data.subject_id})`);
+      }
+    } catch (e) {
+      alert('Failed to switch farmer profile: ' + e.message);
+    }
   };
 
   async function loadPassbookWalletState() {
     try {
-      const token = localStorage.getItem('farmer_auth_token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      const resp = await fetch('/api/farmer/me/passbook', { headers });
+      let token = await getOrInitFarmerToken();
+      let headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      let resp = await fetch('/api/farmer/me/passbook', { headers });
+
+      if (resp.status === 401) {
+        localStorage.removeItem('farmer_auth_token');
+        token = await getOrInitFarmerToken();
+        headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        resp = await fetch('/api/farmer/me/passbook', { headers });
+      }
+
       if (resp.ok) {
         const data = await resp.json();
         currentPassbookState = data;
@@ -4373,7 +4439,7 @@ Copy submitted for information to:
     const pinLockBanner = document.getElementById('pinLockoutBanner');
     const pinLockMsg = document.getElementById('pinLockoutMsg');
     const reviewStatusText = document.getElementById('pbReviewStatusText');
-    const reviewStatusDesc = document.getElementById('pbReviewStatusDesc');
+    const btnPinLabel = document.getElementById('btnPinSetupLabel');
 
     if (state.is_saved) {
       if (savedBadge) {
@@ -4385,7 +4451,16 @@ Copy submitted for information to:
         uploadMeta.textContent = state.uploaded_at ? `Uploaded on: ${state.uploaded_at.substring(0, 16).replace('T', ' ')}` : 'Uploaded & Active';
       }
       if (btnUploadLabel) btnUploadLabel.textContent = 'Replace Passbook';
-      if (detailsBox) detailsBox.style.display = 'block';
+      if (detailsBox) {
+        detailsBox.style.display = 'block';
+        if (state.passbook_details) {
+          if (document.getElementById('pbBankName')) document.getElementById('pbBankName').textContent = state.passbook_details.bank_name || 'State Bank of India';
+          if (document.getElementById('pbBranchName')) document.getElementById('pbBranchName').textContent = state.passbook_details.branch || 'Warangal Main';
+          if (document.getElementById('pbHolderName')) document.getElementById('pbHolderName').textContent = state.passbook_details.account_holder_name || state.farmer_name || 'Ravi Kumar';
+          if (document.getElementById('pbAccountMasked')) document.getElementById('pbAccountMasked').textContent = state.passbook_details.account_number || '******3492';
+          if (document.getElementById('pbIfsc')) document.getElementById('pbIfsc').textContent = state.passbook_details.ifsc || 'SBIN0020144';
+        }
+      }
       if (btnDelete) btnDelete.style.display = 'inline-flex';
     } else {
       if (savedBadge) {
@@ -4405,11 +4480,13 @@ Copy submitted for information to:
         pinStatusText.textContent = 'Configured (Argon2id Protected)';
         pinStatusText.style.color = '#16a34a';
       }
+      if (btnPinLabel) btnPinLabel.textContent = 'Change 4-8 Digit PIN';
     } else {
       if (pinStatusText) {
         pinStatusText.textContent = '⚠️ Not Configured (Review Disabled)';
         pinStatusText.style.color = '#dc2626';
       }
+      if (btnPinLabel) btnPinLabel.textContent = 'Setup 4-8 Digit PIN';
     }
 
     // Lockout banner
@@ -4463,11 +4540,11 @@ Copy submitted for information to:
     const alertBox = document.getElementById('pbUploadAlert');
 
     try {
-      const token = localStorage.getItem('farmer_auth_token');
-      const headers = { 'Content-Type': 'application/json' };
+      let token = await getOrInitFarmerToken();
+      let headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const resp = await fetch('/api/farmer/me/passbook', {
+      let resp = await fetch('/api/farmer/me/passbook', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -4479,6 +4556,24 @@ Copy submitted for information to:
           npci_dbt_seeded: true
         })
       });
+
+      if (resp.status === 401) {
+        localStorage.removeItem('farmer_auth_token');
+        token = await getOrInitFarmerToken();
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        resp = await fetch('/api/farmer/me/passbook', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            bank_name: bank,
+            branch: branch,
+            account_holder_name: holder,
+            account_number: `******${accLast4}`,
+            ifsc: ifsc,
+            npci_dbt_seeded: true
+          })
+        });
+      }
 
       if (resp.ok) {
         document.getElementById('pbBankName').textContent = bank;
@@ -4508,9 +4603,17 @@ Copy submitted for information to:
   window.handleDeletePassbook = async function() {
     if (!confirm('Are you sure you want to delete your saved passbook from the wallet?')) return;
     try {
-      const token = localStorage.getItem('farmer_auth_token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      const resp = await fetch('/api/farmer/me/passbook', { method: 'DELETE', headers });
+      let token = await getOrInitFarmerToken();
+      let headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      let resp = await fetch('/api/farmer/me/passbook', { method: 'DELETE', headers });
+
+      if (resp.status === 401) {
+        localStorage.removeItem('farmer_auth_token');
+        token = await getOrInitFarmerToken();
+        headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        resp = await fetch('/api/farmer/me/passbook', { method: 'DELETE', headers });
+      }
+
       currentPassbookState.is_saved = false;
       renderPassbookUI(currentPassbookState);
       alert('Passbook deleted from wallet.');
@@ -4522,6 +4625,16 @@ Copy submitted for information to:
   window.openPinSetupModal = function() {
     const m = document.getElementById('pinSetupModal');
     const currWrap = document.getElementById('pinCurrentWrap');
+    const alertBox = document.getElementById('pinSetupAlert');
+    if (alertBox) {
+      alertBox.style.display = 'none';
+      alertBox.textContent = '';
+    }
+
+    if (document.getElementById('inpCurrentPin')) document.getElementById('inpCurrentPin').value = '';
+    if (document.getElementById('inpNewPin')) document.getElementById('inpNewPin').value = '';
+    if (document.getElementById('inpConfirmPin')) document.getElementById('inpConfirmPin').value = '';
+
     if (currWrap) {
       currWrap.style.display = currentPassbookState.pin_configured ? 'block' : 'none';
     }
@@ -4550,8 +4663,8 @@ Copy submitted for information to:
     }
 
     try {
-      const token = localStorage.getItem('farmer_auth_token');
-      const headers = { 'Content-Type': 'application/json' };
+      let token = await getOrInitFarmerToken();
+      let headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       let url = '/api/farmer/me/pin/setup';
@@ -4562,11 +4675,22 @@ Copy submitted for information to:
         bodyData = { current_pin: currPin, new_pin: newPin, confirm_new_pin: confirmPin };
       }
 
-      const resp = await fetch(url, {
+      let resp = await fetch(url, {
         method: 'POST',
         headers,
         body: JSON.stringify(bodyData)
       });
+
+      if (resp.status === 401) {
+        localStorage.removeItem('farmer_auth_token');
+        token = await getOrInitFarmerToken();
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        resp = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(bodyData)
+        });
+      }
 
       const res = await resp.json();
       if (resp.ok) {
@@ -4599,7 +4723,10 @@ Copy submitted for information to:
     }
     const m = document.getElementById('requestReviewModal');
     const alertBox = document.getElementById('reviewPinAlert');
-    if (alertBox) alertBox.style.display = 'none';
+    if (alertBox) {
+      alertBox.style.display = 'none';
+      alertBox.textContent = '';
+    }
     const pinInp = document.getElementById('inpReviewPin');
     if (pinInp) pinInp.value = '';
     if (m) m.style.display = 'flex';
@@ -4621,11 +4748,11 @@ Copy submitted for information to:
     }
 
     try {
-      const token = localStorage.getItem('farmer_auth_token');
-      const headers = { 'Content-Type': 'application/json' };
+      let token = await getOrInitFarmerToken();
+      let headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const resp = await fetch('/api/farmer/me/passbook/review-request', {
+      let resp = await fetch('/api/farmer/me/passbook/review-request', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -4633,6 +4760,20 @@ Copy submitted for information to:
           consent_to_share: consent
         })
       });
+
+      if (resp.status === 401) {
+        localStorage.removeItem('farmer_auth_token');
+        token = await getOrInitFarmerToken();
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        resp = await fetch('/api/farmer/me/passbook/review-request', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            pin: pin,
+            consent_to_share: consent
+          })
+        });
+      }
 
       const res = await resp.json();
       if (resp.ok) {
@@ -4656,7 +4797,6 @@ Copy submitted for information to:
       alert('Network error submitting review request: ' + err.message);
     }
   };
-
 
   // =========================================================================
   // 9. INITIALIZATION ENTRY POINT

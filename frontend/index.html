@@ -1573,6 +1573,33 @@ Ask me anything about:
       </div>
     </div>
 
+    <!-- Active Authenticated Farmer Profile Selector -->
+    <div class="card" style="border: 1px solid #bbf7d0; background: #ffffff; padding: 0.85rem 1rem; margin-top: 0.75rem; border-radius: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #e0f2fe; color: #0369a1; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+            👤
+          </div>
+          <div>
+            <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600;">Authenticated Farmer Session</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #0f172a;" id="activeFarmerLabel">Ravi Kumar (TS-NAL-001)</div>
+            <div style="font-size: 0.8rem; color: #16a34a; display: flex; align-items: center; gap: 0.35rem;">
+              <span>●</span> <span id="activeFarmerStatusText">Signed Token Active (Role: Farmer)</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label for="selFarmerProfile" style="font-size: 0.85rem; color: #475569; font-weight: 500;">Switch Profile:</label>
+          <select id="selFarmerProfile" onchange="handleFarmerProfileChange(this.value)" style="min-height: 48px; padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; background: #f8fafc; font-weight: 500;">
+            <option value="TS-NAL-001">TS-NAL-001: Ravi Kumar (Nalgonda)</option>
+            <option value="TS-WAR-001">TS-WAR-001: Komirelli Ramulu (Warangal)</option>
+            <option value="TS-NAL-002">TS-NAL-002: Boda Venkanna (Nalgonda)</option>
+            <option value="TS-NZB-004">TS-NZB-004: Mohammad Shabbir (Nizamabad)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <!-- Passbook Wallet & Action Hub Grid -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
       
