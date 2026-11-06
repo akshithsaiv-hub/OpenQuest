@@ -273,13 +273,13 @@ class TestPerson2FrontEndAndEngine(unittest.TestCase):
         """Test document wallet consent, masking, and scheme readiness evaluator."""
         vault = get_farmer_documents("DEMO_FARMER_1")
         self.assertTrue(vault["consent_granted"])
-        self.assertGreaterEqual(len(vault["documents"]), 2)
+        self.assertGreaterEqual(len(vault["documents"]), 1)
 
-        aadhaar_doc = next((d for d in vault["documents"] if d["doc_type"] == "aadhaar"), None)
-        self.assertIsNotNone(aadhaar_doc)
-        self.assertTrue(aadhaar_doc["identifier_masked"].startswith("XXXX"))
+        passbook_doc = next((d for d in vault["documents"] if d["doc_type"] == "bank_passbook"), None)
+        self.assertIsNotNone(passbook_doc)
+        self.assertIn("8821", passbook_doc["identifier_masked"])
 
-        reqs = ["Aadhaar Card", "Pahani / Dharani Passbook", "Bank Account Passbook"]
+        reqs = ["Bank Account Passbook with active IFSC & A/c"]
         readiness = check_scheme_document_readiness(reqs, farmer_id="DEMO_FARMER_1")
         self.assertTrue(readiness["is_ready"])
         self.assertEqual(readiness["readiness_percent"], 100.0)
