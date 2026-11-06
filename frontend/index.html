@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Kisan Setu - Unified Pan-India Farmer Scheme & Subsidy Assistant</title>
   <meta name="description" content="Discover Central and State agricultural subsidies, 72-hr crop loss claim assistant, water saving subsidies, KCC loans, and higher official escalation across India.">
-  <link rel="stylesheet" href="styles.css?v=2.9">
+  <link rel="stylesheet" href="styles.css?v=3.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
 <body>
@@ -1260,11 +1260,11 @@ Ask me anything about:
             <span class="badge-tag badge-tag-green" id="waterSchemesBadge">18 Schemes Loaded</span>
           </div>
 
-          <div class="form-row form-row-2" style="margin-bottom: 1rem;">
-            <div class="form-group">
-              <label class="form-label" for="waterStateFilter">Filter by State</label>
-              <select id="waterStateFilter" class="form-select">
-                <option value="All">All States (Pan-India)</option>
+          <div class="form-row" style="margin-bottom: 1.25rem;">
+            <div class="form-group" style="max-width: 460px;">
+              <label class="form-label" for="waterStateFilter" style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">📍 Filter by State / Region</label>
+              <select id="waterStateFilter" class="form-select" style="font-size: 1rem; padding: 0.65rem 0.85rem; border: 2px solid #0284c7; background: #f0f9ff; font-weight: 600;">
+                <option value="All">All States (Pan-India Overview)</option>
                 <option value="Telangana">Telangana</option>
                 <option value="Andhra Pradesh">Andhra Pradesh</option>
                 <option value="Maharashtra">Maharashtra</option>
@@ -1278,15 +1278,11 @@ Ask me anything about:
                 <option value="Uttar Pradesh">Uttar Pradesh</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="waterTypeFilter">Filter by Technology</label>
-              <select id="waterTypeFilter" class="form-select">
-                <option value="All">All Technologies</option>
-                <option value="Micro-Irrigation">Micro-Irrigation (Drip &amp; Sprinkler)</option>
-                <option value="Solar Pump">Solar Pumps (PM-KUSUM)</option>
-                <option value="Farm Pond">Farm Ponds &amp; Water Harvesting</option>
-              </select>
-            </div>
+          </div>
+
+          <!-- Dynamic Top 4-5 Technologies in Specific Area & Enlisted Subsidizing Organizations -->
+          <div id="topAreaTechnologiesSection" style="margin-bottom: 1.75rem;">
+            <!-- Rendered dynamically by renderTopAreaTechnologies() -->
           </div>
 
           <div id="waterSchemesGrid" class="schemes-grid">
@@ -1941,7 +1937,7 @@ Ask me anything about:
 
   <!-- Scripts -->
   <script src="data.js"></script>
-  <script src="app.js?v=2.9"></script>
+  <script src="app.js?v=3.0"></script>
 
   <!-- Sample Document Full-Size Preview Modal -->
   <div id="sampleDocModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sampleDocModalTitle">

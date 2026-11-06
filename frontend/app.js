@@ -66,7 +66,6 @@
     eligibilityFilter: 'all',
     searchQuery: '',
     waterStateFilter: 'All',
-    waterTypeFilter: 'All',
     cropCategoryFilter: 'All'
   };
 
@@ -2505,7 +2504,1045 @@ Automated SLA follow-up alerts have been scheduled.`);
     if (modal) modal.style.display = 'none';
   };
 
-  async function initWaterSubsidiesTab() {
+  async 
+  // =========================================================================
+  // STATE-SPECIFIC TOP 4-5 WATER-SAVING TECHNOLOGIES & ENLISTED SUBSIDIZING BODIES
+  // =========================================================================
+  const STATE_TOP_TECHNOLOGIES = {
+    'Telangana': {
+      stateName: 'Telangana',
+      summary: 'High-subsidy focus under TSMIP, borewell revival, micro-irrigation in red chalka & black soils, and daytime solar agricultural feeders.',
+      technologies: [
+        {
+          name: 'Inline Drip Irrigation System (Automated Fertigation)',
+          icon: '💧',
+          savings: '60% – 70% Water Saved • 30% Higher Crop Yield',
+          subsidyRate: '100% for SC/ST | 90% for Small/Marginal (<5 ac) | 80% for Others',
+          suitability: 'Essential for Cotton, Chilli, Maize, Vegetables & Orchard crops in Telangana red and black soils.',
+          organizations: [
+            {
+              name: 'Telangana State Micro Irrigation Project (TSMIP)',
+              dept: 'Department of Horticulture, Govt of Telangana',
+              role: 'State Nodal Agency for Drip & Micro-Sprinkler execution and vendor payment.',
+              portal: 'https://tsmip.telangana.gov.in',
+              portalLabel: 'TSMIP Portal ↗'
+            },
+            {
+              name: 'National Mission on Micro Irrigation (PMKSY-PDMC Central Cell)',
+              dept: 'Ministry of Agriculture & Farmers Welfare, Govt of India',
+              role: 'Provides 55% Central baseline funding top-up to TSMIP.',
+              portal: 'https://pmksy.gov.in',
+              portalLabel: 'PMKSY Central ↗'
+            },
+            {
+              name: 'NABARD Telangana Regional Office',
+              dept: 'Micro Irrigation Fund (MIF) & Rural Infrastructure Wing',
+              role: 'Finances long-term soft loans bridging state contribution share.',
+              portal: 'https://www.nabard.org',
+              portalLabel: 'NABARD Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Micro-Sprinklers & Portable Semi-Permanent Sprinklers',
+          icon: '🚿',
+          savings: '45% – 55% Water Saved • Uniform Germination in Undulating Terrain',
+          subsidyRate: '80% – 90% Subsidized Cost under TSMIP',
+          suitability: 'Ideal for Groundnut, Red Gram, Green Gram, and fodder in light sandy/chalka soils.',
+          organizations: [
+            {
+              name: 'Department of Horticulture & Agriculture, Govt of Telangana',
+              dept: 'Rythu Bandhu Samithi / Rythu Vedika Field Centers',
+              role: 'Farmer identification, soil suitability mapping, and quota sanctions.',
+              portal: 'https://horticulture.telangana.gov.in',
+              portalLabel: 'Telangana Horti ↗'
+            },
+            {
+              name: 'Telangana Agro Industries Development Corp (TS AGROS)',
+              dept: 'Govt of Telangana Undertaking',
+              role: 'Supplies certified BIS-standard aluminum/HDPE portable sprinkler pipe sets.',
+              portal: 'https://tsagros.telangana.gov.in',
+              portalLabel: 'TS AGROS ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Agricultural Pumpsets (PM-KUSUM Component B & C)',
+          icon: '☀️',
+          savings: '100% Grid Power Independence • Reliable Daytime Irrigation',
+          subsidyRate: '60% – 80% Capital Subsidy (Central + State Convergence)',
+          suitability: 'Eliminates reliance on erratic night grid power for agricultural borewells across 33 districts.',
+          organizations: [
+            {
+              name: 'TSREDCO (Telangana State Renewable Energy Development Corp)',
+              dept: 'Energy Department, Govt of Telangana',
+              role: 'State Nodal Agency for PM-KUSUM solar pumps (3 HP to 10 HP).',
+              portal: 'https://tsredco.telangana.gov.in',
+              portalLabel: 'TSREDCO Portal ↗'
+            },
+            {
+              name: 'TSSPDCL & TSNPDCL (State Power Distribution Companies)',
+              dept: 'Agricultural Feeder Solarization Cell',
+              role: 'Dedicated agricultural feeder solarization and net-metering approvals.',
+              portal: 'https://www.tssouthernpower.com',
+              portalLabel: 'Discom Portal ↗'
+            },
+            {
+              name: 'Ministry of New and Renewable Energy (MNRE)',
+              dept: 'Govt of India',
+              role: 'Central financial assistance and quality monitoring.',
+              portal: 'https://mnre.gov.in',
+              portalLabel: 'MNRE Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Lined Farm Ponds (Kunta / Cheruvu) & Runoff Percolation Tanks',
+          icon: '🚜',
+          savings: 'Stores 1.5 – 3.0 Lakh Liters Rainwater • Critical Dry Spell Life-Saver',
+          subsidyRate: '₹50,000 to ₹1,20,000 Unit Grant (75% - 90% assisted via convergence)',
+          suitability: 'Collects monsoonal surface runoff; provides protective critical irrigation during extended dry spells.',
+          organizations: [
+            {
+              name: 'Department of Agriculture & Soil Conservation, Telangana',
+              dept: 'Govt of Telangana',
+              role: 'Engineering design, excavation sanctions, and plastic lining grants.',
+              portal: 'https://agri.telangana.gov.in',
+              portalLabel: 'Agri Dept Portal ↗'
+            },
+            {
+              name: 'Panchayat Raj & Rural Development (MGNREGS Cell)',
+              dept: 'Govt of Telangana',
+              role: '100% labor cost coverage for individual and community farm pond digging.',
+              portal: 'https://nrega.telangana.gov.in',
+              portalLabel: 'MGNREGS TS ↗'
+            },
+            {
+              name: 'Mission Kakatiya / Irrigation & CAD Department',
+              dept: 'Govt of Telangana',
+              role: 'Restoration of minor irrigation feeder channels into farm pond cascades.',
+              portal: 'https://irrigation.telangana.gov.in',
+              portalLabel: 'Irrigation Dept ↗'
+            }
+          ]
+        },
+        {
+          name: 'Sub-Surface Drip with UV-Stabilized Plastic Mulch',
+          icon: '🌱',
+          savings: '75% Evaporation Elimination • Zero Weed Growth & Deep Root Feed',
+          subsidyRate: '50% on Mulch Film + 90% on Sub-Surface Lateral Tubing',
+          suitability: 'High-evapotranspiration blocks in Warangal, Nalgonda, Khammam, and Nizamabad.',
+          organizations: [
+            {
+              name: 'State Horticulture Mission (SHM) Telangana',
+              dept: 'Mission for Integrated Development of Horticulture (MIDH)',
+              role: 'Subsidizes plastic mulching sheets and root-zone sub-surface drip tubing.',
+              portal: 'https://horticulture.telangana.gov.in',
+              portalLabel: 'SHM Telangana ↗'
+            },
+            {
+              name: 'Central Institute of Plastics Engineering & Technology (CIPET)',
+              dept: 'Govt of India',
+              role: 'Quality certification for UV-stabilized agricultural mulching films.',
+              portal: 'https://www.cipet.gov.in',
+              portalLabel: 'CIPET Info ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Andhra Pradesh': {
+      stateName: 'Andhra Pradesh',
+      summary: 'Comprehensive assistance via APMIP through 10,778 YSR Rythu Bharosa Kendras (RBKs) and aquifer recharging in Rayalaseema & Coastal upland zones.',
+      technologies: [
+        {
+          name: 'Inline Drip System with Hydrocyclone Sand & Disc Filters',
+          icon: '💧',
+          savings: '65% Water Saved • Eliminates borewell silt clogging in coastal & red soils',
+          subsidyRate: '90% for SC/ST & Marginal (<5 ac) | 70% for Others',
+          suitability: 'Citrus (Sweet Orange), Mango, Banana, Oil Palm, and Vegetables across AP.',
+          organizations: [
+            {
+              name: 'Andhra Pradesh Micro Irrigation Project (APMIP)',
+              dept: 'Department of Horticulture, Govt of Andhra Pradesh',
+              role: 'Dedicated state SPV implementing micro-irrigation through 10,778 RBKs.',
+              portal: 'https://apmip.ap.gov.in',
+              portalLabel: 'APMIP Portal ↗'
+            },
+            {
+              name: 'Dr. YSR Rythu Bharosa Kendras (RBK Directorate)',
+              dept: 'Agriculture & Cooperation Dept, Govt of AP',
+              role: 'Village-level biometric registration and spot verification.',
+              portal: 'https://rbk.ap.gov.in',
+              portalLabel: 'YSR RBK Portal ↗'
+            },
+            {
+              name: 'Ministry of Agriculture (PMKSY-PDMC Directorate)',
+              dept: 'Govt of India',
+              role: 'Central micro-irrigation project funding partner.',
+              portal: 'https://pmksy.gov.in',
+              portalLabel: 'PMKSY Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Micro-Sprinklers & Portable Aluminum Sprinkler Sets',
+          icon: '🚿',
+          savings: '45% – 50% Water Saved in Groundnut & Pulses',
+          subsidyRate: '85% – 90% Assistance via APMIP',
+          suitability: 'Rayalaseema rainfed belts (Anantapur, Kurnool, Kadapa, Chittoor).',
+          organizations: [
+            {
+              name: 'APMIP District Project Directors',
+              dept: 'Govt of Andhra Pradesh',
+              role: 'Allotment and inspection of approved sprinkler vendor materials.',
+              portal: 'https://apmip.ap.gov.in',
+              portalLabel: 'APMIP District Cell ↗'
+            },
+            {
+              name: 'NABARD Andhra Pradesh Regional Office',
+              dept: 'Development Finance Wing',
+              role: 'Special Micro Irrigation Concessional Loan Window.',
+              portal: 'https://www.nabard.org',
+              portalLabel: 'NABARD AP ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Pumping Systems (PM-KUSUM / YSR Jalakala)',
+          icon: '☀️',
+          savings: 'Free Solar Daytime Pumping • Zero Diesel / Electricity Bills',
+          subsidyRate: '60% – 70% Combined Capital Subsidy',
+          suitability: 'Energization of new free borewells drilled under YSR Jalakala.',
+          organizations: [
+            {
+              name: 'NREDCAP (New & Renewable Energy Dev Corp of AP)',
+              dept: 'Energy Department, Govt of AP',
+              role: 'Tenders, vendor empanelment, and installation of solar pump systems.',
+              portal: 'https://nredcap.gov.in',
+              portalLabel: 'NREDCAP Portal ↗'
+            },
+            {
+              name: 'Panchayat Raj & Rural Development (YSR Jalakala)',
+              dept: 'Govt of Andhra Pradesh',
+              role: 'Free hydrogeological survey and free borewell drilling in upland areas.',
+              portal: 'https://ysrjalakala.ap.gov.in',
+              portalLabel: 'YSR Jalakala ↗'
+            }
+          ]
+        },
+        {
+          name: 'Panta Sanjeevani Farm Ponds with Geotextile / Tarpaulin Lining',
+          icon: '🚜',
+          savings: '2.0 Lakh Liters In-Situ Water Storage • Drought Proofing',
+          subsidyRate: '100% Free Excavation under MGNREGS + ₹25,000 Lining Grant',
+          suitability: 'Captures excess runoff during sudden coastal/cyclonic downpours.',
+          organizations: [
+            {
+              name: 'Department of Rural Development, Govt of Andhra Pradesh',
+              dept: 'Panta Sanjeevani Scheme Wing',
+              role: 'Community and individual farm pond construction.',
+              portal: 'https://rd.ap.gov.in',
+              portalLabel: 'AP Rural Dev ↗'
+            },
+            {
+              name: 'Ground Water & Water Audit Department (GWD AP)',
+              dept: 'Govt of Andhra Pradesh',
+              role: 'Aquifer recharge monitoring and check-dam water mapping.',
+              portal: 'https://groundwater.ap.gov.in',
+              portalLabel: 'AP Groundwater Dept ↗'
+            }
+          ]
+        },
+        {
+          name: 'Tail-End Canal Lift Drip & Underground Pipeline (UGPL)',
+          icon: '🌱',
+          savings: '50% Water Conveyance Efficiency Boost in Canal Commands',
+          subsidyRate: '70% – 80% Subsidy for Water User Associations',
+          suitability: 'Delta tail-ends in Krishna, Godavari, and Pennar canal networks.',
+          organizations: [
+            {
+              name: 'Water Resources Department (Irrigation AP)',
+              dept: 'Govt of Andhra Pradesh',
+              role: 'Command area water allocation and lift irrigation sanctions.',
+              portal: 'https://irrigationap.cgg.gov.in',
+              portalLabel: 'AP Irrigation ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Maharashtra': {
+      stateName: 'Maharashtra',
+      summary: 'Mandatory drip promotion in sugarcane belts, Magel Tyala Solar Pumps, and Jalyukt Shivar farm ponds in Marathwada & Vidarbha.',
+      technologies: [
+        {
+          name: 'Automated Drip Irrigation with Inline Pressure Compensating Emitters',
+          icon: '💧',
+          savings: '60% – 65% Water Saved in Sugarcane, Cotton & Citrus',
+          subsidyRate: '80% for Small/Marginal Farmers | 75% for Other Farmers via MahaDBT',
+          suitability: 'Sugarcane belts (Kolhapur, Pune, Solapur) and Cotton/Soybean in Vidarbha.',
+          organizations: [
+            {
+              name: 'Department of Agriculture, Govt of Maharashtra (MahaDBT)',
+              dept: 'Krishi Vibhag Maharashtra',
+              role: 'Direct subsidy disbursement to farmer bank accounts for drip equipment.',
+              portal: 'https://mahadbt.maharashtra.gov.in',
+              portalLabel: 'MahaDBT Portal ↗'
+            },
+            {
+              name: 'Vasantdada Sugar Institute (VSI Pune)',
+              dept: 'Sugar Industry Research & Development Body',
+              role: 'Technical certification of high-efficiency cane drip protocols.',
+              portal: 'https://www.vsisugar.com',
+              portalLabel: 'VSI Pune ↗'
+            },
+            {
+              name: 'National Mission on Micro Irrigation (PMKSY-PDMC)',
+              dept: 'Central Directorate',
+              role: 'Central assistance for drought-prone districts.',
+              portal: 'https://pmksy.gov.in',
+              portalLabel: 'PMKSY Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Magel Tyala Saur Krishi Pump (PM-KUSUM Component B)',
+          icon: '☀️',
+          savings: 'Daytime Solar Power • Stops Electric Night-Time Shock Hazards',
+          subsidyRate: '90% – 95% Subsidy (Farmer pays only 5% to 10% of total cost)',
+          suitability: 'Off-grid and remote farmland electrification across 34 rural districts.',
+          organizations: [
+            {
+              name: 'Maharashtra Energy Development Agency (MEDA)',
+              dept: 'Energy Dept, Govt of Maharashtra',
+              role: 'Nodal implementing agency for decentralized solar agri pumpsets.',
+              portal: 'https://www.mahaurja.com',
+              portalLabel: 'MEDA Mahaurja ↗'
+            },
+            {
+              name: 'MSEDCL (Mahavitaran - Maharashtra State Electricity Distribution Co)',
+              dept: 'State Power Utility',
+              role: 'Processing applications and solar pump delivery verification.',
+              portal: 'https://www.mahadiscom.in/solar',
+              portalLabel: 'MSEDCL Solar ↗'
+            },
+            {
+              name: 'Ministry of New & Renewable Energy (MNRE)',
+              dept: 'Govt of India',
+              role: '30% Central financial backing.',
+              portal: 'https://mnre.gov.in',
+              portalLabel: 'MNRE Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Magel Tyala Shet Tale (Farm Ponds on Demand with Plastic Lining)',
+          icon: '🚜',
+          savings: '50,000+ Liters Emergency In-Situ Farm Reservoir',
+          subsidyRate: '₹50,000 direct subsidy for excavation + ₹75,000 for 500-micron plastic lining',
+          suitability: 'Marathwada & Vidarbha drought belts (Beed, Osmanabad, Jalna, Yavatmal).',
+          organizations: [
+            {
+              name: 'Jalyukt Shivar Abhiyan 2.0 Directorate',
+              dept: 'Water Conservation & Soil Conservation Dept, Maharashtra',
+              role: 'Comprehensive watershed and farm pond approvals.',
+              portal: 'https://mczma.gov.in',
+              portalLabel: 'Jalyukt Shivar ↗'
+            },
+            {
+              name: 'Department of Agriculture, Govt of Maharashtra',
+              dept: 'MahaDBT Farmer Portal',
+              role: 'Online application and geotagged measurement for grant release.',
+              portal: 'https://mahadbt.maharashtra.gov.in',
+              portalLabel: 'MahaDBT Shet Tale ↗'
+            }
+          ]
+        },
+        {
+          name: 'Broad Bed Furrow (BBF) Planters with Micro-Sprinklers',
+          icon: '🚿',
+          savings: 'Conserves 40% Soil Moisture • Prevents Root Hypoxia in Heavy Rains',
+          subsidyRate: '50% to 60% Subsidy on BBF Machinery & Sprinklers',
+          suitability: 'Soybean, Cotton, and Chickpea in black vertisol soils.',
+          organizations: [
+            {
+              name: 'National Food Security Mission (NFSM) Maharashtra',
+              dept: 'Govt of Maharashtra',
+              role: 'Farm mechanization subsidy for moisture conservation equipment.',
+              portal: 'https://krishi.maharashtra.gov.in',
+              portalLabel: 'Krishi Maharashtra ↗'
+            }
+          ]
+        },
+        {
+          name: 'Sub-Surface Drip with Anti-Clog Sand Media Filters',
+          icon: '🌱',
+          savings: '70% Water Saved in Heavy Silt Canal Command Areas',
+          subsidyRate: 'Up to 80% through MahaDBT + Sugar Mill Cane Development Fund',
+          suitability: 'Western Maharashtra sugarcane estates.',
+          organizations: [
+            {
+              name: 'Sugar Commissionerate, Govt of Maharashtra',
+              dept: 'Cooperative Sugar Factories Association',
+              role: 'Subsidized drip loans via factory credit society.',
+              portal: 'https://maharesearch.org',
+              portalLabel: 'Sugar Comm. ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Rajasthan': {
+      stateName: 'Rajasthan',
+      summary: 'Aggressive subsidies for desert water preservation, deep plastic-lined diggis, solar tube-well pumps, and dark-zone drip conversion.',
+      technologies: [
+        {
+          name: 'Solar Agricultural Pumping Systems (PM-KUSUM Component B)',
+          icon: '☀️',
+          savings: 'Enables tube-well irrigation in non-electrified desert zones',
+          subsidyRate: '60% Capital Subsidy (30% Central + 30% State; 10% farmer share with 30% bank loan)',
+          suitability: 'Critical across western and central Rajasthan (Jodhpur, Bikaner, Nagaur, Kota).',
+          organizations: [
+            {
+              name: 'Rajasthan Renewable Energy Corporation Limited (RRECL)',
+              dept: 'Energy Department, Govt of Rajasthan',
+              role: 'Nodal executing body for solar agricultural pump installations.',
+              portal: 'https://energy.rajasthan.gov.in/rrecl',
+              portalLabel: 'RRECL Portal ↗'
+            },
+            {
+              name: 'Department of Horticulture, Govt of Rajasthan',
+              dept: 'RajKisan Sathi Portal',
+              role: 'Farmer eligibility verification and solar quota allotment.',
+              portal: 'https://rajkisan.rajasthan.gov.in',
+              portalLabel: 'RajKisan Sathi ↗'
+            },
+            {
+              name: 'Ministry of New and Renewable Energy (MNRE)',
+              dept: 'Govt of India',
+              role: 'Central scheme sponsor under National Solar Mission.',
+              portal: 'https://mnre.gov.in',
+              portalLabel: 'MNRE Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Khet Talai (Plastic Lined Farm Ponds / Diggi Construction)',
+          icon: '🚜',
+          savings: 'Stores canal turn allocations & monsoon runoff in desert belts',
+          subsidyRate: '₹63,000 for unlined; ₹1,05,000 to ₹1,35,000 for plastic/HDPE geomembrane lined Diggis',
+          suitability: 'Indira Gandhi Canal Command (IGNP) and rainfed drylands.',
+          organizations: [
+            {
+              name: 'Department of Watershed Development & Soil Conservation',
+              dept: 'Govt of Rajasthan',
+              role: 'Excavation approval, geo-membrane liner inspection, and subsidy grant.',
+              portal: 'https://watershed.rajasthan.gov.in',
+              portalLabel: 'Watershed Rajasthan ↗'
+            },
+            {
+              name: 'Command Area Development (CAD) Authority',
+              dept: 'IGNP Rajasthan',
+              role: 'Diggi connection permits from canal distributary heads.',
+              portal: 'https://waterresources.rajasthan.gov.in',
+              portalLabel: 'CAD Authority ↗'
+            }
+          ]
+        },
+        {
+          name: 'Micro-Irrigation Drip Systems in Dark Zones / Over-Exploited Blocks',
+          icon: '💧',
+          savings: '70% Water Saved in Cumin, Isabgol, Mustard, Pomegranate & Kinnow',
+          subsidyRate: '75% for Small/Marginal/Women/SC/ST | 70% for Other Farmers',
+          suitability: 'Mandatory for all new borewells in critical groundwater blocks.',
+          organizations: [
+            {
+              name: 'Rajasthan Horticulture Development Society (RHDS)',
+              dept: 'Directorate of Horticulture, Rajasthan',
+              role: 'State Nodal Agency for PMKSY-PDMC Micro-Irrigation implementation.',
+              portal: 'https://rajkisan.rajasthan.gov.in',
+              portalLabel: 'RajKisan Sathi ↗'
+            },
+            {
+              name: 'Central Ground Water Board (CGWB) Western Region',
+              dept: 'Ministry of Jal Shakti',
+              role: 'Hydrogeological mapping and dark-zone advisory certification.',
+              portal: 'https://cgwb.gov.in',
+              portalLabel: 'CGWB Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Mobile Raingun & Micro-Sprinkler Irrigation',
+          icon: '🚿',
+          savings: '50% Water Savings in Sandy Loam Soils; prevents percolation',
+          subsidyRate: '70% to 75% Subsidy under National Mission on Sustainable Agriculture',
+          suitability: 'Gram, Wheat, Mustard, and Barley in arid soils.',
+          organizations: [
+            {
+              name: 'Department of Agriculture, Govt of Rajasthan',
+              dept: 'Krishi Bhawan Jaipur',
+              role: 'Equipment verification and direct benefit transfer.',
+              portal: 'https://agriculture.rajasthan.gov.in',
+              portalLabel: 'Agri Rajasthan ↗'
+            }
+          ]
+        },
+        {
+          name: 'Greenhouse & Low-Tunnel Drip with Reflective Plastic Mulch',
+          icon: '🌱',
+          savings: 'Eliminates 85% Evaporation under 45°C+ summer heatwaves',
+          subsidyRate: '50% to 70% Subsidy on Mulch + Greenhouses',
+          suitability: 'High-value exotic vegetables and seed production.',
+          organizations: [
+            {
+              name: 'Rajasthan State Horticulture Mission (RSHM)',
+              dept: 'Govt of Rajasthan',
+              role: 'Protected cultivation grants and nursery development.',
+              portal: 'https://rajkisan.rajasthan.gov.in',
+              portalLabel: 'RSHM Sathi ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Punjab': {
+      stateName: 'Punjab',
+      summary: 'Urgent policy focus on arresting groundwater depletion by incentivizing Underground Pipelines (UGPL), Direct Seeded Rice (DSR), and micro-irrigation for non-paddy crops.',
+      technologies: [
+        {
+          name: 'Underground Pipeline System (UGPL) for Irrigation Conveyance',
+          icon: '🚜',
+          savings: 'Stops 25% – 30% seepage & evaporation losses in canal / tube-well channels',
+          subsidyRate: '50% Subsidy up to ₹60,000 for Individual Farmers; 90% for Farmer Groups',
+          suitability: 'Ludhiana, Sangrur, Patiala, Jalandhar canal & borewell distributaries.',
+          organizations: [
+            {
+              name: 'Department of Soil and Water Conservation, Govt of Punjab',
+              dept: 'Punjab Civil Secretariat Chandigarh',
+              role: 'Technical surveying, PVC/HDPE pipe laying supervision, and subsidy grant.',
+              portal: 'https://dswcpunjab.gov.in',
+              portalLabel: 'DSWC Punjab ↗'
+            },
+            {
+              name: 'NABARD Punjab Regional Office',
+              dept: 'Rural Infrastructure Development Fund',
+              role: 'Underwrites state pipeline infrastructure outlays.',
+              portal: 'https://www.nabard.org',
+              portalLabel: 'NABARD Punjab ↗'
+            }
+          ]
+        },
+        {
+          name: 'Direct Seeded Rice (DSR) Tar-Vattar Technique with Laser Leveling',
+          icon: '🌾',
+          savings: 'Saves 15% – 20% water by eliminating flooded puddling • Recharges aquifer',
+          subsidyRate: '₹1,500 per acre Direct Cash Incentive + 50% Subsidy on Laser Land Leveler',
+          suitability: 'Statewide paddy lands with medium to heavy soils.',
+          organizations: [
+            {
+              name: 'Department of Agriculture & Farmers Welfare, Govt of Punjab',
+              dept: 'i-Khet Punjab Portal',
+              role: 'Satellite verification of DSR fields and direct cash transfer of ₹1,500/acre.',
+              portal: 'https://agri.punjab.gov.in',
+              portalLabel: 'Agri Punjab ↗'
+            },
+            {
+              name: 'Punjab Agricultural University (PAU Ludhiana)',
+              dept: 'Department of Farm Power & Machinery',
+              role: 'Testing and certification of approved Lucky Seed Drill and Laser Levelers.',
+              portal: 'https://www.pau.edu',
+              portalLabel: 'PAU Ludhiana ↗'
+            }
+          ]
+        },
+        {
+          name: 'Drip & Micro-Sprinkler Irrigation for Non-Paddy Diversification',
+          icon: '💧',
+          savings: '60% Water Saved in Maize, Cotton, Sugarcane, Kinnow Orchards',
+          subsidyRate: '80% Subsidy for General | 85% for SC/ST and Women Farmers',
+          suitability: 'Promoted as substitute for water-guzzling paddy in over-exploited blocks.',
+          organizations: [
+            {
+              name: 'Directorate of Horticulture, Govt of Punjab',
+              dept: 'Mission for Integrated Development of Horticulture',
+              role: 'Allotment of micro-irrigation systems and empanelled vendor supply.',
+              portal: 'https://horticulture.punjab.gov.in',
+              portalLabel: 'Punjab Horti ↗'
+            },
+            {
+              name: 'Ministry of Agriculture (PMKSY-PDMC Directorate)',
+              dept: 'Govt of India',
+              role: 'Central micro-irrigation mission support.',
+              portal: 'https://pmksy.gov.in',
+              portalLabel: 'PMKSY Central ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Agricultural Pumpsets (PM-KUSUM Component B)',
+          icon: '☀️',
+          savings: 'Replaces polluting diesel generators; daylight canal lift pumping',
+          subsidyRate: '60% Subsidy (30% Central + 30% State Punjab)',
+          suitability: 'Off-grid tube-wells in Kandi sub-mountainous region and tail-end canal branches.',
+          organizations: [
+            {
+              name: 'Punjab Energy Development Agency (PEDA)',
+              dept: 'Department of New & Renewable Energy Sources, Punjab',
+              role: 'Tendering and allocation of 3 HP, 5 HP, and 7.5 HP solar pumpsets.',
+              portal: 'https://peda.gov.in',
+              portalLabel: 'PEDA Portal ↗'
+            },
+            {
+              name: 'PSPCL (Punjab State Power Corporation Limited)',
+              dept: 'State Electricity Utility',
+              role: 'Grid feeder segregation and agricultural solar connectivity.',
+              portal: 'https://pspcl.in',
+              portalLabel: 'PSPCL Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Community Silt Detention Tanks & Canal Tail Storage',
+          icon: '🌱',
+          savings: 'Captures and clarifies canal water turns for drip injection',
+          subsidyRate: '70% Community Grant to Water User Associations',
+          suitability: 'Fazilka, Ferozepur, Bathinda tail-end canal reaches.',
+          organizations: [
+            {
+              name: 'Water Resources Department, Punjab',
+              dept: 'Irrigation Branch, Punjab Secretariat',
+              role: 'Construction of community storage diggis along canal minors.',
+              portal: 'https://irrigation.punjab.gov.in',
+              portalLabel: 'Punjab Irrigation ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Haryana': {
+      stateName: 'Haryana',
+      summary: 'Aggressive crop diversification away from paddy under Mera Pani Meri Virasat (₹7,000/ac), MICADA micro-irrigation, and solar pumps.',
+      technologies: [
+        {
+          name: 'Micro-Irrigation Drip & Sprinkler Systems via MICADA',
+          icon: '💧',
+          savings: '60% Water Saved in Cotton, Mustard, Bajra & Horticultural Crops',
+          subsidyRate: '85% Subsidy under Micro Irrigation and Command Area Development Authority',
+          suitability: 'Over-exploited groundwater blocks across Karnal, Kurukshetra, Kaithal, Sirsa.',
+          organizations: [
+            {
+              name: 'MICADA (Micro Irrigation & Command Area Development Authority)',
+              dept: 'Irrigation & Water Resources Department, Govt of Haryana',
+              role: 'State Nodal Agency for on-farm micro irrigation and community STPs.',
+              portal: 'https://cadaharyana.nic.in',
+              portalLabel: 'MICADA Portal ↗'
+            },
+            {
+              name: 'Department of Agriculture & Farmers Welfare, Haryana',
+              dept: 'Meri Fasal Mera Byora (MFMB) Portal',
+              role: 'Farmer registration and eligibility verification.',
+              portal: 'https://fasal.haryana.gov.in',
+              portalLabel: 'MFMB Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Agricultural Pumpsets (PM-KUSUM Component B)',
+          icon: '☀️',
+          savings: '75% Total Subsidy • Eliminates Diesel Pumping in Rural Belts',
+          subsidyRate: '75% Subsidy (30% Central + 45% State Govt of Haryana)',
+          suitability: 'Farmers without grid tube-well connections; 3 HP to 10 HP pumps.',
+          organizations: [
+            {
+              name: 'HAREDA (Haryana Renewable Energy Development Agency)',
+              dept: 'New & Renewable Energy Dept, Govt of Haryana',
+              role: 'Primary nodal implementing agency for PM-KUSUM in Haryana.',
+              portal: 'https://hareda.gov.in',
+              portalLabel: 'HAREDA Portal ↗'
+            },
+            {
+              name: 'Saral Haryana Portal',
+              dept: 'Citizen Services Mission, Govt of Haryana',
+              role: 'Unified online portal for solar pump applications.',
+              portal: 'https://saralharyana.gov.in',
+              portalLabel: 'Saral Haryana ↗'
+            }
+          ]
+        },
+        {
+          name: 'Direct Seeded Rice (DSR) & Laser Land Leveling',
+          icon: '🌾',
+          savings: 'Saves 20% Water • Direct Incentive of ₹4,000/acre under DSR Promotion',
+          subsidyRate: '₹4,000 per acre Cash Incentive + 50% Subsidy on Laser Leveler Equipment',
+          suitability: 'Paddy belt of GT Road and northern Haryana.',
+          organizations: [
+            {
+              name: 'Department of Agriculture & Farmers Welfare, Haryana',
+              dept: 'Directorate of Agriculture Panchkula',
+              role: 'Field physical verification via mobile app and direct DBTs.',
+              portal: 'https://agriharyana.gov.in',
+              portalLabel: 'Agri Haryana ↗'
+            }
+          ]
+        },
+        {
+          name: 'Underground Pipeline (UGPL) Water Conveyance Systems',
+          icon: '🚜',
+          savings: 'Stops 30% canal transit loss and evaporative waste',
+          subsidyRate: '50% Subsidy up to ₹10,000 per hectare for Individual Farmers',
+          suitability: 'Canal command distributaries and community tube-wells.',
+          organizations: [
+            {
+              name: 'Department of Agriculture & Soil Conservation, Haryana',
+              dept: 'Govt of Haryana',
+              role: 'Sanctioning UGPL layout maps and material subsidies.',
+              portal: 'https://agriharyana.gov.in',
+              portalLabel: 'Haryana Soil Cons. ↗'
+            }
+          ]
+        },
+        {
+          name: 'Farm Ponds with Polyethylene Geomembrane Liners',
+          icon: '🌱',
+          savings: 'Harvests surplus canal water & monsoon runoff for micro-irrigation',
+          subsidyRate: '70% Subsidy on Farm Pond Construction & Solar Lifting Pump',
+          suitability: 'Southern Haryana arid districts (Bhiwani, Mahendragarh, Rewari).',
+          organizations: [
+            {
+              name: 'MICADA & Soil Conservation Directorate, Haryana',
+              dept: 'Irrigation & Water Resources Dept',
+              role: 'Sanctions on-farm water storage reservoirs.',
+              portal: 'https://cadaharyana.nic.in',
+              portalLabel: 'MICADA Ponds ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'Karnataka': {
+      stateName: 'Karnataka',
+      summary: 'Focus on Krishi Bhagya farm ponds in rainfed drylands, Drip subsidies for sugarcane and horticultural belts, and KREDL solar pump installations.',
+      technologies: [
+        {
+          name: 'Inline Drip Irrigation Systems with Sand Filters',
+          icon: '💧',
+          savings: '65% Water Saved in Sugarcane, Arecanut, Coffee & Vegetables',
+          subsidyRate: '90% for SC/ST | 75% for General Farmers via Dept of Horticulture',
+          suitability: 'Mandya, Belagavi, Shimoga, Davanagere, and Kolar.',
+          organizations: [
+            {
+              name: 'Department of Horticulture, Govt of Karnataka',
+              dept: 'Mission for Integrated Development of Horticulture (MIDH)',
+              role: 'State Nodal Agency for PMKSY-PDMC micro-irrigation systems.',
+              portal: 'https://horticulturedir.karnataka.gov.in',
+              portalLabel: 'Karnataka Horti ↗'
+            },
+            {
+              name: 'NABARD Karnataka Regional Office',
+              dept: 'Micro Irrigation Infrastructure Fund',
+              role: 'Refinancing support for Farmer Producer Organizations (FPOs).',
+              portal: 'https://www.nabard.org',
+              portalLabel: 'NABARD Karnataka ↗'
+            }
+          ]
+        },
+        {
+          name: 'Krishi Bhagya Scheme (Farm Ponds with Polyethylene Lining)',
+          icon: '🚜',
+          savings: '1.5 Lakh Liters Rainwater Storage • Critical Crop Survival Shield',
+          subsidyRate: '80% Subsidy for General | 90% for SC/ST Farmers (includes diesel/solar lift pump)',
+          suitability: 'Dryland agriculture in northern and central Karnataka rainfed zones.',
+          organizations: [
+            {
+              name: 'Department of Agriculture, Govt of Karnataka',
+              dept: 'Krishi Bhagya Scheme Directorate',
+              role: 'Approval of farm pond digging, polythene sheet lining, and pump sets.',
+              portal: 'https://raitamitra.karnataka.gov.in',
+              portalLabel: 'Raita Mitra ↗'
+            },
+            {
+              name: 'Watershed Development Department (WDD Karnataka)',
+              dept: 'Govt of Karnataka',
+              role: 'Sujala-III watershed development and micro-catchment planning.',
+              portal: 'https://watershed.karnataka.gov.in',
+              portalLabel: 'Watershed Karnataka ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Agricultural Pumpsets (PM-KUSUM / Surya Raitha)',
+          icon: '☀️',
+          savings: 'Daytime Solar Power • Export surplus electricity back to BESCOM/HESCOM',
+          subsidyRate: '60% – 80% Capital Subsidy under KUSUM Component B & C',
+          suitability: 'Replaces unmetered agricultural pumpsets across southern & northern Karnataka.',
+          organizations: [
+            {
+              name: 'KREDL (Karnataka Renewable Energy Development Ltd)',
+              dept: 'Energy Department, Govt of Karnataka',
+              role: 'State executing authority for solar pumpsets and Surya Raitha feeders.',
+              portal: 'https://kredlinfo.in',
+              portalLabel: 'KREDL Portal ↗'
+            },
+            {
+              name: 'BESCOM, HESCOM, GESCOM, MESCOM, CHESCOM',
+              dept: 'State Electricity Supply Companies',
+              role: 'Feed-in tariff settlements and net-meter grid connectivity.',
+              portal: 'https://bescom.karnataka.gov.in',
+              portalLabel: 'Discom Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Micro-Sprinklers & Overhead Raingun Sets',
+          icon: '🚿',
+          savings: '50% Water Savings in Groundnut, Maize, and Pulses',
+          subsidyRate: '75% to 90% Subsidized Cost',
+          suitability: 'Undulating black and red soils of Raichur, Ballari, and Koppal.',
+          organizations: [
+            {
+              name: 'Department of Agriculture, Karnataka',
+              dept: 'Raita Samparka Kendras (RSK)',
+              role: 'Village-level equipment distribution and subsidy tokens.',
+              portal: 'https://raitamitra.karnataka.gov.in',
+              portalLabel: 'RSK Portal ↗'
+            }
+          ]
+        },
+        {
+          name: 'Sub-Surface Drip in Sugarcane & Cotton Belts',
+          icon: '🌱',
+          savings: '70% Water Saved • Prevents soil salinization in canal commands',
+          subsidyRate: '75% to 80% Subsidy via Horticulture & Sugar Mills Convergence',
+          suitability: 'Ghataprabha and Malaprabha command areas in Belagavi & Bagalkot.',
+          organizations: [
+            {
+              name: 'Sugar Directorate, Govt of Karnataka',
+              dept: 'Commerce & Industries Department',
+              role: 'Sugar mill cane development partnerships for micro-irrigation.',
+              portal: 'https://karnataka.gov.in',
+              portalLabel: 'Sugar Directorate ↗'
+            }
+          ]
+        }
+      ]
+    },
+    'All': {
+      stateName: 'Pan-India (All States Overview)',
+      summary: 'Central Flagship Micro-Irrigation Schemes (PMKSY-PDMC), Solar Agri Feeder Mission (PM-KUSUM), and Jal Shakti Catch the Rain programs available across all Indian states.',
+      technologies: [
+        {
+          name: 'High-Efficiency Inline Drip Irrigation Systems',
+          icon: '💧',
+          savings: '60% – 70% Water Saved • 20% to 35% Yield Boost',
+          subsidyRate: '55% Central Baseline (Up to 90% – 100% with State Top-Ups for Small/Marginal/SC/ST)',
+          suitability: 'Universal standard for commercial, horticultural, cash, and orchard crops across India.',
+          organizations: [
+            {
+              name: 'Ministry of Agriculture & Farmers Welfare (MoA&FW)',
+              dept: 'Department of Agriculture & Farmers Welfare, Govt of India',
+              role: 'National PMKSY-PDMC scheme policy, mission guidelines, and fund allocation.',
+              portal: 'https://pmksy.gov.in',
+              portalLabel: 'PMKSY National ↗'
+            },
+            {
+              name: 'National Bank for Agriculture and Rural Development (NABARD)',
+              dept: 'Micro Irrigation Fund (MIF - ₹5,000 Crore Corpus)',
+              role: 'Provides low-interest long-term finance to states to expand micro-irrigation coverage.',
+              portal: 'https://www.nabard.org',
+              portalLabel: 'NABARD MIF ↗'
+            },
+            {
+              name: 'State Horticulture & Agriculture Departments (TSMIP, APMIP, MahaDBT, RHDS, etc.)',
+              dept: 'Respective State Nodal Agencies',
+              role: 'Field inspections, vendor empanelment, and direct subsidy payments.',
+              portal: 'https://pmksy.gov.in/StateNodalAgencies.aspx',
+              portalLabel: 'State Nodal List ↗'
+            }
+          ]
+        },
+        {
+          name: 'Solar Agricultural Pumpsets (PM-KUSUM Component B & C)',
+          icon: '☀️',
+          savings: 'Zero Grid Electricity Cost • Dependable Daylight Pumping',
+          subsidyRate: '60% to 90% Capital Subsidy (30% Central + 30-60% State Share)',
+          suitability: 'Stand-alone off-grid solar pumps (3 HP to 10 HP) and solarization of existing grid pumps.',
+          organizations: [
+            {
+              name: 'Ministry of New and Renewable Energy (MNRE)',
+              dept: 'Govt of India',
+              role: 'National scheme custodian and Central Financial Assistance (CFA) provider.',
+              portal: 'https://pmkusum.mnre.gov.in',
+              portalLabel: 'PM-KUSUM National ↗'
+            },
+            {
+              name: 'State Renewable Energy Development Agencies (TSREDCO, MEDA, RRECL, HAREDA, PEDA)',
+              dept: 'State Energy Departments',
+              role: 'Tenders, pump allocations, and vendor installation inspections.',
+              portal: 'https://mnre.gov.in/state-nodal-agencies',
+              portalLabel: 'State Agencies ↗'
+            }
+          ]
+        },
+        {
+          name: 'Micro-Sprinkler & Overhead Rain-Gun Systems',
+          icon: '🚿',
+          savings: '40% – 50% Water Savings in Close-Spaced Pulses & Oilseeds',
+          subsidyRate: '55% to 80% Subsidy under PMKSY & State Schemes',
+          suitability: 'Optimal for Groundnut, Mustard, Pulses, Wheat, and Millets across rainfed India.',
+          organizations: [
+            {
+              name: 'National Food Security Mission (NFSM) / Crop Diversification Cell',
+              dept: 'Ministry of Agriculture, Govt of India',
+              role: 'Incentivizes water-saving equipment in pulses and oilseeds production.',
+              portal: 'https://nfsm.gov.in',
+              portalLabel: 'NFSM Portal ↗'
+            },
+            {
+              name: 'Bureau of Indian Standards (BIS)',
+              dept: 'Ministry of Consumer Affairs, Food & Public Distribution',
+              role: 'Quality standards and certification (IS 12786, IS 13488) for irrigation hardware.',
+              portal: 'https://www.bis.gov.in',
+              portalLabel: 'BIS Standards ↗'
+            }
+          ]
+        },
+        {
+          name: 'Excavated Farm Ponds with HDPE / Tarpaulin Lined Reservoirs',
+          icon: '🚜',
+          savings: 'Stores 1.0 – 5.0 Lakh Liters In-Situ Rainwater for Dry Spell Life-Saving',
+          subsidyRate: '₹50,000 to ₹1,35,000 Direct Financial Assistance',
+          suitability: 'Critical rainfed watershed intervention preventing drought devastation across 150+ districts.',
+          organizations: [
+            {
+              name: 'Department of Land Resources (DoLR), Ministry of Rural Development',
+              dept: 'Watershed Development Component of PMKSY (WDC-PMKSY)',
+              role: 'Micro-watershed, water harvesting, and catchment rejuvenation grants.',
+              portal: 'https://dolr.gov.in',
+              portalLabel: 'DoLR Portal ↗'
+            },
+            {
+              name: 'Ministry of Jal Shakti (National Water Mission)',
+              dept: 'Catch the Rain Campaign',
+              role: 'Technical guidelines for decentralized farm percolation structures.',
+              portal: 'https://jalshakti-dowr.gov.in',
+              portalLabel: 'Jal Shakti ↗'
+            }
+          ]
+        },
+        {
+          name: 'Sub-Surface Drip with Plastic Mulch & Soil Moisture Sensors',
+          icon: '🌱',
+          savings: 'Eliminates 75% Evaporation • IoT Automated Root-Zone Delivery',
+          subsidyRate: '50% to 75% Assistance via Mission for Integrated Development of Horticulture',
+          suitability: 'High-value horticulture, sugarcane, and arid orchard farms facing water scarcity.',
+          organizations: [
+            {
+              name: 'Mission for Integrated Development of Horticulture (MIDH)',
+              dept: 'Ministry of Agriculture & Farmers Welfare, Govt of India',
+              role: 'Central funding for precision agriculture, mulching, and smart irrigation.',
+              portal: 'https://midh.gov.in',
+              portalLabel: 'MIDH National ↗'
+            },
+            {
+              name: 'Indian Council of Agricultural Research (ICAR)',
+              dept: 'Water Management Research Directorate',
+              role: 'Crop-water requirement advisory and sensor calibration protocols.',
+              portal: 'https://icar.org.in',
+              portalLabel: 'ICAR Portal ↗'
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  function renderTopAreaTechnologies(selectedState) {
+    const container = document.getElementById('topAreaTechnologiesSection');
+    if (!container) return;
+
+    const data = STATE_TOP_TECHNOLOGIES[selectedState] || STATE_TOP_TECHNOLOGIES['All'];
+    const stateLabel = data.stateName || selectedState;
+
+    container.innerHTML = `
+      <div class="card" style="border: 2px solid #0284c7; background: #f8fafc; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.75rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge-tag badge-tag-blue" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+                🔬 REGION-CALIBRATED TECHNOLOGIES (${data.technologies.length})
+              </span>
+              <span class="badge-tag badge-tag-green" style="font-size: 0.8rem; font-weight: 700;">
+                🏛️ ALL SUBSIDIZING BODIES ENLISTED
+              </span>
+            </div>
+            <h3 style="margin: 0.4rem 0 0.2rem 0; color: #0369a1; font-size: 1.25rem; font-weight: 800;">
+              Top Water-Saving Technologies for ${escapeHtml(stateLabel)}
+            </h3>
+            <p style="margin: 0; color: #475569; font-size: 0.88rem; line-height: 1.45;">
+              ${escapeHtml(data.summary)}
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+          ${data.technologies.map((t, idx) => `
+            <div class="tech-item-card" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1.15rem; border-left: 6px solid #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div style="display: flex; align-items: flex-start; gap: 0.65rem;">
+                  <span style="font-size: 1.6rem; line-height: 1.1;">${t.icon}</span>
+                  <div>
+                    <h4 style="margin: 0; color: #0f172a; font-size: 1.05rem; font-weight: 700;">
+                      ${idx + 1}. ${escapeHtml(t.name)}
+                    </h4>
+                    <span class="badge-tag badge-tag-blue" style="font-size: 0.76rem; font-weight: 600; margin-top: 3px; display: inline-block;">
+                      ${escapeHtml(t.savings)}
+                    </span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge-tag badge-tag-green" style="font-size: 0.82rem; font-weight: 700; padding: 0.35rem 0.65rem;">
+                    Subsidy: ${escapeHtml(t.subsidyRate)}
+                  </span>
+                </div>
+              </div>
+
+              <p style="color: #334155; font-size: 0.86rem; line-height: 1.45; margin: 0.5rem 0 0.85rem 0; background: #f1f5f9; padding: 0.5rem 0.75rem; border-radius: 6px;">
+                <strong>🌾 Area Suitability:</strong> ${escapeHtml(t.suitability)}
+              </p>
+
+              <!-- Enlisted Subsidizing Organizations -->
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span>🏛️</span> Subsidizing Organizations & Nodal Departments (${escapeHtml(stateLabel)})
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  ${t.organizations.map(org => `
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0;">
+                      <div style="max-width: 80%;">
+                        <div style="font-weight: 700; color: #0f172a; font-size: 0.88rem;">${escapeHtml(org.name)}</div>
+                        <div style="color: #64748b; font-size: 0.78rem; margin-top: 2px;">
+                          <strong style="color: #475569;">${escapeHtml(org.dept)}:</strong> ${escapeHtml(org.role)}
+                        </div>
+                      </div>
+                      <div>
+                        <a href="${org.portal}" target="_blank" rel="noopener" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem; color: #0284c7; border-color: #0284c7; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 3px;">
+                          <span>🌐</span> ${escapeHtml(org.portalLabel || 'Official Portal ↗')}
+                        </a>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function initWaterSubsidiesTab() {
     // 1. Initialize Agro-Climate Ecosystem
     const ecoStateSelect = document.getElementById('ecoStateSelect');
     const ecoDistrictSelect = document.getElementById('ecoDistrictSelect');
@@ -2578,20 +3615,15 @@ Automated SLA follow-up alerts have been scheduled.`);
       cachedLowWaterCrops = typeof LOW_WATER_CROPS_DATA !== 'undefined' ? LOW_WATER_CROPS_DATA : [];
     }
 
+    renderTopAreaTechnologies(state.waterStateFilter);
     renderWaterSchemes();
     renderLowWaterCrops();
 
     const waterStateFilter = document.getElementById('waterStateFilter');
-    const waterTypeFilter = document.getElementById('waterTypeFilter');
     if (waterStateFilter) {
       waterStateFilter.addEventListener('change', function () {
         state.waterStateFilter = this.value;
-        renderWaterSchemes();
-      });
-    }
-    if (waterTypeFilter) {
-      waterTypeFilter.addEventListener('change', function () {
-        state.waterTypeFilter = this.value;
+        renderTopAreaTechnologies(state.waterStateFilter);
         renderWaterSchemes();
       });
     }
@@ -2622,10 +3654,7 @@ Automated SLA follow-up alerts have been scheduled.`);
       });
     }
 
-    if (state.waterTypeFilter !== 'All') {
-      const ty = state.waterTypeFilter.toLowerCase();
-      pool = pool.filter(s => (s.category || '').toLowerCase().includes(ty));
-    }
+
 
     if (badge) badge.textContent = `${pool.length} Schemes Loaded`;
 
