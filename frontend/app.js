@@ -309,34 +309,61 @@
   // =========================================================================
   // 1. PRIMARY TAB NAVIGATION LOGIC (Tabs 0 through 7)
   // =========================================================================
-  function initPrimaryTabs() {
+  function switchTab(targetTab) {
+    if (!targetTab) return;
     const navButtons = document.querySelectorAll('.nav-tab-btn');
     const tabViews = document.querySelectorAll('.tab-view');
 
+    // Update active class on nav buttons
+    navButtons.forEach(b => {
+      const bTab = b.getAttribute('data-tab');
+      if (bTab === targetTab) {
+        b.classList.add('active');
+        b.setAttribute('aria-selected', 'true');
+      } else {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      }
+    });
+
+    // Show corresponding tab view and hide others explicitly
+    tabViews.forEach(view => {
+      if (view.id === 'view-' + targetTab) {
+        view.classList.add('active');
+        view.style.display = 'block';
+      } else {
+        view.classList.remove('active');
+        view.style.display = 'none';
+      }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  window.switchTab = switchTab;
+
+  function initPrimaryTabs() {
+    const navButtons = document.querySelectorAll('.nav-tab-btn');
+
     navButtons.forEach(btn => {
-      btn.addEventListener('click', function () {
-        const targetTab = this.getAttribute('data-tab');
-
-        // Update active class on nav buttons
-        navButtons.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        this.classList.add('active');
-        this.setAttribute('aria-selected', 'true');
-
-        // Show corresponding tab view
-        tabViews.forEach(view => {
-          view.classList.remove('active');
-        });
-
-        const activeView = document.getElementById('view-' + targetTab);
-        if (activeView) {
-          activeView.classList.add('active');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetTab = this.getAttribute('data-tab') || (e.target.closest && e.target.closest('.nav-tab-btn') ? e.target.closest('.nav-tab-btn').getAttribute('data-tab') : null);
+        switchTab(targetTab);
       });
     });
+
+    // Delegation on nav container for 100% click guarantee
+    const navContainer = document.getElementById('mainNavContainer') || document.querySelector('.main-nav-container') || document.querySelector('.nav-tabs');
+    if (navContainer) {
+      navContainer.addEventListener('click', function (e) {
+        const btn = e.target.closest('.nav-tab-btn');
+        if (btn) {
+          e.preventDefault();
+          const targetTab = btn.getAttribute('data-tab');
+          switchTab(targetTab);
+        }
+      });
+    }
   }
 
   // =========================================================================
@@ -4802,20 +4829,24 @@ Copy submitted for information to:
   // 9. INITIALIZATION ENTRY POINT
   // =========================================================================
   function init() {
-    // 1. Detect location and initialize regional language
-    detectLocationAndSetDefaultLanguage();
+    // 1. Initialize Tab Switching FIRST so all tabs ALWAYS open cleanly
+    try {
+      initPrimaryTabs();
+    } catch (err) {
+      console.error('Error initializing tabs:', err);
+    }
 
-    // 2. Initialize Tab Views & Modules
-    initPrimaryTabs();
-    initChatbot();
-    initVoiceAssistantConsole();
-    initEligibilityTab();
-    initClaimShieldTab();
-    initWaterSubsidiesTab();
-    initKccAndTrackerTab();
-    initMspTab();
-    initIntermediaryTab();
-    loadPassbookWalletState();
+    // 2. Initialize Subsystems wrapped in protective boundaries
+    try { initEligibilityTab(); } catch (e) { console.error('initEligibilityTab error:', e); }
+    try { initClaimShieldTab(); } catch (e) { console.error('initClaimShieldTab error:', e); }
+    try { initWaterSubsidiesTab(); } catch (e) { console.error('initWaterSubsidiesTab error:', e); }
+    try { initKccAndTrackerTab(); } catch (e) { console.error('initKccAndTrackerTab error:', e); }
+    try { initMspTab(); } catch (e) { console.error('initMspTab error:', e); }
+    try { initIntermediaryTab(); } catch (e) { console.error('initIntermediaryTab error:', e); }
+    try { initChatbot(); } catch (e) { console.error('initChatbot error:', e); }
+    try { initVoiceAssistantConsole(); } catch (e) { console.error('initVoiceAssistantConsole error:', e); }
+    try { loadPassbookWalletState(); } catch (e) { console.error('loadPassbookWalletState error:', e); }
+    try { detectLocationAndSetDefaultLanguage(); } catch (e) { console.error('detectLocation error:', e); }
 
     // 3. Tab 0: Scheme Browser Event Handlers
     if (stateSelect) {
