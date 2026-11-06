@@ -97,5 +97,30 @@ class TestClaimGeoEvidence(unittest.TestCase):
         self.assertEqual(data["status"], "success")
         self.assertTrue(data["evidence_id"].startswith("GEO-"))
 
+    def test_climate_water_stress_dynamic_calamity_and_loan_window(self):
+        resp = self.client.get('/climate_water_stress?district=Kota&crop=Paddy')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn('weather', data)
+        self.assertIn('temperature_c', data['weather'])
+        self.assertIn('humidity_percent', data['weather'])
+        self.assertIn('calamity_info', data)
+        self.assertIn('is_calamity', data['calamity_info'])
+        self.assertIn('remaining_seconds', data['calamity_info'])
+        self.assertIn('loan_window_info', data)
+        self.assertIn('status', data['loan_window_info'])
+
+    def test_climate_water_stress_hazard_override(self):
+        resp = self.client.get('/climate_water_stress?district=Warangal&hazard_override=Excess+Rain')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        cal = data['calamity_info']
+        self.assertTrue(cal['is_calamity'])
+        self.assertIn('Excess Rain', cal['calamity_type'])
+        self.assertLess(cal['remaining_seconds'], 72 * 3600)
+        loan = data['loan_window_info']
+        self.assertEqual(loan['status'], 'DISASTER_RELIEF_ACTIVE')
+        self.assertIn('Moratorium', loan['moratorium_benefit'])
+
 if __name__ == "__main__":
     unittest.main()

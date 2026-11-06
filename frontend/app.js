@@ -1282,18 +1282,72 @@
     const capturedEvidence = [];
     let cameraStream = null;
 
-    // 1. 72-Hour Live Countdown Timer
-    const timerDisplay = document.getElementById('liveCountdownTimer');
-    if (timerDisplay) {
-      let secondsLeft = 71 * 3600 + 59 * 60 + 42;
-      setInterval(() => {
-        if (secondsLeft > 0) secondsLeft--;
-        const hrs = Math.floor(secondsLeft / 3600);
-        const mins = Math.floor((secondsLeft % 3600) / 60);
-        const secs = secondsLeft % 60;
-        timerDisplay.textContent = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    // 1. 72-Hour Dynamic Live Countdown Timer (Event-Triggered & Location-Aware)
+    let claimCountdownTimerId = null;
+
+    function runCountdownTimer(remainingSeconds, isCalamity) {
+      if (claimCountdownTimerId) {
+        clearInterval(claimCountdownTimerId);
+        claimCountdownTimerId = null;
+      }
+
+      const timerEl = document.getElementById('liveCountdownTimer');
+      const statusLbl = document.getElementById('timerStatusLabel');
+      if (!timerEl) return;
+
+      if (!isCalamity) {
+        timerEl.textContent = '72:00:00';
+        timerEl.style.color = '#059669'; // Green standby
+        if (statusLbl) {
+          statusLbl.textContent = 'STANDBY — ACTIVATES ON LOCAL CALAMITY';
+          statusLbl.style.color = '#065f46';
+        }
+        return;
+      }
+
+      timerEl.style.color = '#ef4444'; // Red active countdown
+      if (statusLbl) {
+        statusLbl.textContent = 'COUNTDOWN FROM DISASTER OCCURRENCE';
+        statusLbl.style.color = '#991b1b';
+      }
+
+      let secsLeft = Math.max(0, Math.floor(remainingSeconds));
+
+      function renderTime() {
+        const hrs = Math.floor(secsLeft / 3600);
+        const mins = Math.floor((secsLeft % 3600) / 60);
+        const secs = secsLeft % 60;
+        timerEl.textContent = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        if (secsLeft <= 0) {
+          if (statusLbl) statusLbl.textContent = '⚠️ 72-HOUR WINDOW EXPIRED — SUBMIT SDRF APPEAL';
+          if (claimCountdownTimerId) clearInterval(claimCountdownTimerId);
+        }
+      }
+
+      renderTime();
+      claimCountdownTimerId = setInterval(() => {
+        if (secsLeft > 0) {
+          secsLeft--;
+          renderTime();
+        } else {
+          clearInterval(claimCountdownTimerId);
+        }
       }, 1000);
     }
+
+    // Global navigation shortcut to KCC Disaster Debt Moratorium in Tab 4
+    window.navToKccRestructuring = function () {
+      const kccTabBtn = document.getElementById('btn-tab4') || document.querySelector('.nav-tab-btn[data-tab="tab4"]');
+      if (kccTabBtn) {
+        kccTabBtn.click();
+        setTimeout(() => {
+          const kccTarget = document.getElementById('view-tab4');
+          if (kccTarget) {
+            kccTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      }
+    };
 
     // 2. GPS Location Acquisition
     function updateGpsUI() {
@@ -1410,42 +1464,194 @@
     });
     updateCompensationDisplay();
 
-    // 4. Weather Check Button
-    const btnCheckWeather = document.getElementById('btnCheckWeather');
-    if (btnCheckWeather) {
-      btnCheckWeather.addEventListener('click', async function () {
-        const district = document.getElementById('hazardDistrict') ? document.getElementById('hazardDistrict').value : 'Warangal';
-        const crop = document.getElementById('hazardCrop') ? document.getElementById('hazardCrop').value : 'Paddy';
-        const btn = this;
-        btn.textContent = '🛰️ Fetching Live Open-Meteo Telemetry...';
+    // 4. Dynamic Area Climatic Conditions, Risk Detection & Calamity Synchronization
+    async function updateAreaClimaticAndCalamityData(hazardOverride = '') {
+      const districtInput = document.getElementById('hazardDistrict');
+      const cropInput = document.getElementById('hazardCrop');
+      const district = (districtInput && districtInput.value.trim()) || 'Warangal';
+      const crop = (cropInput && cropInput.value.trim()) || 'Paddy';
 
-        try {
-          const resp = await fetch(`${API_BASE}/climate_water_stress?district=${encodeURIComponent(district)}&crop=${encodeURIComponent(crop)}`);
-          if (resp.ok) {
-            const data = await resp.json();
-            if (data.weather) {
-              const tempEl = document.getElementById('dispTemp');
-              const rainEl = document.getElementById('dispRain');
-              const humEl = document.getElementById('dispHumidity');
-              const warnBox = document.getElementById('weatherWarningBox');
+      const tempEl = document.getElementById('dispTemp');
+      const rainEl = document.getElementById('dispRain');
+      const humEl = document.getElementById('dispHumidity');
+      const warnBox = document.getElementById('weatherWarningBox');
 
-              if (tempEl) tempEl.textContent = `${data.weather.temperature_c || 33.5}°C`;
-              if (rainEl) rainEl.textContent = `${data.weather.rainfall_mm || 0.0} mm`;
-              if (humEl) humEl.textContent = `${data.weather.humidity_percent || 46}%`;
+      // Calamity banner elements
+      const bannerCard = document.getElementById('calamityBannerCard');
+      const statusBadge = document.getElementById('calamityStatusBadge');
+      const bannerTitle = document.getElementById('calamityBannerTitle');
+      const bannerDesc = document.getElementById('calamityBannerDesc');
+      const timestampDetail = document.getElementById('calamityTimestampDetail');
 
-              if (warnBox && data.stress_summary) {
-                warnBox.innerHTML = `<strong>⚠️ Active Telemetry Warning:</strong> ${escapeHtml(data.stress_summary)}`;
+      // Loan moratorium window elements
+      const loanCard = document.getElementById('loanWindowCard');
+      const loanBadge = document.getElementById('loanWindowBadge');
+      const loanTitle = document.getElementById('loanWindowTitle');
+      const loanDesc = document.getElementById('loanWindowDesc');
+      const loanDetails = document.getElementById('loanWindowDetails');
+      const loanDeadlineDate = document.getElementById('loanWindowDeadlineDate');
+
+      try {
+        let url = `${API_BASE}/climate_water_stress?district=${encodeURIComponent(district)}&crop=${encodeURIComponent(crop)}`;
+        if (hazardOverride) {
+          url += `&hazard_override=${encodeURIComponent(hazardOverride)}`;
+        }
+
+        const resp = await fetch(url);
+        if (resp.ok) {
+          const data = await resp.json();
+          const w = data.weather || {};
+
+          // 1. Update Area Climatic Telemetry (Temperature, Rain, Humidity)
+          const tempVal = w.temperature_c !== undefined ? w.temperature_c : (w.current_temperature !== undefined ? w.current_temperature : 30.0);
+          const rainVal = w.rainfall_mm !== undefined ? w.rainfall_mm : (w.current_rain_mm !== undefined ? w.current_rain_mm : 0.0);
+          const humVal = w.humidity_percent !== undefined ? w.humidity_percent : (w.current_humidity !== undefined ? w.current_humidity : 55);
+
+          if (tempEl) tempEl.textContent = `${tempVal}°C`;
+          if (rainEl) rainEl.textContent = `${rainVal} mm`;
+          if (humEl) humEl.textContent = `${humVal}%`;
+
+          if (warnBox) {
+            const stressTxt = data.stress_summary || (data.assessment && data.assessment.risk_level) || '';
+            if (stressTxt) {
+              warnBox.innerHTML = `<strong>⚠️ Active Telemetry Warning (${escapeHtml(district)}):</strong> ${escapeHtml(stressTxt)}`;
+              warnBox.style.display = 'block';
+            } else if (data.advisory_text) {
+              warnBox.innerHTML = `<strong>ℹ️ Agro-Advisory (${escapeHtml(district)}):</strong> ${escapeHtml(data.advisory_text)}`;
+              warnBox.style.display = 'block';
+            }
+          }
+
+          // 2. Dynamic 72-Hour PMFBY Loss Intimation Countdown
+          const cal = data.calamity_info || {};
+          const isCalamity = !!cal.is_calamity;
+
+          if (bannerCard) {
+            if (isCalamity) {
+              bannerCard.style.borderLeftColor = '#ef4444';
+              bannerCard.style.background = '#fff5f5';
+              if (statusBadge) {
+                statusBadge.className = 'badge-tag badge-tag-red';
+                statusBadge.textContent = `🚨 ACTIVE CALAMITY: ${(cal.calamity_type || 'DISASTER').toUpperCase()}`;
+              }
+              if (bannerTitle) {
+                bannerTitle.textContent = `72-Hour PMFBY Loss Intimation Countdown (${district})`;
+                bannerTitle.style.color = '#991b1b';
+              }
+              if (bannerDesc) {
+                bannerDesc.textContent = cal.description || 'PMFBY Section 21.4 mandates reporting localized calamity within 72 hours of occurrence. Failure leads to automatic claim forfeiture.';
+                bannerDesc.style.color = '#7f1d1d';
+              }
+              if (timestampDetail) {
+                timestampDetail.style.display = 'block';
+                timestampDetail.innerHTML = `⏱️ Calamity Detected: <strong>${cal.incident_time || 'Recent'}</strong> • Statutory Intimation Deadline: <span id="calamityDeadlineTime"><strong>${cal.deadline_time || 'Within 72h'}</strong></span>`;
+              }
+            } else {
+              bannerCard.style.borderLeftColor = '#10b981';
+              bannerCard.style.background = '#f0fdf4';
+              if (statusBadge) {
+                statusBadge.className = 'badge-tag badge-tag-green';
+                statusBadge.textContent = '🟢 NORMAL AGRO-CLIMATIC CONDITIONS';
+              }
+              if (bannerTitle) {
+                bannerTitle.textContent = `72-Hour PMFBY Loss Intimation System: Standby (${district})`;
+                bannerTitle.style.color = '#065f46';
+              }
+              if (bannerDesc) {
+                bannerDesc.textContent = `Weather parameters in ${district} are within safe thresholds. If severe inundation, hailstorm, or cyclone strikes your field, report below to trigger the 72-hour countdown immediately.`;
+                bannerDesc.style.color = '#166534';
+              }
+              if (timestampDetail) {
+                timestampDetail.style.display = 'block';
+                timestampDetail.innerHTML = `🛡️ Automatic Agro-Met Telemetry Active • Statutory Claim Window on Standby`;
               }
             }
           }
-        } catch (err) {
-          console.warn('Weather API failed, using cached values.');
-        } finally {
-          btn.innerHTML = '<span>📡</span> Fetch Live Weather & Detect Risks';
-          updateCompensationDisplay();
+
+          runCountdownTimer(cal.remaining_seconds || (72 * 3600), isCalamity);
+
+          // 3. Dynamic Farmer Loan Restructuring & Moratorium Window (RBI Master Guidelines)
+          const loan = data.loan_window_info || {};
+          if (loanCard) {
+            if (isCalamity) {
+              loanCard.style.borderLeftColor = '#2563eb';
+              loanCard.style.background = '#eff6ff';
+              if (loanBadge) {
+                loanBadge.className = 'badge-tag badge-tag-blue';
+                loanBadge.textContent = loan.badge || '🚨 90-DAY DISASTER DEBT MORATORIUM ACTIVE';
+              }
+              if (loanTitle) {
+                loanTitle.textContent = loan.title || `RBI Disaster Loan Restructuring: ${district}`;
+              }
+              if (loanDesc) {
+                loanDesc.innerHTML = `Under RBI Master Directions: <strong>${escapeHtml(loan.moratorium_benefit || '12-Month Principal Debt Moratorium')}</strong>. No default downgrade or penal interest.`;
+              }
+              if (loanDetails) {
+                loanDetails.innerHTML = `🌱 <strong>${escapeHtml(loan.resowing_credit_window || 'Emergency Resowing Credit')}</strong> • ${escapeHtml(loan.interest_subvention || '4% Subvention Preserved')}`;
+              }
+              if (loanDeadlineDate && loan.deadline_date) {
+                loanDeadlineDate.textContent = loan.deadline_date;
+              }
+            } else {
+              loanCard.style.borderLeftColor = '#64748b';
+              loanCard.style.background = '#f8fafc';
+              if (loanBadge) {
+                loanBadge.className = 'badge-tag';
+                loanBadge.style.background = '#e2e8f0';
+                loanBadge.style.color = '#334155';
+                loanBadge.textContent = '🟢 STANDARD SEASONAL KCC WINDOW';
+              }
+              if (loanTitle) {
+                loanTitle.textContent = `Standard Seasonal KCC Credit Facility (${district})`;
+              }
+              if (loanDesc) {
+                loanDesc.innerHTML = `Regular revolving agricultural credit at 4% subvention rate with standard 12-month renewal cycle.`;
+              }
+              if (loanDetails) {
+                loanDetails.innerHTML = `🌾 Kharif & Rabi credit limit active based on Scale of Finance (DLTC norms).`;
+              }
+            }
+          }
         }
+      } catch (err) {
+        console.warn('Weather / calamity fetch failed:', err);
+      }
+    }
+
+    const btnCheckWeather = document.getElementById('btnCheckWeather');
+    if (btnCheckWeather) {
+      btnCheckWeather.addEventListener('click', async function () {
+        const btn = this;
+        btn.textContent = '🛰️ Fetching Live Open-Meteo Telemetry...';
+        await updateAreaClimaticAndCalamityData();
+        btn.innerHTML = '<span>📡</span> Fetch Live Weather & Detect Risks';
+        updateCompensationDisplay();
       });
     }
+
+    const hazardDistrictInput = document.getElementById('hazardDistrict');
+    if (hazardDistrictInput) {
+      let debounceDistrictTimer = null;
+      hazardDistrictInput.addEventListener('change', function () {
+        updateAreaClimaticAndCalamityData();
+      });
+      hazardDistrictInput.addEventListener('input', function () {
+        clearTimeout(debounceDistrictTimer);
+        debounceDistrictTimer = setTimeout(() => {
+          updateAreaClimaticAndCalamityData();
+        }, 600);
+      });
+    }
+
+    const claimHazardSelect = document.getElementById('claimHazard');
+    if (claimHazardSelect) {
+      claimHazardSelect.addEventListener('change', function () {
+        updateAreaClimaticAndCalamityData(this.value);
+      });
+    }
+
+    // Initial weather & calamity fetch on tab load
+    updateAreaClimaticAndCalamityData();
 
     // 5. In-App Camera Viewfinder Controls
     const videoElem = document.getElementById('geoVideoPreview');

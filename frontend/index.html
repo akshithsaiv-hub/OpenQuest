@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Kisan Setu - Unified Pan-India Farmer Scheme & Subsidy Assistant</title>
   <meta name="description" content="Discover Central and State agricultural subsidies, 72-hr crop loss claim assistant, water saving subsidies, KCC loans, and higher official escalation across India.">
-  <link rel="stylesheet" href="styles.css?v=2.8">
+  <link rel="stylesheet" href="styles.css?v=2.9">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
 </head>
 <body>
@@ -455,20 +455,51 @@ Ask me anything about:
       </p>
     </div>
 
-    <!-- Live 72-Hour Urgency Banner -->
-    <div class="card" style="border-left: 6px solid #ef4444; background: #fff5f5; margin-bottom: 1.25rem;">
+    <!-- 1. Live 72-Hour Calamity Urgency Banner (Event-Triggered & Location-Aware) -->
+    <div id="calamityBannerCard" class="card" style="border-left: 6px solid #ef4444; background: #fff5f5; margin-bottom: 1rem;">
       <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
         <div>
-          <span class="badge-tag badge-tag-red">CRITICAL STATUTORY DEADLINE</span>
-          <h3 style="color: #991b1b; margin: 0.35rem 0 0.2rem 0; font-size: 1.25rem;">
+          <span class="badge-tag badge-tag-red" id="calamityStatusBadge">🚨 ACTIVE DISASTER INTIMATION WINDOW</span>
+          <h3 style="color: #991b1b; margin: 0.35rem 0 0.2rem 0; font-size: 1.25rem;" id="calamityBannerTitle">
             72-Hour PMFBY Loss Intimation Countdown
           </h3>
-          <p style="font-size: 0.88rem; color: #7f1d1d; margin: 0;">
+          <p style="font-size: 0.88rem; color: #7f1d1d; margin: 0;" id="calamityBannerDesc">
             PMFBY Section 21.4 mandates reporting localized calamities within 72 hours of occurrence. Failure leads to automatic claim forfeiture.
           </p>
+          <div style="font-size: 0.82rem; color: #991b1b; font-weight: 700; margin-top: 0.35rem;" id="calamityTimestampDetail">
+            ⏱️ Event Detected: Today at 04:30 AM • Intimation Deadline: <span id="calamityDeadlineTime">09-Nov-2026, 04:30 AM</span>
+          </div>
         </div>
-        <div class="countdown-box-lg" id="liveCountdownTimer">
-          71:59:42
+        <div style="text-align: right;">
+          <div class="countdown-box-lg" id="liveCountdownTimer">
+            63:28:14
+          </div>
+          <div style="font-size: 0.72rem; color: #7f1d1d; font-weight: 700; margin-top: 4px;" id="timerStatusLabel">
+            DYNAMIC COUNTDOWN FROM DISASTER TIME
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Dynamic Farmer Loan Restructuring & Moratorium Window (RBI Master Guidelines) -->
+    <div id="loanWindowCard" class="card" style="border-left: 6px solid #2563eb; background: #eff6ff; margin-bottom: 1.25rem;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <span class="badge-tag badge-tag-blue" id="loanWindowBadge">🚨 90-DAY DISASTER DEBT MORATORIUM ACTIVE</span>
+          <h3 style="color: #1e40af; margin: 0.35rem 0 0.2rem 0; font-size: 1.15rem;" id="loanWindowTitle">
+            RBI Disaster Loan Restructuring &amp; Moratorium Window
+          </h3>
+          <p style="font-size: 0.86rem; color: #1e3a8a; margin: 0;" id="loanWindowDesc">
+            Under RBI Master Directions for natural calamities: <strong>12-Month Principal Moratorium</strong> is activated. Zero penal interest and no default classification.
+          </p>
+          <div style="font-size: 0.82rem; color: #1d4ed8; font-weight: 700; margin-top: 0.35rem;" id="loanWindowDetails">
+            🌱 Emergency Resowing Credit: Open till <strong id="loanWindowDeadlineDate">04-Feb-2027</strong> (90 Days from Incident) • 4% Subvention Preserved
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="window.navToKccRestructuring()" style="font-size: 0.85rem; padding: 0.55rem 1rem; background: #2563eb;">
+            <span>🏦</span> Avail KCC Disaster Relief (Tab 4)
+          </button>
         </div>
       </div>
     </div>
@@ -486,7 +517,30 @@ Ask me anything about:
           <div class="form-row form-row-2">
             <div class="form-group">
               <label class="form-label" for="hazardDistrict">District</label>
-              <input type="text" id="hazardDistrict" class="form-input" value="Warangal">
+              <input type="text" id="hazardDistrict" class="form-input" value="Warangal" list="districtsDatalist" placeholder="Select or type Indian district...">
+              <datalist id="districtsDatalist">
+                <option value="Warangal">Warangal (Telangana)</option>
+                <option value="Nalgonda">Nalgonda (Telangana)</option>
+                <option value="Karimnagar">Karimnagar (Telangana)</option>
+                <option value="East Godavari">East Godavari (Andhra Pradesh - Coastal Flood Prone)</option>
+                <option value="West Godavari">West Godavari (Andhra Pradesh)</option>
+                <option value="Krishna">Krishna (Andhra Pradesh - Cyclone / Flood)</option>
+                <option value="Guntur">Guntur (Andhra Pradesh)</option>
+                <option value="Ludhiana">Ludhiana (Punjab - Northern Grain Belt)</option>
+                <option value="Amritsar">Amritsar (Punjab)</option>
+                <option value="Karnal">Karnal (Haryana)</option>
+                <option value="Bardhaman">Bardhaman (West Bengal)</option>
+                <option value="Varanasi">Varanasi (Uttar Pradesh)</option>
+                <option value="Patna">Patna (Bihar - Gangetic Flood Plain)</option>
+                <option value="Thanjavur">Thanjavur (Tamil Nadu - Cauvery Delta)</option>
+                <option value="Mandya">Mandya (Karnataka)</option>
+                <option value="Cuttack">Cuttack (Odisha - Cyclone / Flood Zone)</option>
+                <option value="Palakkad">Palakkad (Kerala - Heavy Inundation)</option>
+                <option value="Alappuzha">Alappuzha (Kerala - Waterlogged Lowlands)</option>
+                <option value="Kolhapur">Kolhapur (Maharashtra)</option>
+                <option value="Kota">Kota (Rajasthan - Arid / Semi-Arid)</option>
+                <option value="Raipur">Raipur (Chhattisgarh)</option>
+              </datalist>
             </div>
             <div class="form-group">
               <label class="form-label" for="hazardCrop">Crop</label>
@@ -1930,7 +1984,7 @@ Ask me anything about:
 
   <!-- Scripts -->
   <script src="data.js"></script>
-  <script src="app.js?v=2.8"></script>
+  <script src="app.js?v=2.9"></script>
 
   <!-- Sample Document Full-Size Preview Modal -->
   <div id="sampleDocModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="sampleDocModalTitle">
